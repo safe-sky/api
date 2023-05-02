@@ -1,0 +1,26 @@
+name: Update API spec
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '00 01 1 * *'
+
+jobs:
+
+  update-api-spec:
+    runs-on: ubuntu-latest
+    name: Download API spec from current stable Atlas
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - run: |
+          set -euo pipefail
+          git config --global user.name 'Safe Sky Release Automation'
+          git config --global user.email 'release@safe-sky.net'
+          curl -LO https://atlas.safe-sky.net/v1/openapi.json
+          git add openapi.json
+          git commit -am 'Import updated API specs'
+          git push
