@@ -20,7 +20,12 @@ jobs:
           set -euo pipefail
           git config --global user.name 'Safe Sky Release Automation'
           git config --global user.email 'release@safe-sky.net'
+
           curl -LO https://atlas.safe-sky.net/v1/openapi.json
-          git add openapi.json
+
+          npm i -g @redocly/cli@latest
+          redocly build-docs openapi.json -o index.html
+
+          git add openapi.json index.html
           git commit -am 'Import updated API specs'
           git push
