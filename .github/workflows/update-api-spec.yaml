@@ -24,8 +24,8 @@ jobs:
           curl -LO https://atlas.safe-sky.net/v1/openapi.json
 
           npm i -g @redocly/cli@latest
-          redocly build-docs openapi.json -o index.html
+          redocly build-docs openapi.json -o docs/index.html
 
-          git add openapi.json index.html
+          git add openapi.json docs/index.html
           git commit -am 'Import updated API specs'
           git push
