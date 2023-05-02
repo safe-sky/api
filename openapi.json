@@ -1,0 +1,3814 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "definitions": {
+    "ListAPIKeysResponseAPIKey": {
+      "properties": {
+        "expiresAt": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "lastUsed": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "revocationId": {
+          "type": "string"
+        },
+        "tokenDisplay": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "METARSkyCondition": {
+      "properties": {
+        "cloudBaseFtAgl": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "skyCover": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "OnlineUsersOnlineUser": {
+      "properties": {
+        "aerodromeId": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "deadline": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "instance": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "started": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "apiHttpBody": {
+      "description": "Message that represents an arbitrary HTTP body. It should only be used for\npayload formats that can't be represented as JSON, such as raw binary or\nan HTML page.\n\n\nThis message can be used both in streaming and non-streaming API methods in\nthe request as well as the response.\n\nIt can be used as a top-level request field, which is convenient if one\nwants to extract parameters from either the URL or HTTP template into the\nrequest fields and also want access to the raw HTTP body.\n\nExample:\n\n    message GetResourceRequest {\n      // A unique request id.\n      string request_id = 1;\n\n      // The raw HTTP body is bound to this field.\n      google.api.HttpBody http_body = 2;\n\n    }\n\n    service ResourceService {\n      rpc GetResource(GetResourceRequest)\n        returns (google.api.HttpBody);\n      rpc UpdateResource(google.api.HttpBody)\n        returns (google.protobuf.Empty);\n\n    }\n\nExample with streaming methods:\n\n    service CaldavService {\n      rpc GetCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n      rpc UpdateCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n\n    }\n\nUse of this type only changes how the request and response bodies are\nhandled, all other features will continue to work unchanged.",
+      "properties": {
+        "contentType": {
+          "description": "The HTTP Content-Type header value specifying the content type of the body.",
+          "type": "string"
+        },
+        "data": {
+          "description": "The HTTP request/response body as raw binary.",
+          "format": "byte",
+          "type": "string"
+        },
+        "extensions": {
+          "description": "Application specific response metadata. Must be set in the first response\nfor streaming APIs.",
+          "items": {
+            "$ref": "#/definitions/protobufAny",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAFTNConfig": {
+      "properties": {
+        "connectionName": {
+          "type": "string"
+        },
+        "destinations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "hosts": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAddAerodromeUserRequest": {
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "permissions": {
+          "$ref": "#/definitions/atlasPermissions"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAerodromeConfig": {
+      "properties": {
+        "aerodromeId": {
+          "title": "Aerodrome identifier (ICAO)",
+          "type": "string"
+        },
+        "aftn": {
+          "$ref": "#/definitions/atlasAFTNConfig",
+          "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+        },
+        "aprons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aprons, in the order they are presented to the user",
+          "type": "array"
+        },
+        "awoswxSiteId": {
+          "title": "wx.awos.se site ID, for importing weather data",
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "Created timestamp (read only)",
+          "type": "string"
+        },
+        "deployment": {
+          "$ref": "#/definitions/atlasAerodromeDeployment",
+          "title": "The aerodrome deployment type (production, trial, etc.)"
+        },
+        "description": {
+          "title": "Aerodrome description (name) for display purposes",
+          "type": "string"
+        },
+        "distanceUnit": {
+          "$ref": "#/definitions/atlasDistanceUnit",
+          "title": "Unit for runway lengths, widths"
+        },
+        "email": {
+          "$ref": "#/definitions/atlasEmailConfig",
+          "title": "Configuration for outgoing email (requires system admin permissions)"
+        },
+        "emailImportAccount": {
+          "title": "Email account ID for importing sensor data sent via email",
+          "type": "string"
+        },
+        "expires": {
+          "format": "date-time",
+          "title": "The license expiry for the aerodrome, or blank if the license does not expire",
+          "type": "string"
+        },
+        "iata": {
+          "title": "Airport code (IATA), for information purposes only",
+          "type": "string"
+        },
+        "managedEmailDomains": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Email domains where new users can be added",
+          "type": "array"
+        },
+        "map": {
+          "$ref": "#/definitions/atlasAerodromeMap",
+          "title": "Map of aerodrome elements"
+        },
+        "mapPointPrecision": {
+          "format": "int32",
+          "title": "Map point precision in meters, for reducing map resolution to increase performance",
+          "type": "integer"
+        },
+        "metarId": {
+          "title": "METAR ID (ICAO), for importing weather data",
+          "type": "string"
+        },
+        "navCanada": {
+          "$ref": "#/definitions/atlasNavCanadaConfig",
+          "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
+        },
+        "optionalFeatures": {
+          "items": {
+            "$ref": "#/definitions/atlasOptionalFeature"
+          },
+          "title": "Enabled optional features (licensed modules)",
+          "type": "array"
+        },
+        "preferences": {
+          "$ref": "#/definitions/atlasAerodromePreferences",
+          "title": "Aerodrome preferences, editable with aerodrome admin permissions"
+        },
+        "regulatoryFramework": {
+          "$ref": "#/definitions/atlasRegulatoryFramework",
+          "title": "The used framework (ICAO_GRF / CANADA_RSC)"
+        },
+        "runwaySenseId": {
+          "title": "NavBlue RunwaySense ID, for importing aircraft braking data",
+          "type": "string"
+        },
+        "runways": {
+          "items": {
+            "$ref": "#/definitions/atlasRunwayConfig",
+            "type": "object"
+          },
+          "title": "Runways, in the order they are presented to the user",
+          "type": "array"
+        },
+        "silentAprons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Silent aprons, i.e., those that can be reported but are not included in SNOWTAM",
+          "type": "array"
+        },
+        "silentTaxiways": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
+          "type": "array"
+        },
+        "taxiways": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Taxiways, in the order they are presented to the user",
+          "type": "array"
+        },
+        "updated": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "Updated timestamp (read only)",
+          "type": "string"
+        },
+        "userLimit": {
+          "format": "int32",
+          "title": "User limit, where 0 means unlimited",
+          "type": "integer"
+        }
+      },
+      "title": "Aerodrome configuration",
+      "type": "object"
+    },
+    "atlasAerodromeDeployment": {
+      "default": "UNKNOWN",
+      "enum": [
+        "UNKNOWN",
+        "PRODUCTION",
+        "TESTING",
+        "TRIAL",
+        "DEVELOPMENT",
+        "EXPIRED"
+      ],
+      "title": "- PRODUCTION: Used by customer for production purposes\n - TESTING: Used by customer for testing / training purposes\n - TRIAL: Used by prospective customer for trial purposes\n - DEVELOPMENT: Used internally for development purposes\n - EXPIRED: Has expired",
+      "type": "string"
+    },
+    "atlasAerodromeMap": {
+      "properties": {
+        "bounds": {
+          "$ref": "#/definitions/atlasMapRect"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/definitions/atlasMapFeature",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "markers": {
+          "items": {
+            "$ref": "#/definitions/atlasMapMarker",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAerodromePreferences": {
+      "properties": {
+        "allowedChemicals": {
+          "items": {
+            "$ref": "#/definitions/atlasDeicingChemical"
+          },
+          "type": "array"
+        },
+        "atisAudioFormat": {
+          "$ref": "#/definitions/atlasAudioFormat"
+        },
+        "atisRecipients": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "autoImportConditions": {
+          "type": "boolean"
+        },
+        "enforceRwyccUpDownGrades": {
+          "type": "boolean"
+        },
+        "mapTaxiwaysOnTop": {
+          "type": "boolean"
+        },
+        "observationTimeOnPublish": {
+          "$ref": "#/definitions/atlasSetObservationTimeOnPublish"
+        },
+        "rcrPhotosCutoffHours": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "rcrRecipients": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "snowtamRecipients": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "stockPhrases": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "withFriction": {
+          "type": "boolean"
+        },
+        "withFrozenSand": {
+          "type": "boolean"
+        },
+        "withLandingDirection": {
+          "type": "boolean"
+        },
+        "withSpwr": {
+          "type": "boolean"
+        },
+        "withUnassessed": {
+          "type": "boolean"
+        },
+        "withViewerKeys": {
+          "type": "boolean"
+        },
+        "withoutSnow": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAerodromeReport": {
+      "properties": {
+        "aerodrome": {
+          "$ref": "#/definitions/safeskyatlasAerodrome"
+        },
+        "formattedCsv": {
+          "type": "string"
+        },
+        "formattedPdf": {
+          "format": "byte",
+          "type": "string"
+        },
+        "formattedText": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/definitions/atlasAerodromeReportMeta"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAerodromeReportMeta": {
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/atlasPublishReportFormat"
+        },
+        "published": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "publisher": {
+          "$ref": "#/definitions/atlasUserDetails"
+        },
+        "reportId": {
+          "type": "string"
+        },
+        "sequence": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "status": {
+          "items": {
+            "$ref": "#/definitions/atlasDeliveryStatus",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "year": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "atlasApron": {
+      "properties": {
+        "apronId": {
+          "type": "string"
+        },
+        "closed": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "silent": {
+          "title": "A silent apron is not included in SNOWTAMs",
+          "type": "boolean"
+        },
+        "slipperyOrPoor": {
+          "$ref": "#/definitions/atlasBoolValue"
+        }
+      },
+      "title": "Apron assessments",
+      "type": "object"
+    },
+    "atlasAudioFormat": {
+      "default": "AUDIO_UNSPECIFIED",
+      "enum": [
+        "AUDIO_UNSPECIFIED",
+        "AUDIO_NONE",
+        "AUDIO_MP3",
+        "AUDIO_WAV"
+      ],
+      "type": "string"
+    },
+    "atlasBoolValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "type": "boolean"
+        }
+      },
+      "title": "A boolean",
+      "type": "object"
+    },
+    "atlasCardinal": {
+      "default": "CARDINAL_UNSPECIFIED",
+      "enum": [
+        "CARDINAL_UNSPECIFIED",
+        "NORTH",
+        "NORTHEAST",
+        "EAST",
+        "SOUTHEAST",
+        "SOUTH",
+        "SOUTHWEST",
+        "WEST",
+        "NORTHWEST"
+      ],
+      "type": "string"
+    },
+    "atlasChangeReason": {
+      "default": "TEMPERATURE",
+      "enum": [
+        "TEMPERATURE",
+        "DEW_POINT",
+        "FRICTION",
+        "PRECIPITATION",
+        "PIREP",
+        "OTHER",
+        "FROZEN_SAND"
+      ],
+      "type": "string"
+    },
+    "atlasChangeReasonsValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "items": {
+            "$ref": "#/definitions/atlasChangeReason"
+          },
+          "type": "array"
+        }
+      },
+      "title": "A up/downgrade reason",
+      "type": "object"
+    },
+    "atlasConditionImport": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "runway": {
+          "$ref": "#/definitions/atlasRunway"
+        },
+        "source": {
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCreateAPIKeyRequest": {
+      "properties": {
+        "validityDays": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCreateAPIKeyResponse": {
+      "properties": {
+        "key": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCreateConditionImportResponse": {
+      "type": "object"
+    },
+    "atlasDeicingChemical": {
+      "default": "UNSPECIFIED_OR_OTHER",
+      "enum": [
+        "UNSPECIFIED_OR_OTHER",
+        "KAC_POTASSIUM_ACETATE",
+        "KFOR_POTASSIUM_FORMATE",
+        "GAC_GLYCERINE_ACETATE",
+        "NAFO_SODIUM_FORMATE",
+        "NAAC_SODIUM_ACETATE",
+        "EG_ETHYLEN_GLYCOL",
+        "PG_PROPYLENE_GLYCOL",
+        "UREA"
+      ],
+      "type": "string"
+    },
+    "atlasDeicingChemicalValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "$ref": "#/definitions/atlasDeicingChemical"
+        }
+      },
+      "title": "A deicing chemical",
+      "type": "object"
+    },
+    "atlasDeliveryStatus": {
+      "properties": {
+        "delivered": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "failed": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/definitions/atlasPublishReportMethod"
+        },
+        "recipient": {
+          "type": "string"
+        },
+        "sent": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDistanceSideValue": {
+      "properties": {
+        "distance": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "heightMm": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "side": {
+          "$ref": "#/definitions/atlasSide"
+        },
+        "unit": {
+          "$ref": "#/definitions/atlasDistanceUnit"
+        }
+      },
+      "title": "A distance and side",
+      "type": "object"
+    },
+    "atlasDistanceUnit": {
+      "default": "DISTANCE_UNIT_UNSPECIFIED",
+      "enum": [
+        "DISTANCE_UNIT_UNSPECIFIED",
+        "METERS",
+        "FEET"
+      ],
+      "type": "string"
+    },
+    "atlasDistanceValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "side": {
+          "$ref": "#/definitions/atlasSide"
+        },
+        "unit": {
+          "$ref": "#/definitions/atlasDistanceUnit"
+        },
+        "value": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "title": "A distance",
+      "type": "object"
+    },
+    "atlasEmailConfig": {
+      "properties": {
+        "aadClientId": {
+          "type": "string"
+        },
+        "aadClientSecret": {
+          "type": "string"
+        },
+        "aadScopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "aadTokenUrl": {
+          "type": "string"
+        },
+        "smtpFrom": {
+          "type": "string"
+        },
+        "smtpHost": {
+          "type": "string"
+        },
+        "smtpPassword": {
+          "type": "string"
+        },
+        "smtpUser": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasGetHealthResponse": {
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/atlasHealthStatus"
+        }
+      },
+      "type": "object"
+    },
+    "atlasGetSpokenATISResponse": {
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "mp3": {
+          "format": "byte",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasGetUserDataResponse": {
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/atlasUserData"
+        }
+      },
+      "type": "object"
+    },
+    "atlasHealthStatus": {
+      "default": "FAIL",
+      "enum": [
+        "FAIL",
+        "OK"
+      ],
+      "type": "string"
+    },
+    "atlasIntValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "title": "An unitless integer",
+      "type": "object"
+    },
+    "atlasLicenseLimits": {
+      "properties": {
+        "aerodromeIdPatterns": {
+          "description": "Permitted aerodrome glob patterns. If empty, all aerodromes are permitted.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "optionalFeatures": {
+          "description": "Permitted optional features. If empty, all features are permitted. To\npermit no features, add an explicit NO_OPTIONAL_FEATURE to the list.",
+          "items": {
+            "$ref": "#/definitions/atlasOptionalFeature"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasLicensee": {
+      "properties": {
+        "commonName": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "dnsNames": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "organizationalUnit": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListAPIKeysResponse": {
+      "properties": {
+        "keys": {
+          "items": {
+            "$ref": "#/definitions/ListAPIKeysResponseAPIKey",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListAerodromesResponse": {
+      "properties": {
+        "aerodromes": {
+          "items": {
+            "$ref": "#/definitions/atlasListAerodromesResponseAerodrome",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListAerodromesResponseAerodrome": {
+      "properties": {
+        "aerodromeId": {
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "deployment": {
+          "$ref": "#/definitions/atlasAerodromeDeployment"
+        },
+        "description": {
+          "type": "string"
+        },
+        "expires": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "iata": {
+          "type": "string"
+        },
+        "metarId": {
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListConditionImportsResponse": {
+      "properties": {
+        "imports": {
+          "items": {
+            "$ref": "#/definitions/atlasConditionImport",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListReportYearsResponse": {
+      "properties": {
+        "years": {
+          "items": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListReportsResponse": {
+      "properties": {
+        "reports": {
+          "items": {
+            "$ref": "#/definitions/atlasAerodromeReportMeta",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListUsersResponse": {
+      "properties": {
+        "users": {
+          "items": {
+            "$ref": "#/definitions/atlasUser",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasLoginConfiguration": {
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/atlasLoginKind"
+        },
+        "oidcAllowedTfps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "oidcClientId": {
+          "type": "string"
+        },
+        "oidcIssuer": {
+          "type": "string"
+        },
+        "oidcJwksUrl": {
+          "type": "string"
+        },
+        "oidcLoginDiscoveryUrl": {
+          "type": "string"
+        },
+        "oidcPermissionsClaim": {
+          "type": "string"
+        },
+        "oidcRequiredScps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "oidcResetDiscoveryUrl": {
+          "type": "string"
+        },
+        "oidcScopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "oidcSystemAdminClaim": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasLoginKind": {
+      "default": "LOGINKIND_UNSUPPORTED",
+      "enum": [
+        "LOGINKIND_UNSUPPORTED",
+        "LOGINKIND_OIDC"
+      ],
+      "type": "string"
+    },
+    "atlasMETAR": {
+      "properties": {
+        "altimInHg": {
+          "format": "double",
+          "type": "number"
+        },
+        "dewpointC": {
+          "format": "double",
+          "type": "number"
+        },
+        "elevationM": {
+          "format": "double",
+          "type": "number"
+        },
+        "flightCategory": {
+          "type": "string"
+        },
+        "latitude": {
+          "format": "double",
+          "type": "number"
+        },
+        "longitude": {
+          "format": "double",
+          "type": "number"
+        },
+        "maxt24hrC": {
+          "format": "double",
+          "type": "number"
+        },
+        "maxtC": {
+          "format": "double",
+          "type": "number"
+        },
+        "metarType": {
+          "type": "string"
+        },
+        "mint24hrC": {
+          "format": "double",
+          "type": "number"
+        },
+        "mintC": {
+          "format": "double",
+          "type": "number"
+        },
+        "observationTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "precip24hrIn": {
+          "format": "double",
+          "type": "number"
+        },
+        "precip3hrIn": {
+          "format": "double",
+          "type": "number"
+        },
+        "precip6hrIn": {
+          "format": "double",
+          "type": "number"
+        },
+        "precipIn": {
+          "format": "double",
+          "type": "number"
+        },
+        "rawText": {
+          "type": "string"
+        },
+        "seaLevelPressureMb": {
+          "format": "double",
+          "type": "number"
+        },
+        "skyCondition": {
+          "items": {
+            "$ref": "#/definitions/METARSkyCondition",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "snowIn": {
+          "format": "double",
+          "type": "number"
+        },
+        "stationId": {
+          "type": "string"
+        },
+        "tempC": {
+          "format": "double",
+          "type": "number"
+        },
+        "threeHrPressureTendencyMb": {
+          "format": "double",
+          "type": "number"
+        },
+        "vertVisFt": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "visibilityStatuteMi": {
+          "format": "double",
+          "type": "number"
+        },
+        "windDirDegrees": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "windGustKt": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "windSpeedKt": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "wxString": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMapFeature": {
+      "properties": {
+        "geometries": {
+          "items": {
+            "$ref": "#/definitions/atlasMapGeometry",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMapGeometry": {
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/atlasMapGeometryKind"
+        },
+        "points": {
+          "items": {
+            "$ref": "#/definitions/atlasMapPoint",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMapGeometryKind": {
+      "default": "UNDEFINED",
+      "enum": [
+        "UNDEFINED",
+        "LINE",
+        "POLYGON"
+      ],
+      "type": "string"
+    },
+    "atlasMapMarker": {
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/atlasMapMarkerKind"
+        },
+        "point": {
+          "$ref": "#/definitions/atlasMapPoint"
+        },
+        "text": {
+          "type": "string"
+        },
+        "weight": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMapMarkerKind": {
+      "default": "MARKER_UNDEFINED",
+      "enum": [
+        "MARKER_UNDEFINED",
+        "MARKER_RWY",
+        "MARKER_TWY",
+        "MARKER_APR"
+      ],
+      "type": "string"
+    },
+    "atlasMapPoint": {
+      "properties": {
+        "lat": {
+          "format": "double",
+          "type": "number"
+        },
+        "lon": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMapRect": {
+      "properties": {
+        "northEast": {
+          "$ref": "#/definitions/atlasMapPoint"
+        },
+        "southWest": {
+          "$ref": "#/definitions/atlasMapPoint"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMetadata": {
+      "description": "Metadata describes the current state of a given field. A field starts\nlife with op = UNCHANGED_CLEAR and no user or time. When a client sends\nan update with op = SET or op = CLEAR the server will update the\ncorresponding field value, set the user and time according to current\nauthenticated values, and set op back to the corresponding UNCHANGED_\nvariant. Fields without metadata, or with op set to something other than\nSET/CLEAR will be ignored by the server in updates.",
+      "properties": {
+        "op": {
+          "$ref": "#/definitions/safeskyatlasOperation"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasNavCanadaConfig": {
+      "properties": {
+        "apiEndpoint": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasOnlineUsers": {
+      "properties": {
+        "users": {
+          "items": {
+            "$ref": "#/definitions/OnlineUsersOnlineUser",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasOptionalFeature": {
+      "default": "NO_OPTIONAL_FEATURE",
+      "enum": [
+        "NO_OPTIONAL_FEATURE",
+        "MOBILE_SENSORS_FEATURE",
+        "ATIS_REPORTING_FEATURE",
+        "DESKTOP_UI_FEATURE",
+        "MEDIA_CAPTURE_FEATURE",
+        "NAVBLUE_RUNWAYSENSE_FEATURE",
+        "SEND_RCR_FEATURE",
+        "FRICTION_REPORTING_FEATURE",
+        "VIEWER_KEY_FEATURE",
+        "ARCHIVE_VIEW_FEATURE",
+        "STOCK_REMARKS_FEATURE",
+        "API_FEATURE"
+      ],
+      "title": "Optional features, i.e., licensed modules",
+      "type": "string"
+    },
+    "atlasPermissions": {
+      "properties": {
+        "aerodromeAdmin": {
+          "description": "The aerodrome_admin permission grants configuration updates on the\nspecified aerodrome.",
+          "type": "boolean"
+        },
+        "aerodromeId": {
+          "type": "string"
+        },
+        "archiveRead": {
+          "description": "The archive_read permission grants listing and exporting historical\nreports.",
+          "type": "boolean"
+        },
+        "archiveReadMetadata": {
+          "description": "The archive_read_metadata permission grants listing and exporting\nhistorical reports including field metadata (who changed what when).",
+          "type": "boolean"
+        },
+        "liveWrite": {
+          "description": "The live_write permission grants changing the live report data.",
+          "type": "boolean"
+        },
+        "regionId": {
+          "$ref": "#/definitions/atlasRegion",
+          "description": "The region ID where the aerodrome is located.",
+          "readOnly": true
+        },
+        "reportSend": {
+          "description": "The report_send permission grants sending (and thus archiving) a new\nreport.",
+          "type": "boolean"
+        },
+        "revokeAccess": {
+          "description": "The revoke_access bit makes the permission invalid and it will be\nremoved. Used in updates only.",
+          "type": "boolean"
+        },
+        "taint": {
+          "description": "The taint string invalidates the permission with a reason for it's\ninvalidation.",
+          "type": "string"
+        }
+      },
+      "title": "Permissions",
+      "type": "object"
+    },
+    "atlasPublishATISResponse": {
+      "type": "object"
+    },
+    "atlasPublishReportFormat": {
+      "default": "UNSPECIFIED",
+      "enum": [
+        "UNSPECIFIED",
+        "RCR",
+        "SNOWTAM"
+      ],
+      "type": "string"
+    },
+    "atlasPublishReportMethod": {
+      "default": "METHOD_UNSPECIFIED",
+      "enum": [
+        "METHOD_UNSPECIFIED",
+        "AFTN",
+        "FAX",
+        "NAVCANADA",
+        "EMAIL"
+      ],
+      "type": "string"
+    },
+    "atlasPublishReportResponse": {
+      "properties": {
+        "report": {
+          "$ref": "#/definitions/atlasAerodromeReport"
+        },
+        "results": {
+          "items": {
+            "$ref": "#/definitions/atlasPublishReportResult",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPublishReportResult": {
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/definitions/atlasPublishReportMethod"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "atlasRWYCC": {
+      "default": "RWYCC_0",
+      "enum": [
+        "RWYCC_0",
+        "RWYCC_1",
+        "RWYCC_2",
+        "RWYCC_3",
+        "RWYCC_4",
+        "RWYCC_5",
+        "RWYCC_6"
+      ],
+      "type": "string"
+    },
+    "atlasRWYCCValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "$ref": "#/definitions/atlasRWYCC"
+        }
+      },
+      "title": "An RWYCC",
+      "type": "object"
+    },
+    "atlasRegion": {
+      "default": "EU",
+      "description": "Region IDs must be valid DNS labels when used in\n\"$region.atlas.safe-sky.net\", e.g. \"EU\" will be encoded to\n\"eu.atlas.safe-sky.net\".",
+      "enum": [
+        "EU",
+        "US",
+        "AP",
+        "CA",
+        "UK",
+        "IN",
+        "CN",
+        "KR",
+        "BR"
+      ],
+      "type": "string"
+    },
+    "atlasRegulatoryFramework": {
+      "default": "FRAMEWORK_UNSPECIFIED",
+      "enum": [
+        "FRAMEWORK_UNSPECIFIED",
+        "ICAO_GRF",
+        "CANADA_RSC"
+      ],
+      "type": "string"
+    },
+    "atlasRepeatedStringValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "title": "One or more strings",
+      "type": "object"
+    },
+    "atlasResetAerodromeResponse": {
+      "type": "object"
+    },
+    "atlasResetAerodromeRunwayResponse": {
+      "type": "object"
+    },
+    "atlasRestoreLatestReportResponse": {
+      "type": "object"
+    },
+    "atlasRevokeAPIKeyResponse": {
+      "type": "object"
+    },
+    "atlasRunway": {
+      "properties": {
+        "adjacentSnowbanks": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "chemicalTreatment": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "clearedLength": {
+          "$ref": "#/definitions/atlasDistanceValue"
+        },
+        "clearedWidth": {
+          "$ref": "#/definitions/atlasDistanceValue"
+        },
+        "closed": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "deicingChemical": {
+          "$ref": "#/definitions/atlasDeicingChemicalValue"
+        },
+        "driftingSnow": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "frozenSand": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "landingDirection": {
+          "$ref": "#/definitions/atlasSide"
+        },
+        "looseSand": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "observationTime": {
+          "$ref": "#/definitions/atlasTimeValue"
+        },
+        "remarks": {
+          "$ref": "#/definitions/atlasStringValue"
+        },
+        "runwayId": {
+          "type": "string"
+        },
+        "singleZone": {
+          "type": "boolean"
+        },
+        "snowDrifts": {
+          "$ref": "#/definitions/atlasDistanceSideValue"
+        },
+        "snowbanks": {
+          "$ref": "#/definitions/atlasDistanceSideValue"
+        },
+        "stockPhrases": {
+          "$ref": "#/definitions/atlasRepeatedStringValue"
+        },
+        "temperature": {
+          "$ref": "#/definitions/atlasTemperatureValue"
+        },
+        "windrows": {
+          "$ref": "#/definitions/atlasDistanceSideValue"
+        },
+        "zoneA": {
+          "$ref": "#/definitions/atlasRunwayZone"
+        },
+        "zoneB": {
+          "$ref": "#/definitions/atlasRunwayZone"
+        },
+        "zoneC": {
+          "$ref": "#/definitions/atlasRunwayZone"
+        }
+      },
+      "title": "Runway assessments",
+      "type": "object"
+    },
+    "atlasRunwayConfig": {
+      "properties": {
+        "leftSide": {
+          "$ref": "#/definitions/atlasCardinal",
+          "title": "Side of the runway as Compass Cardinal value"
+        },
+        "length": {
+          "format": "int32",
+          "title": "Runway length in meters",
+          "type": "integer"
+        },
+        "localTaxiways": {
+          "items": {
+            "type": "string"
+          },
+          "title": "List of taxiways serving this runway",
+          "type": "array"
+        },
+        "rightSide": {
+          "$ref": "#/definitions/atlasCardinal",
+          "title": "Side of the runway as Compass Cardinal value"
+        },
+        "runwayId": {
+          "title": "Runway identifier, with dash (e.g., \"01L-19R\")",
+          "type": "string"
+        },
+        "width": {
+          "format": "int32",
+          "title": "Runway width in meters",
+          "type": "integer"
+        }
+      },
+      "title": "Runway configuration",
+      "type": "object"
+    },
+    "atlasRunwaySenseSummary": {
+      "properties": {
+        "bestRwycc": {
+          "$ref": "#/definitions/atlasRWYCC"
+        },
+        "numLandings": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "worstRwycc": {
+          "$ref": "#/definitions/atlasRWYCC"
+        }
+      },
+      "type": "object"
+    },
+    "atlasRunwaySurfaceDescription": {
+      "default": "DRY",
+      "enum": [
+        "DRY",
+        "COMPACTED_SNOW",
+        "DRY_SNOW",
+        "DRY_SNOW_ON_TOP_OF_COMPACTED_SNOW",
+        "DRY_SNOW_ON_TOP_OF_ICE",
+        "FROST",
+        "ICE",
+        "SLIPPERY_WET",
+        "SLUSH",
+        "SPECIALLY_PREPARED_WINTER_RUNWAY",
+        "STANDING_WATER",
+        "WATER_ON_TOP_OF_COMPACTED_SNOW",
+        "WET",
+        "WET_ICE",
+        "WET_SNOW",
+        "WET_SNOW_ON_TOP_OF_COMPACTED_SNOW",
+        "WET_SNOW_ON_TOP_OF_ICE"
+      ],
+      "type": "string"
+    },
+    "atlasRunwaySurfaceDescriptionValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "$ref": "#/definitions/atlasRunwaySurfaceDescription"
+        }
+      },
+      "title": "A runway surface description",
+      "type": "object"
+    },
+    "atlasRunwayZone": {
+      "properties": {
+        "adjustedRwycc": {
+          "$ref": "#/definitions/atlasRWYCCValue"
+        },
+        "calculatedRwycc": {
+          "$ref": "#/definitions/atlasRWYCC"
+        },
+        "contaminationCoverPct": {
+          "$ref": "#/definitions/atlasIntValue"
+        },
+        "contaminationDepthMm": {
+          "$ref": "#/definitions/atlasIntValue"
+        },
+        "frictionMu": {
+          "$ref": "#/definitions/atlasIntValue"
+        },
+        "runwaySense": {
+          "$ref": "#/definitions/atlasRunwaySenseSummary",
+          "readOnly": true,
+          "title": "Summary of current RunwaySense data (read only)"
+        },
+        "rwyccAdjustReasons": {
+          "$ref": "#/definitions/atlasChangeReasonsValue"
+        },
+        "secondContaminationCoverPct": {
+          "$ref": "#/definitions/atlasIntValue",
+          "title": "Canada-RSC only"
+        },
+        "secondContaminationDepthMm": {
+          "$ref": "#/definitions/atlasIntValue",
+          "title": "Canada-RSC only"
+        },
+        "secondSurfaceDescription": {
+          "$ref": "#/definitions/atlasRunwaySurfaceDescriptionValue",
+          "title": "Canada-RSC only"
+        },
+        "surfaceDescription": {
+          "$ref": "#/definitions/atlasRunwaySurfaceDescriptionValue"
+        }
+      },
+      "title": "Runway zone assessments",
+      "type": "object"
+    },
+    "atlasSetObservationTimeOnPublish": {
+      "default": "NO",
+      "enum": [
+        "NO",
+        "REMIND",
+        "AUTO"
+      ],
+      "type": "string"
+    },
+    "atlasSetUserDataResponse": {
+      "type": "object"
+    },
+    "atlasSide": {
+      "default": "LR",
+      "enum": [
+        "LR",
+        "L",
+        "R"
+      ],
+      "type": "string"
+    },
+    "atlasStringValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": "A string",
+      "type": "object"
+    },
+    "atlasSystemInfo": {
+      "properties": {
+        "licenseLimits": {
+          "$ref": "#/definitions/atlasLicenseLimits"
+        },
+        "licensee": {
+          "$ref": "#/definitions/atlasLicensee"
+        },
+        "version": {
+          "$ref": "#/definitions/atlasVersion"
+        }
+      },
+      "type": "object"
+    },
+    "atlasTaxiway": {
+      "properties": {
+        "closed": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "silent": {
+          "title": "A silent taxiways is not included in SNOWTAMs",
+          "type": "boolean"
+        },
+        "slipperyOrPoor": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "snowbanks": {
+          "$ref": "#/definitions/atlasDistanceSideValue"
+        },
+        "taxiwayId": {
+          "type": "string"
+        }
+      },
+      "title": "Taxiway assessments",
+      "type": "object"
+    },
+    "atlasTemperatureUnit": {
+      "default": "TEMPERATURE_UNIT_UNSPECIFIED",
+      "enum": [
+        "TEMPERATURE_UNIT_UNSPECIFIED",
+        "CELSIUS",
+        "FAHRENHEIT"
+      ],
+      "type": "string"
+    },
+    "atlasTemperatureValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "unit": {
+          "$ref": "#/definitions/atlasTemperatureUnit"
+        },
+        "value": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "title": "A temperature",
+      "type": "object"
+    },
+    "atlasTimeValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "value": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "title": "A time",
+      "type": "object"
+    },
+    "atlasUpdateAerodromePreferencesResponse": {
+      "type": "object"
+    },
+    "atlasUpdateApronsResponse": {
+      "type": "object"
+    },
+    "atlasUpdateRemarksResponse": {
+      "type": "object"
+    },
+    "atlasUpdateRunwayResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaxiwaysResponse": {
+      "type": "object"
+    },
+    "atlasUser": {
+      "properties": {
+        "accountDisabled": {
+          "type": "boolean"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "permissions": {
+          "items": {
+            "$ref": "#/definitions/atlasPermissions",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "systemAdmin": {
+          "title": "The system_admin permissions grants system level operations above\nthat of a single aerodrome:\n- create, list, update, and delete aerodromes\n- create, list, update, and delete users\n- grant and revoke user permissions",
+          "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
+        }
+      },
+      "title": "User",
+      "type": "object"
+    },
+    "atlasUserData": {
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "format": "byte",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasUserDetails": {
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasVersion": {
+      "properties": {
+        "buildTime": {
+          "type": "string"
+        },
+        "versionName": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "protobufAny": {
+      "additionalProperties": {},
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }",
+      "properties": {
+        "@type": {
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "rpcStatus": {
+      "properties": {
+        "code": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "details": {
+          "items": {
+            "$ref": "#/definitions/protobufAny",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "safeskyatlasAerodrome": {
+      "properties": {
+        "aerodromeId": {
+          "type": "string"
+        },
+        "aprons": {
+          "items": {
+            "$ref": "#/definitions/atlasApron",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "atisPreview": {
+          "readOnly": true,
+          "title": "Preview of ATIS report in text format",
+          "type": "string"
+        },
+        "csvPreview": {
+          "readOnly": true,
+          "title": "Preview of RCR in CSV format",
+          "type": "string"
+        },
+        "metar": {
+          "$ref": "#/definitions/atlasMETAR",
+          "readOnly": true,
+          "title": "Last METAR (read only)"
+        },
+        "pdfPreview": {
+          "format": "byte",
+          "readOnly": true,
+          "title": "Preview of RCR in PDF format",
+          "type": "string"
+        },
+        "remainingValidityMinutes": {
+          "description": "Remaining validity time of the latest filed SNOWTAM.",
+          "format": "int32",
+          "readOnly": true,
+          "type": "integer"
+        },
+        "remarks": {
+          "$ref": "#/definitions/atlasStringValue",
+          "title": "Free form remarks"
+        },
+        "runwaySenseTimestamp": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "Timestamp of last RunwaySense update (read only)",
+          "type": "string"
+        },
+        "runways": {
+          "items": {
+            "$ref": "#/definitions/atlasRunway",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "sequence": {
+          "format": "int64",
+          "title": "Sequence number increments by one for each change",
+          "type": "string"
+        },
+        "significantChange": {
+          "description": "True if the current assessments represent a significant change\ncompared to the latest filed SNOWTAM.",
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "stockPhrases": {
+          "$ref": "#/definitions/atlasRepeatedStringValue",
+          "title": "Remarks, of the ones available as stock phrases"
+        },
+        "taxiways": {
+          "items": {
+            "$ref": "#/definitions/atlasTaxiway",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "textPreview": {
+          "readOnly": true,
+          "title": "Preview of RCR in text format",
+          "type": "string"
+        },
+        "updatedTimestamp": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "Timestamp of last update (read only)",
+          "type": "string"
+        }
+      },
+      "title": "Aerodrome assessments",
+      "type": "object"
+    },
+    "safeskyatlasOperation": {
+      "default": "CLEARED",
+      "enum": [
+        "CLEARED",
+        "SET",
+        "UPDATE_CLEAR",
+        "UPDATE_SET"
+      ],
+      "type": "string"
+    }
+  },
+  "host": "atlas.safe-sky.net",
+  "info": {
+    "description": "## Overview\n\nThe Atlas system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://atlas.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAtlas provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://atlas.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://atlas.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
+    "title": "Safe Sky Atlas API",
+    "version": "1.17"
+  },
+  "paths": {
+    "/map/tile/{name}": {
+      "get": {
+        "description": "The tile name is in OpenStreetMap format: x/y/zoom. The tile data is\nreturned in the HTTP body in png format.",
+        "operationId": "Tile_GetTile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "pattern": ".+",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiHttpBody"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get map tile",
+        "tags": [
+          "Tile"
+        ]
+      }
+    },
+    "/v1/aerodromes": {
+      "get": {
+        "description": "This method requires system admin permissions.",
+        "operationId": "Config_ListAerodromes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListAerodromesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List aerodromes",
+        "tags": [
+          "Config"
+        ]
+      },
+      "post": {
+        "description": "This method requires system admin permissions.",
+        "operationId": "Config_CreateAerodromeConfig",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeConfig"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Create aerodrome",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments": {
+      "get": {
+        "description": "The aerodrome live method returns the currently assessed state of the\naerodrome. No request body is required.",
+        "operationId": "Live_GetAerodrome",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/safeskyatlasAerodrome"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get current assessments",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/aprons": {
+      "post": {
+        "operationId": "Live_UpdateAprons",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "aprons": {
+                  "items": {
+                    "$ref": "#/definitions/atlasApron",
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateApronsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update apron assessments",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/atis/tts": {
+      "post": {
+        "description": "Returns the ATIS report as voice synthesized speech. If `keyOnly` is\nset, then only the blob key for the generated file is returned, and\nGetBlob can be used to download it.",
+        "operationId": "Live_GetSpokenATIS",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "keyOnly",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasGetSpokenATISResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get spoken ATIS report",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/remarks": {
+      "post": {
+        "operationId": "Live_UpdateRemarks",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "remarks": {
+                  "type": "string"
+                },
+                "stockPhrases": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateRemarksResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update general free text remarks for the aerodrome",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/reset": {
+      "post": {
+        "description": "Resets all assessments for the entire aerodrome.",
+        "operationId": "Live_ResetAerodrome",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasResetAerodromeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Reset aerodrome",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/restore": {
+      "post": {
+        "description": "Restores all aerodrome assessments to those of the latest filed SNOWTAM.",
+        "operationId": "Live_RestoreLatestReport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasRestoreLatestReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Restore aerodrome",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/runways/{runway.runwayId}": {
+      "post": {
+        "operationId": "Live_UpdateRunway",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "runway.runwayId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Runway assessments",
+            "in": "body",
+            "name": "runway",
+            "required": true,
+            "schema": {
+              "properties": {
+                "adjacentSnowbanks": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "chemicalTreatment": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "clearedLength": {
+                  "$ref": "#/definitions/atlasDistanceValue"
+                },
+                "clearedWidth": {
+                  "$ref": "#/definitions/atlasDistanceValue"
+                },
+                "closed": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "deicingChemical": {
+                  "$ref": "#/definitions/atlasDeicingChemicalValue"
+                },
+                "driftingSnow": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "frozenSand": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "landingDirection": {
+                  "$ref": "#/definitions/atlasSide"
+                },
+                "looseSand": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "observationTime": {
+                  "$ref": "#/definitions/atlasTimeValue"
+                },
+                "remarks": {
+                  "$ref": "#/definitions/atlasStringValue"
+                },
+                "singleZone": {
+                  "type": "boolean"
+                },
+                "snowDrifts": {
+                  "$ref": "#/definitions/atlasDistanceSideValue"
+                },
+                "snowbanks": {
+                  "$ref": "#/definitions/atlasDistanceSideValue"
+                },
+                "stockPhrases": {
+                  "$ref": "#/definitions/atlasRepeatedStringValue"
+                },
+                "temperature": {
+                  "$ref": "#/definitions/atlasTemperatureValue"
+                },
+                "windrows": {
+                  "$ref": "#/definitions/atlasDistanceSideValue"
+                },
+                "zoneA": {
+                  "$ref": "#/definitions/atlasRunwayZone"
+                },
+                "zoneB": {
+                  "$ref": "#/definitions/atlasRunwayZone"
+                },
+                "zoneC": {
+                  "$ref": "#/definitions/atlasRunwayZone"
+                }
+              },
+              "title": "Runway assessments",
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateRunwayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update runway assessments",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/stream": {
+      "get": {
+        "description": "This returns a stream of JSON objects, in real time as assessments change.",
+        "operationId": "Live_WatchAerodrome",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                },
+                "result": {
+                  "$ref": "#/definitions/safeskyatlasAerodrome"
+                }
+              },
+              "title": "Stream result of safeskyatlasAerodrome",
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Watch aerodrome assessments stream",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/taxiways": {
+      "post": {
+        "operationId": "Live_UpdateTaxiways",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "taxiways": {
+                  "items": {
+                    "$ref": "#/definitions/atlasTaxiway",
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaxiwaysResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update taxiway assessments",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/assessments/{runwayId}/reset": {
+      "post": {
+        "description": "Resets all assessments for a specific runway.",
+        "operationId": "Live_ResetAerodromeRunway",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "runwayId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasResetAerodromeRunwayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Reset runway",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/configuration": {
+      "get": {
+        "description": "Returns the configuration for the specified aerodrome, including map\ndata.",
+        "operationId": "Config_GetAerodromeConfig",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeConfig"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get aerodrome configuration",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/imports/runways/{runwayId}": {
+      "get": {
+        "operationId": "Live_ListConditionImports",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "runwayId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListConditionImportsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List available recent condition imports",
+        "tags": [
+          "Live"
+        ]
+      },
+      "post": {
+        "description": "Atlas can accept condition data from third party providers, which can\nthen be selected for import in the app. Only fields with the metadata\nop `UPDATE_SET` or `UPDATE_CLEAR` are applied on import.",
+        "operationId": "Live_CreateConditionImport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "runwayId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "import",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasConditionImport"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasCreateConditionImportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Inject a condition import",
+        "tags": [
+          "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/online-users": {
+      "get": {
+        "description": "List the users who are currently online for the given aerodrome.\nRequires aerodrome admin permissions.",
+        "operationId": "System_ListOnlineUsers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasOnlineUsers"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List online users",
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/preferences": {
+      "post": {
+        "description": "Set optional preferences for the specified aerodrome. Requires\naerodrome admin permissions.",
+        "operationId": "Config_UpdateAerodromePreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "preferences": {
+                  "$ref": "#/definitions/atlasAerodromePreferences"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateAerodromePreferencesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update aerodrome preferences",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/publish-atis": {
+      "post": {
+        "description": "This publishes the current status as an ATIS message via email, including\nboth text and voice synthesized sound file (as configured).",
+        "operationId": "Reports_PublishATIS",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasPublishATISResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Publish ATIS",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/publish-report": {
+      "post": {
+        "description": "Create and publish a new SNOWTAM or RCR (according to the given\nformat) and send it out using specified methods. The created report\nis returned.",
+        "operationId": "Reports_PublishReport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "format": {
+                  "$ref": "#/definitions/atlasPublishReportFormat"
+                },
+                "methods": {
+                  "items": {
+                    "$ref": "#/definitions/atlasPublishReportMethod"
+                  },
+                  "type": "array"
+                },
+                "updateTime": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasPublishReportResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Publish report",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/rcr/by-id/{reportId}": {
+      "get": {
+        "description": "Get a specific published RCR for the given aerodrome, identified by\nid.",
+        "operationId": "Reports_GetRCR",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "reportId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeReport"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get RCR",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/rcr/latest-snowtam": {
+      "get": {
+        "description": "Get the latest published SNOWTAM report for the given aeroddome.",
+        "operationId": "Reports_GetLatestReport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeReport"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get latest SNOWTAM",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/rcr/years": {
+      "get": {
+        "description": "Lists the available years for the given aerodrome.",
+        "operationId": "Reports_ListReportYears",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListReportYearsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List years",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/rcr/years/{year}": {
+      "get": {
+        "description": "Lists the published SNOWTAMs for the given aerodrome and year.",
+        "operationId": "Reports_ListReports",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListReportsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List SNOWTAMs",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/rcr/years/{year}/snowtam/{sequence}": {
+      "get": {
+        "description": "Get a specific published SNOWTAM for the given aerodrome, identified\nby year and sequence number.",
+        "operationId": "Reports_GetReport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "sequence",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeReport"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get SNOWTAM",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{config.aerodromeId}/configuration": {
+      "patch": {
+        "description": "This method requires system admin permissions.",
+        "operationId": "Config_UpdateAerodromeConfig2",
+        "parameters": [
+          {
+            "description": "Aerodrome identifier (ICAO)",
+            "in": "path",
+            "name": "config.aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Aerodrome configuration",
+            "in": "body",
+            "name": "config",
+            "required": true,
+            "schema": {
+              "properties": {
+                "aftn": {
+                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+                },
+                "aprons": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Aprons, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "awoswxSiteId": {
+                  "title": "wx.awos.se site ID, for importing weather data",
+                  "type": "string"
+                },
+                "created": {
+                  "format": "date-time",
+                  "readOnly": true,
+                  "title": "Created timestamp (read only)",
+                  "type": "string"
+                },
+                "deployment": {
+                  "$ref": "#/definitions/atlasAerodromeDeployment",
+                  "title": "The aerodrome deployment type (production, trial, etc.)"
+                },
+                "description": {
+                  "title": "Aerodrome description (name) for display purposes",
+                  "type": "string"
+                },
+                "distanceUnit": {
+                  "$ref": "#/definitions/atlasDistanceUnit",
+                  "title": "Unit for runway lengths, widths"
+                },
+                "email": {
+                  "$ref": "#/definitions/atlasEmailConfig",
+                  "title": "Configuration for outgoing email (requires system admin permissions)"
+                },
+                "emailImportAccount": {
+                  "title": "Email account ID for importing sensor data sent via email",
+                  "type": "string"
+                },
+                "expires": {
+                  "format": "date-time",
+                  "title": "The license expiry for the aerodrome, or blank if the license does not expire",
+                  "type": "string"
+                },
+                "iata": {
+                  "title": "Airport code (IATA), for information purposes only",
+                  "type": "string"
+                },
+                "managedEmailDomains": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Email domains where new users can be added",
+                  "type": "array"
+                },
+                "map": {
+                  "$ref": "#/definitions/atlasAerodromeMap",
+                  "title": "Map of aerodrome elements"
+                },
+                "mapPointPrecision": {
+                  "format": "int32",
+                  "title": "Map point precision in meters, for reducing map resolution to increase performance",
+                  "type": "integer"
+                },
+                "metarId": {
+                  "title": "METAR ID (ICAO), for importing weather data",
+                  "type": "string"
+                },
+                "navCanada": {
+                  "$ref": "#/definitions/atlasNavCanadaConfig",
+                  "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
+                },
+                "optionalFeatures": {
+                  "items": {
+                    "$ref": "#/definitions/atlasOptionalFeature"
+                  },
+                  "title": "Enabled optional features (licensed modules)",
+                  "type": "array"
+                },
+                "preferences": {
+                  "$ref": "#/definitions/atlasAerodromePreferences",
+                  "title": "Aerodrome preferences, editable with aerodrome admin permissions"
+                },
+                "regulatoryFramework": {
+                  "$ref": "#/definitions/atlasRegulatoryFramework",
+                  "title": "The used framework (ICAO_GRF / CANADA_RSC)"
+                },
+                "runwaySenseId": {
+                  "title": "NavBlue RunwaySense ID, for importing aircraft braking data",
+                  "type": "string"
+                },
+                "runways": {
+                  "items": {
+                    "$ref": "#/definitions/atlasRunwayConfig",
+                    "type": "object"
+                  },
+                  "title": "Runways, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "silentAprons": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Silent aprons, i.e., those that can be reported but are not included in SNOWTAM",
+                  "type": "array"
+                },
+                "silentTaxiways": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
+                  "type": "array"
+                },
+                "taxiways": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Taxiways, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "updated": {
+                  "format": "date-time",
+                  "readOnly": true,
+                  "title": "Updated timestamp (read only)",
+                  "type": "string"
+                },
+                "userLimit": {
+                  "format": "int32",
+                  "title": "User limit, where 0 means unlimited",
+                  "type": "integer"
+                }
+              },
+              "title": "Aerodrome configuration",
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeConfig"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update aerodrome configuration",
+        "tags": [
+          "Config"
+        ]
+      },
+      "put": {
+        "description": "This method requires system admin permissions.",
+        "operationId": "Config_UpdateAerodromeConfig",
+        "parameters": [
+          {
+            "description": "Aerodrome identifier (ICAO)",
+            "in": "path",
+            "name": "config.aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Aerodrome configuration",
+            "in": "body",
+            "name": "config",
+            "required": true,
+            "schema": {
+              "properties": {
+                "aftn": {
+                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+                },
+                "aprons": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Aprons, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "awoswxSiteId": {
+                  "title": "wx.awos.se site ID, for importing weather data",
+                  "type": "string"
+                },
+                "created": {
+                  "format": "date-time",
+                  "readOnly": true,
+                  "title": "Created timestamp (read only)",
+                  "type": "string"
+                },
+                "deployment": {
+                  "$ref": "#/definitions/atlasAerodromeDeployment",
+                  "title": "The aerodrome deployment type (production, trial, etc.)"
+                },
+                "description": {
+                  "title": "Aerodrome description (name) for display purposes",
+                  "type": "string"
+                },
+                "distanceUnit": {
+                  "$ref": "#/definitions/atlasDistanceUnit",
+                  "title": "Unit for runway lengths, widths"
+                },
+                "email": {
+                  "$ref": "#/definitions/atlasEmailConfig",
+                  "title": "Configuration for outgoing email (requires system admin permissions)"
+                },
+                "emailImportAccount": {
+                  "title": "Email account ID for importing sensor data sent via email",
+                  "type": "string"
+                },
+                "expires": {
+                  "format": "date-time",
+                  "title": "The license expiry for the aerodrome, or blank if the license does not expire",
+                  "type": "string"
+                },
+                "iata": {
+                  "title": "Airport code (IATA), for information purposes only",
+                  "type": "string"
+                },
+                "managedEmailDomains": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Email domains where new users can be added",
+                  "type": "array"
+                },
+                "map": {
+                  "$ref": "#/definitions/atlasAerodromeMap",
+                  "title": "Map of aerodrome elements"
+                },
+                "mapPointPrecision": {
+                  "format": "int32",
+                  "title": "Map point precision in meters, for reducing map resolution to increase performance",
+                  "type": "integer"
+                },
+                "metarId": {
+                  "title": "METAR ID (ICAO), for importing weather data",
+                  "type": "string"
+                },
+                "navCanada": {
+                  "$ref": "#/definitions/atlasNavCanadaConfig",
+                  "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
+                },
+                "optionalFeatures": {
+                  "items": {
+                    "$ref": "#/definitions/atlasOptionalFeature"
+                  },
+                  "title": "Enabled optional features (licensed modules)",
+                  "type": "array"
+                },
+                "preferences": {
+                  "$ref": "#/definitions/atlasAerodromePreferences",
+                  "title": "Aerodrome preferences, editable with aerodrome admin permissions"
+                },
+                "regulatoryFramework": {
+                  "$ref": "#/definitions/atlasRegulatoryFramework",
+                  "title": "The used framework (ICAO_GRF / CANADA_RSC)"
+                },
+                "runwaySenseId": {
+                  "title": "NavBlue RunwaySense ID, for importing aircraft braking data",
+                  "type": "string"
+                },
+                "runways": {
+                  "items": {
+                    "$ref": "#/definitions/atlasRunwayConfig",
+                    "type": "object"
+                  },
+                  "title": "Runways, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "silentAprons": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Silent aprons, i.e., those that can be reported but are not included in SNOWTAM",
+                  "type": "array"
+                },
+                "silentTaxiways": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
+                  "type": "array"
+                },
+                "taxiways": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Taxiways, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "updated": {
+                  "format": "date-time",
+                  "readOnly": true,
+                  "title": "Updated timestamp (read only)",
+                  "type": "string"
+                },
+                "userLimit": {
+                  "format": "int32",
+                  "title": "User limit, where 0 means unlimited",
+                  "type": "integer"
+                }
+              },
+              "title": "Aerodrome configuration",
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "updateMask",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeConfig"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update aerodrome configuration",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
+    "/v1/auth/aerodrome/{aerodromeId}/users": {
+      "get": {
+        "description": "Returns a list of users that are members of the aerodrome. This\nmethod requires aerodrome admin permissions.",
+        "operationId": "Auth_ListUsers",
+        "parameters": [
+          {
+            "description": "Aerodrome is optional, when set it returns users with permission for\nthe aerodrome in question only, requires aerodrome admin permission.\nBlank aerodrome returns all users and requires system admin\npermission.",
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List aerodrome users",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/invite": {
+      "post": {
+        "description": "The email address is used to look up an existing user or, if one does\nnot exist, invite the user to the Atlas system. In this case the\ndisplay name is used when creating the user.",
+        "operationId": "Auth_AddAerodromeUser",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasAddAerodromeUserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Add a user to an aerodrome, granting the given permissions.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/login-configuration": {
+      "get": {
+        "description": "The system login configuration determines whether internal or\nexternal authentication is used, and which ID provider to use.",
+        "operationId": "Login_GetLoginConfiguration",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasLoginConfiguration"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get login configuration",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user": {
+      "get": {
+        "description": "Returns the currently authenticated user.",
+        "operationId": "Auth_GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get current user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/apikeys": {
+      "get": {
+        "description": "Returns a list of current API keys for the currently authenticated\nuser. For security reasons the full API keys are not returned,\ninstead a truncated display string is returned that can be shown to\nthe user. The revocation ID is used to refer to a key in the revoke\nAPI key call.",
+        "operationId": "Auth_ListAPIKeys",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListAPIKeysResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List API keys",
+        "tags": [
+          "Auth"
+        ]
+      },
+      "post": {
+        "description": "Creates an API key that can be used to authenticate as the currently\nauthenticated user. The validity period is specified in days.",
+        "operationId": "Auth_CreateAPIKey",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasCreateAPIKeyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasCreateAPIKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Create API key",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/apikeys/{revocationId}": {
+      "delete": {
+        "description": "Revokes an API key, by looking it up via its revocation ID.",
+        "operationId": "Auth_RevokeAPIKey",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "revocationId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasRevokeAPIKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Revoke API key",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/data/{data.key}": {
+      "put": {
+        "description": "Set user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes. The server does not interpret the value\nand is only used to store it. The Atlas app uses user data to store\nuser preferences and other settings.",
+        "operationId": "Auth_SetUserData",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "data.key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "properties": {
+                "value": {
+                  "format": "byte",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasSetUserDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Set user data",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/data/{key}": {
+      "get": {
+        "description": "Get user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes. The server does not interpret the value\nand is only used to store it. The Atlas app uses user data to store\nuser preferences and other settings.",
+        "operationId": "Auth_GetUserData",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasGetUserDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get user data",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/{userId}/attributes": {
+      "put": {
+        "description": "Set the user attributes (currently only display name). This method\nrequires aerodrome admin permissions.",
+        "operationId": "Auth_SetUserAttributes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "displayName": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Set user attributes",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/{userId}/permissions": {
+      "post": {
+        "description": "Update the user permissions for one or more aerodromes. The user\npermissions are replaced for the specified aerodromes. The special\npermission \"RevokeAccess\" can be used to remove permissions for an\naerodrome entirely. This method requires aerodrome admin permissions\nfor all aerodromes mentioned in the permission set. The user may have\n(and will retain) permissions on other aerodromes than those\nmentioned in the permission set.",
+        "operationId": "Auth_SetUserPermissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "permissions": {
+                  "$ref": "#/definitions/atlasPermissions"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Set user permissions",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/blob/{key}": {
+      "get": {
+        "description": "The blob data is returned directly in the HTTP response body. The key\nto use is returned by other methods, such as GetSpokenATIS.",
+        "operationId": "Blob_GetBlob",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "pattern": ".+",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiHttpBody"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get a blob from backend storage",
+        "tags": [
+          "Blob"
+        ]
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "description": "The system performs an end-to-end health check, including a full\ndatabase transaction, and returns a summarized status. This method\ncan be used for service monitoring and load balancing.\n\nThis method does not require authentication.",
+        "operationId": "Health_GetHealth",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasGetHealthResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Perform a health check",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/v1/system-info": {
+      "get": {
+        "description": "Get current system information (version, etc).",
+        "operationId": "System_GetSystemInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasSystemInfo"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get system info",
+        "tags": [
+          "System"
+        ]
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "scheme": "bearer",
+      "type": "http"
+    }
+  },
+  "swagger": "2.0",
+  "tags": [
+    {
+      "description": "All API methods require authentication, unless otherwise noted. Each request\nmust carry an `Authorization` header with the `Bearer` scheme and a valid\naccess token. An access token can be acquired in different ways depending on\nthe specific deployment. For customers using federated authentication\n(OAuth2 / OpenID Connect), the access token provided from the identity\nprovider should be used. For customers using built-in Atlas authentication\nthe token is acquired from the [Login](#tag/Auth/operation/Login_Login)\nmethod. It's also possible to request a long lived API key for the Atlas\ncloud, please contact your support representative.\n\n### Demo Key\n\nThere is a read only API key `azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4` that\ncan be used for demonstration and experimentation on the fictional aerodrome\n`DEMO`. For example, to verify authentication from the command line:\n\n    % curl -H 'Authorization: Bearer azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4' \\\n        https://atlas.safe-sky.net/v1/auth/user?pretty\n    {\n        \"username\": \"dc78f878-2d7c-40b9-a416-52a7ceea1fff\",\n        \"email\": \"demo@safe-sky.net\",\n        \"displayName\": \"Atlas Demo User\",\n        ...\n\n",
+      "name": "Auth"
+    },
+    {
+      "name": "Blob"
+    },
+    {
+      "name": "Config"
+    },
+    {
+      "name": "Health"
+    },
+    {
+      "description": "The aerodrome assessment is represented a single JSON object. At the top\nlevel are certain metadata fields, and the `runways`, `taxiways` and\n`aprons` arrays. Each contain lists of objects describing an individual\naerodrome element. Each such element has several fields, each generally\nconsisting of both a `value` and `meta` field. The `value` is the current\nassessment and the `meta` contains information about who and when made the\nassessment. The personal information (user ID) is in some cases redacted.",
+      "name": "Live"
+    },
+    {
+      "name": "Reports"
+    },
+    {
+      "name": "System"
+    },
+    {
+      "name": "Tile"
+    }
+  ]
+}
