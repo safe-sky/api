@@ -215,6 +215,10 @@
           "title": "Enabled optional features (licensed modules)",
           "type": "array"
         },
+        "plausibilityThresholds": {
+          "$ref": "#/definitions/atlasPlausibilityThresholds",
+          "title": "Plausibility Analysis Thresholds"
+        },
         "preferences": {
           "$ref": "#/definitions/atlasAerodromePreferences",
           "title": "Aerodrome preferences, editable with aerodrome admin permissions"
@@ -324,6 +328,9 @@
           "type": "array"
         },
         "autoImportConditions": {
+          "type": "boolean"
+        },
+        "disablePlausibilityAnalysis": {
           "type": "boolean"
         },
         "enforceRwyccUpDownGrades": {
@@ -1218,7 +1225,9 @@
         "VIEWER_KEY_FEATURE",
         "ARCHIVE_VIEW_FEATURE",
         "STOCK_REMARKS_FEATURE",
-        "API_FEATURE"
+        "API_FEATURE",
+        "SEND_SMS_FEATURE",
+        "SEND_FAX_FEATURE"
       ],
       "title": "Optional features, i.e., licensed modules",
       "type": "string"
@@ -1265,6 +1274,184 @@
       "title": "Permissions",
       "type": "object"
     },
+    "atlasPlausibilityAnalysis": {
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/atlasPlausibilityAnalysisType",
+          "title": "Description of the analysis"
+        },
+        "warnings": {
+          "items": {
+            "$ref": "#/definitions/atlasPlausibilityWarning",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPlausibilityAnalysisType": {
+      "default": "PLAUSIBILITY_ANALYSIS_UNSPECIFIED",
+      "enum": [
+        "PLAUSIBILITY_ANALYSIS_UNSPECIFIED",
+        "PLAUSIBILITY_ANALYSIS_RUNWAY_TEMPERATURE",
+        "PLAUSIBILITY_ANALYSIS_SERVING_TAXIWAYS",
+        "PLAUSIBILITY_ANALYSIS_RUNWAY_CONDITIONS",
+        "PLAUSIBILITY_ANALYSIS_ZONE_RWYCC"
+      ],
+      "title": "- PLAUSIBILITY_ANALYSIS_RUNWAY_TEMPERATURE: Temperature abnormalies\n - PLAUSIBILITY_ANALYSIS_SERVING_TAXIWAYS: No open serving taxiways for a specific runway\n - PLAUSIBILITY_ANALYSIS_RUNWAY_CONDITIONS: Conditions within the same runway are conflicting or unlikely\n - PLAUSIBILITY_ANALYSIS_ZONE_RWYCC: Unexpected difference in RWYCC within a runway",
+      "type": "string"
+    },
+    "atlasPlausibilityConditionWarning": {
+      "properties": {
+        "contaminationDepthFirst": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "contaminationDepthSecond": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "coveragePercFirst": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "coveragePercSecond": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "surfaceDescriptionFirst": {
+          "$ref": "#/definitions/atlasRunwaySurfaceDescription"
+        },
+        "surfaceDescriptionSecond": {
+          "$ref": "#/definitions/atlasRunwaySurfaceDescription"
+        },
+        "thresholdCover": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "thresholdDepth": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "zoneFirst": {
+          "$ref": "#/definitions/atlasZone"
+        },
+        "zoneSecond": {
+          "$ref": "#/definitions/atlasZone"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPlausibilityRWYCCWarning": {
+      "properties": {
+        "rwyccFirst": {
+          "$ref": "#/definitions/atlasRWYCC"
+        },
+        "rwyccSecond": {
+          "$ref": "#/definitions/atlasRWYCC"
+        },
+        "threshold": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "zoneFirst": {
+          "$ref": "#/definitions/atlasZone"
+        },
+        "zoneSecond": {
+          "$ref": "#/definitions/atlasZone"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPlausibilityTempWarning": {
+      "properties": {
+        "median": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "runwayTemperature": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "threshold": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "unit": {
+          "$ref": "#/definitions/atlasTemperatureUnit"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPlausibilityThresholds": {
+      "properties": {
+        "depthThreshold": {
+          "format": "int32",
+          "title": "Max depth of a contamination when another zone is dry",
+          "type": "integer"
+        },
+        "maxTemp": {
+          "format": "int32",
+          "title": "Max temp (celcius)",
+          "type": "integer"
+        },
+        "maxTempDeviation": {
+          "format": "int32",
+          "title": "Max deviation in temp (celcius)",
+          "type": "integer"
+        },
+        "rwyccThreshold": {
+          "format": "int32",
+          "title": "Max deviation in RWYCC",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPlausibilityWarning": {
+      "properties": {
+        "apronId": {
+          "type": "string"
+        },
+        "conditionWarning": {
+          "$ref": "#/definitions/atlasPlausibilityConditionWarning"
+        },
+        "reason": {
+          "$ref": "#/definitions/atlasPlausibilityWarningReason",
+          "title": "Description of the warning"
+        },
+        "runwayId": {
+          "type": "string"
+        },
+        "runwayZone": {
+          "$ref": "#/definitions/atlasZone"
+        },
+        "rwyccWarning": {
+          "$ref": "#/definitions/atlasPlausibilityRWYCCWarning"
+        },
+        "taxiwayId": {
+          "type": "string"
+        },
+        "tempWarning": {
+          "$ref": "#/definitions/atlasPlausibilityTempWarning"
+        }
+      },
+      "type": "object"
+    },
+    "atlasPlausibilityWarningReason": {
+      "default": "PLAUSIBILITY_WARNING_REASON_UNSPECIFIED",
+      "enum": [
+        "PLAUSIBILITY_WARNING_REASON_UNSPECIFIED",
+        "PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MEDIAN",
+        "PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MAX_THRESHOLD",
+        "PLAUSIBILITY_WARNING_REASON_ALL_SERVING_TAXIWAYS_CLOSED",
+        "PLAUSIBILITY_WARNING_REASON_RWYCC_SIGNIFICANT_DIFF",
+        "PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS"
+      ],
+      "title": "- PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MEDIAN: Significant deviation from the median of all the runways\n - PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MAX_THRESHOLD: Maximum temperature exceeded\n - PLAUSIBILITY_WARNING_REASON_ALL_SERVING_TAXIWAYS_CLOSED: All serving taxiways are closed\n - PLAUSIBILITY_WARNING_REASON_RWYCC_SIGNIFICANT_DIFF: Significant RWYCC difference within a runway\n - PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS: Conflicting or unlikely conditions within a runway",
+      "type": "string"
+    },
     "atlasPublishATISResponse": {
       "type": "object"
     },
@@ -1284,7 +1471,8 @@
         "AFTN",
         "FAX",
         "NAVCANADA",
-        "EMAIL"
+        "EMAIL",
+        "SMS"
       ],
       "type": "string"
     },
@@ -1789,6 +1977,16 @@
       },
       "type": "object"
     },
+    "atlasZone": {
+      "default": "ZONE_UNSPECIFIED",
+      "enum": [
+        "ZONE_UNSPECIFIED",
+        "ZONE_A",
+        "ZONE_B",
+        "ZONE_C"
+      ],
+      "type": "string"
+    },
     "protobufAny": {
       "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }",
@@ -1851,6 +2049,15 @@
           "readOnly": true,
           "title": "Preview of RCR in PDF format",
           "type": "string"
+        },
+        "plausibilityAnalysis": {
+          "items": {
+            "$ref": "#/definitions/atlasPlausibilityAnalysis",
+            "type": "object"
+          },
+          "readOnly": true,
+          "title": "Plausibility analysis",
+          "type": "array"
         },
         "remainingValidityMinutes": {
           "description": "Remaining validity time of the latest filed SNOWTAM.",
@@ -3052,6 +3259,10 @@
                   "title": "Enabled optional features (licensed modules)",
                   "type": "array"
                 },
+                "plausibilityThresholds": {
+                  "$ref": "#/definitions/atlasPlausibilityThresholds",
+                  "title": "Plausibility Analysis Thresholds"
+                },
                 "preferences": {
                   "$ref": "#/definitions/atlasAerodromePreferences",
                   "title": "Aerodrome preferences, editable with aerodrome admin permissions"
@@ -3227,6 +3438,10 @@
                   },
                   "title": "Enabled optional features (licensed modules)",
                   "type": "array"
+                },
+                "plausibilityThresholds": {
+                  "$ref": "#/definitions/atlasPlausibilityThresholds",
+                  "title": "Plausibility Analysis Thresholds"
                 },
                 "preferences": {
                   "$ref": "#/definitions/atlasAerodromePreferences",
@@ -3632,7 +3847,7 @@
             }
           }
         },
-        "summary": "Set user attributes",
+        "summary": "Deprecated: Set user attributes",
         "tags": [
           "Auth"
         ]
@@ -3677,7 +3892,55 @@
             }
           }
         },
-        "summary": "Set user permissions",
+        "summary": "Deprecated: Set user permissions",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/{userId}/update": {
+      "post": {
+        "description": "Update the user permissions for one or more aerodromes and sets the\ndisplay name. The special permission \"RevokeAccess\" can be used to\nremove permissions for an aerodrome entirely.",
+        "operationId": "Auth_UpdateAerodromeUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "displayName": {
+                  "type": "string"
+                },
+                "permissions": {
+                  "$ref": "#/definitions/atlasPermissions"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update aerodrome user",
         "tags": [
           "Auth"
         ]
