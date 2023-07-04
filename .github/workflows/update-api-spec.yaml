@@ -27,5 +27,5 @@ jobs:
           redocly build-docs openapi.json -o docs/index.html
 
           git add openapi.json docs/index.html
-          git commit -am 'Import updated API specs'
+          git commit -am 'Import updated API specs' || exit 0
           git push
