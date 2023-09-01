@@ -25,14 +25,54 @@
       },
       "type": "object"
     },
+    "ListSensorSessionsResponseSensorSessionListItem": {
+      "properties": {
+        "numMeasurements": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "runwayId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "METARSkyCondition": {
       "properties": {
         "cloudBaseFtAgl": {
           "format": "int32",
           "type": "integer"
         },
+        "cloudType": {
+          "$ref": "#/definitions/atlasSkyCover"
+        },
         "skyCover": {
+          "title": "Deprecated (07-06-2023)",
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "METARWeatherCondition": {
+      "properties": {
+        "intensity": {
+          "$ref": "#/definitions/atlasWeatherIntensity"
+        },
+        "weatherCategory": {
+          "$ref": "#/definitions/atlasWeatherTypeCategory"
+        },
+        "weatherType": {
+          "items": {
+            "$ref": "#/definitions/atlasWeatherType"
+          },
+          "type": "array"
         }
       },
       "type": "object"
@@ -64,6 +104,17 @@
         },
         "userId": {
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "SensorMeasurementSensorMeasurementLocation": {
+      "properties": {
+        "runwayId": {
+          "type": "string"
+        },
+        "zone": {
+          "$ref": "#/definitions/atlasZone"
         }
       },
       "type": "object"
@@ -237,6 +288,14 @@
             "type": "object"
           },
           "title": "Runways, in the order they are presented to the user",
+          "type": "array"
+        },
+        "rws200": {
+          "items": {
+            "$ref": "#/definitions/atlasRWS200Config",
+            "type": "object"
+          },
+          "title": "RWS200 config",
           "type": "array"
         },
         "silentAprons": {
@@ -700,6 +759,36 @@
       },
       "type": "object"
     },
+    "atlasGPSPosition": {
+      "properties": {
+        "accuracy": {
+          "format": "double",
+          "type": "number"
+        },
+        "altitude": {
+          "format": "double",
+          "type": "number"
+        },
+        "latitude": {
+          "format": "double",
+          "type": "number"
+        },
+        "longitude": {
+          "format": "double",
+          "type": "number"
+        },
+        "sequence": {
+          "format": "int32",
+          "title": "within measurement session",
+          "type": "integer"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasGetHealthResponse": {
       "properties": {
         "status": {
@@ -889,6 +978,18 @@
       },
       "type": "object"
     },
+    "atlasListSensorSessionsResponse": {
+      "properties": {
+        "sensorSessions": {
+          "items": {
+            "$ref": "#/definitions/ListSensorSessionsResponseSensorSessionListItem",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "atlasListUsersResponse": {
       "properties": {
         "users": {
@@ -1057,9 +1158,19 @@
           "format": "double",
           "type": "number"
         },
+        "weatherCondition": {
+          "items": {
+            "$ref": "#/definitions/METARWeatherCondition",
+            "type": "object"
+          },
+          "type": "array"
+        },
         "windDirDegrees": {
           "format": "int32",
           "type": "integer"
+        },
+        "windDirVariable": {
+          "type": "boolean"
         },
         "windGustKt": {
           "format": "int32",
@@ -1147,6 +1258,10 @@
     },
     "atlasMapPoint": {
       "properties": {
+        "altitude": {
+          "format": "double",
+          "type": "number"
+        },
         "lat": {
           "format": "double",
           "type": "number"
@@ -1227,7 +1342,8 @@
         "STOCK_REMARKS_FEATURE",
         "API_FEATURE",
         "SEND_SMS_FEATURE",
-        "SEND_FAX_FEATURE"
+        "SEND_FAX_FEATURE",
+        "MAP_FEATURE"
       ],
       "title": "Optional features, i.e., licensed modules",
       "type": "string"
@@ -1265,10 +1381,6 @@
         "revokeAccess": {
           "description": "The revoke_access bit makes the permission invalid and it will be\nremoved. Used in updates only.",
           "type": "boolean"
-        },
-        "taint": {
-          "description": "The taint string invalidates the permission with a reason for it's\ninvalidation.",
-          "type": "string"
         }
       },
       "title": "Permissions",
@@ -1505,6 +1617,171 @@
       },
       "type": "object"
     },
+    "atlasRCREntry": {
+      "properties": {
+        "runwayLines": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasRWISData": {
+      "properties": {
+        "airTemperature": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "airTemperatureMax": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "airTemperatureMin": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "chemicalAmount": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "frostPointTemperature": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "hailIntensity": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "iceLayerThickness": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "presentWeather": {
+          "$ref": "#/definitions/atlasWeatherType",
+          "title": "WMO 4680 (SYNOP)"
+        },
+        "rainAccumulation": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "rainIntensity": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "snowAccumulation": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "snowLayerThickness": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "subSurfaceTemperature": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "surfaceGrip": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "surfaceState": {
+          "$ref": "#/definitions/atlasRWISDataValue",
+          "title": "EN 15518-3:2011"
+        },
+        "surfaceTemperature": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "waterDepth": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "waterLayerThickness": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "weatherStationId": {
+          "type": "string"
+        },
+        "weatherStationLocation": {
+          "$ref": "#/definitions/atlasMapPoint",
+          "title": "Weather Station location"
+        },
+        "windDirection": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "windGustDirection": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "windSpeed": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        },
+        "windSpeedMax": {
+          "$ref": "#/definitions/atlasRWISDataValue"
+        }
+      },
+      "type": "object"
+    },
+    "atlasRWISDataValue": {
+      "properties": {
+        "sensorId": {
+          "type": "string"
+        },
+        "sensorLocation": {
+          "$ref": "#/definitions/atlasMapPoint",
+          "title": "Sensor location"
+        },
+        "unit": {
+          "$ref": "#/definitions/atlasRWISUnit"
+        },
+        "value": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "atlasRWISObservation": {
+      "properties": {
+        "rwisData": {
+          "$ref": "#/definitions/atlasRWISData"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasRWISUnit": {
+      "default": "RWIS_UNIT_UNKNOWN",
+      "enum": [
+        "RWIS_UNIT_UNKNOWN",
+        "RWIS_UNIT_NO_UNIT",
+        "RWIS_UNIT_DEGREES",
+        "RWIS_UNIT_DEGREES_CELSIUS",
+        "RWIS_UNIT_METRES",
+        "RWIS_UNIT_MILLIMETRES",
+        "RWIS_UNIT_METRES_PER_SECOND",
+        "RWIS_UNIT_MILLIMETRES_PER_HOUR",
+        "RWIS_UNIT_GRAMS_PER_SQUARE_METRE",
+        "RWIS_UNIT_PRESENT_WEATHER_WMO",
+        "RWIS_UNIT_METERS",
+        "RWIS_UNIT_HITS_PER_SQUARE_CENTIMETRE_HOUR"
+      ],
+      "title": "- RWIS_UNIT_DEGREES: Degree of angle, f.e. wind direction",
+      "type": "string"
+    },
+    "atlasRWS200Config": {
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "runwayOverride": {
+          "type": "string"
+        },
+        "stationId": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasRWYCC": {
       "default": "RWYCC_0",
       "enum": [
@@ -1576,7 +1853,7 @@
     "atlasResetAerodromeRunwayResponse": {
       "type": "object"
     },
-    "atlasRestoreLatestReportResponse": {
+    "atlasRestoreReportResponse": {
       "type": "object"
     },
     "atlasRevokeAPIKeyResponse": {
@@ -1783,6 +2060,155 @@
       "title": "Runway zone assessments",
       "type": "object"
     },
+    "atlasSensorDataPointType": {
+      "default": "MEASUREMENT_UNSPECIFIED",
+      "enum": [
+        "MEASUREMENT_UNSPECIFIED",
+        "MEASUREMENT_AIR_TEMPERATURE",
+        "MEASUREMENT_RELATIVE_HUMIDITY",
+        "MEASUREMENT_DEW_POINT",
+        "MEASUREMENT_FROST_POINT",
+        "MEASUREMENT_SURFACE_TEMPERATURE",
+        "MEASUREMENT_GRIP",
+        "MEASUREMENT_WATER_LAYER_THICKNESS",
+        "MEASUREMENT_SNOW_LAYER_THICKNESS",
+        "MEASUREMENT_ICE_LAYER_THICKNESS",
+        "MEASUREMENT_VAISALA_SURFACE_STATE",
+        "MEASUREMENT_EN15518_SURFACE_STATE",
+        "MEASUREMENT_VAISALA_ANALYSIS_COUNTER",
+        "MEASUREMENT_VAISALA_DATA_STATUS_WARNING",
+        "MEASUREMENT_VAISALA_DATA_STATUS_ERROR",
+        "MEASUREMENT_VAISALA_UNIT_STATUS_INFO",
+        "MEASUREMENT_VAISALA_UNIT_STATUS_ERROR"
+      ],
+      "type": "string"
+    },
+    "atlasSensorFloatDataPoint": {
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/atlasSensorDataPointType"
+        },
+        "value": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "atlasSensorIntDataPoint": {
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/atlasSensorDataPointType"
+        },
+        "value": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "atlasSensorMeasurement": {
+      "properties": {
+        "contaminationDepthMm": {
+          "format": "int32",
+          "title": "interpreted from raw sensor data",
+          "type": "integer"
+        },
+        "floatData": {
+          "items": {
+            "$ref": "#/definitions/atlasSensorFloatDataPoint",
+            "type": "object"
+          },
+          "title": "Raw sensor data",
+          "type": "array"
+        },
+        "frictionMu": {
+          "format": "int32",
+          "title": "interpreted from raw sensor data",
+          "type": "integer"
+        },
+        "intData": {
+          "items": {
+            "$ref": "#/definitions/atlasSensorIntDataPoint",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "interpolatedPosition": {
+          "$ref": "#/definitions/atlasMapPoint",
+          "title": "Added server side"
+        },
+        "resolvedLocation": {
+          "$ref": "#/definitions/SensorMeasurementSensorMeasurementLocation"
+        },
+        "sequence": {
+          "format": "int32",
+          "title": "within measurement session",
+          "type": "integer"
+        },
+        "surface": {
+          "$ref": "#/definitions/atlasRunwaySurfaceDescription",
+          "description": "interpreted from raw sensor data",
+          "title": "Client interpretation of sensor data"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasSensorMeasurementLog": {
+      "properties": {
+        "measurements": {
+          "items": {
+            "$ref": "#/definitions/atlasSensorMeasurement",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/definitions/atlasSensorMetadata"
+        },
+        "positions": {
+          "items": {
+            "$ref": "#/definitions/atlasGPSPosition",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "runwayId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasSensorMetadata": {
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/definitions/atlasSensorMetadataItem",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasSensorMetadataItem": {
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasSetObservationTimeOnPublish": {
       "default": "NO",
       "enum": [
@@ -1804,6 +2230,24 @@
       ],
       "type": "string"
     },
+    "atlasSkyCover": {
+      "default": "SKY_COVER_UNKNOWN",
+      "enum": [
+        "SKY_COVER_UNKNOWN",
+        "SKY_COVER_CAVOK",
+        "SKY_COVER_SKC",
+        "SKY_COVER_NCD",
+        "SKY_COVER_CLR",
+        "SKY_COVER_NSC",
+        "SKY_COVER_FEW",
+        "SKY_COVER_SCT",
+        "SKY_COVER_BKN",
+        "SKY_COVER_OVC",
+        "SKY_COVER_TCU",
+        "SKY_COVER_CB"
+      ],
+      "type": "string"
+    },
     "atlasStringValue": {
       "properties": {
         "meta": {
@@ -1816,8 +2260,19 @@
       "title": "A string",
       "type": "object"
     },
+    "atlasSystemFeatures": {
+      "properties": {
+        "userManagement": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "atlasSystemInfo": {
       "properties": {
+        "features": {
+          "$ref": "#/definitions/atlasSystemFeatures"
+        },
         "licenseLimits": {
           "$ref": "#/definitions/atlasLicenseLimits"
         },
@@ -1946,6 +2401,7 @@
           "type": "string"
         },
         "value": {
+          "description": "In JSON, this value is base64 encoded.",
           "format": "byte",
           "type": "string"
         }
@@ -1977,6 +2433,79 @@
       },
       "type": "object"
     },
+    "atlasWeatherIntensity": {
+      "default": "INTENSITY_UNKNOWN",
+      "enum": [
+        "INTENSITY_UNKNOWN",
+        "INTENSITY_MODERATE",
+        "INTENSITY_HEAVY",
+        "INTENSITY_LIGHT",
+        "INTENSITY_RECENT",
+        "INTENSITY_VICINITY"
+      ],
+      "type": "string"
+    },
+    "atlasWeatherType": {
+      "default": "TYPE_UNKNOWN",
+      "enum": [
+        "TYPE_UNKNOWN",
+        "TYPE_DRIZZLE",
+        "TYPE_HAIL",
+        "TYPE_SMALL_HAIL",
+        "TYPE_ICE_CRYSTALS",
+        "TYPE_ICE_PELLETS",
+        "TYPE_RAIN",
+        "TYPE_SNOW_GRAINS",
+        "TYPE_SNOW",
+        "TYPE_UNKNOWN_PRECIPITATION",
+        "TYPE_MIST",
+        "TYPE_FOG",
+        "TYPE_SMOKE",
+        "TYPE_WIDESPREAD_DUST",
+        "TYPE_HAZE",
+        "TYPE_SAND",
+        "TYPE_SPRAY",
+        "TYPE_VOLCANIC_ASH",
+        "TYPE_DUST_STORM",
+        "TYPE_FUNNEL_CLOUD",
+        "TYPE_SAND_WHIRLS",
+        "TYPE_SQUALLS",
+        "TYPE_SAND_STORM",
+        "TYPE_PATCHES_FOG",
+        "TYPE_SHALLOW_FOG",
+        "TYPE_PARTIAL_FOG",
+        "TYPE_LOW_DRIFT_SNOW",
+        "TYPE_LOW_DRIFT_SAND",
+        "TYPE_LOW_DRIFT_WIDESPREAD_DUST",
+        "TYPE_BLOWING_SNOW",
+        "TYPE_BLOWING_SAND",
+        "TYPE_BLOWING_WIDESPREAD_DUST",
+        "TYPE_FREEZING_RAIN",
+        "TYPE_FREEZING_DRIZZLE",
+        "TYPE_FREEZING_FOG",
+        "TYPE_SHOWERS_DRIZZLE",
+        "TYPE_SHOWERS_RAIN",
+        "TYPE_SHOWERS_SNOW",
+        "TYPE_SHOWERS_SNOW_GRAINS",
+        "TYPE_SHOWERS_ICE_CRYSTALS",
+        "TYPE_SHOWERS_ICE_PELLETS",
+        "TYPE_SHOWERS_HAIL",
+        "TYPE_SHOWERS_SMALL_HAIL",
+        "TYPE_SHOWERS_UNKNOWN_PRECIPITATION",
+        "TYPE_THUNDERSTORMS"
+      ],
+      "type": "string"
+    },
+    "atlasWeatherTypeCategory": {
+      "default": "CATEGORY_UNKNOWN",
+      "enum": [
+        "CATEGORY_UNKNOWN",
+        "CATEGORY_PRECIPITATION",
+        "CATEGORY_OBSCURATION",
+        "CATEGORY_OTHER"
+      ],
+      "type": "string"
+    },
     "atlasZone": {
       "default": "ZONE_UNSPECIFIED",
       "enum": [
@@ -1989,7 +2518,7 @@
     },
     "protobufAny": {
       "additionalProperties": {},
-      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }",
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n    // or ...\n    if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n      foo = any.unpack(Foo.getDefaultInstance());\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }",
       "properties": {
         "@type": {
           "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics.",
@@ -2059,6 +2588,23 @@
           "title": "Plausibility analysis",
           "type": "array"
         },
+        "rcrCurrent": {
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true,
+          "title": "Current RCR Lines",
+          "type": "array"
+        },
+        "rcrHistory": {
+          "items": {
+            "$ref": "#/definitions/atlasRCREntry",
+            "type": "object"
+          },
+          "readOnly": true,
+          "title": "Most recent RCRs",
+          "type": "array"
+        },
         "remainingValidityMinutes": {
           "description": "Remaining validity time of the latest filed SNOWTAM.",
           "format": "int32",
@@ -2082,8 +2628,18 @@
           },
           "type": "array"
         },
+        "rwis": {
+          "items": {
+            "$ref": "#/definitions/atlasRWISObservation",
+            "type": "object"
+          },
+          "readOnly": true,
+          "title": "// Most recent RWIS data",
+          "type": "array"
+        },
         "sequence": {
           "format": "int64",
+          "readOnly": true,
           "title": "Sequence number increments by one for each change",
           "type": "string"
         },
@@ -2131,9 +2687,14 @@
   },
   "host": "atlas.safe-sky.net",
   "info": {
+    "contact": {
+      "email": "support@safe-sky.net",
+      "name": "Safe Sky Industries, Inc.",
+      "url": "https://docs.safe-sky.net/"
+    },
     "description": "## Overview\n\nThe Atlas system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://atlas.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAtlas provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://atlas.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://atlas.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Atlas API",
-    "version": "1.17"
+    "version": "1.18"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -2425,14 +2986,20 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/assessments/restore": {
+    "/v1/aerodromes/{aerodromeId}/assessments/restore/{reportId}": {
       "post": {
-        "description": "Restores all aerodrome assessments to those of the latest filed SNOWTAM.",
-        "operationId": "Live_RestoreLatestReport",
+        "description": "Restores all aerodrome assessments to those of the specified report\n(either RCR or SNOWTAM).",
+        "operationId": "Live_RestoreReport",
         "parameters": [
           {
             "in": "path",
             "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "reportId",
             "required": true,
             "type": "string"
           }
@@ -2441,7 +3008,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasRestoreLatestReportResponse"
+              "$ref": "#/definitions/atlasRestoreReportResponse"
             }
           },
           "default": {
@@ -2451,7 +3018,7 @@
             }
           }
         },
-        "summary": "Restore aerodrome",
+        "summary": "Restore aerodrome from specific report",
         "tags": [
           "Live"
         ]
@@ -2743,6 +3310,14 @@
             "name": "runwayId",
             "required": true,
             "type": "string"
+          },
+          {
+            "description": "Number of hours to look back, defaults to 24",
+            "format": "int32",
+            "in": "query",
+            "name": "sinceHours",
+            "required": false,
+            "type": "integer"
           }
         ],
         "responses": {
@@ -3159,6 +3734,95 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/sensorsessions/runways/{runwayId}": {
+      "get": {
+        "operationId": "Sensor_ListSensorSessions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "runwayId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Number of hours to look back, defaults to 24",
+            "format": "int32",
+            "in": "query",
+            "name": "sinceHours",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListSensorSessionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List sensor sessions for a given runway",
+        "tags": [
+          "Sensor"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/sensorsessions/runways/{runwayId}/sessions/{sessionId}": {
+      "get": {
+        "description": "This returns the entire sensor session, with all data points from the\nsensor plus correlating position data from the device GPS.",
+        "operationId": "Sensor_GetSensorSession",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "runwayId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "sessionId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasSensorMeasurementLog"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get a sensor session by ID",
+        "tags": [
+          "Sensor"
+        ]
+      }
+    },
     "/v1/aerodromes/{config.aerodromeId}/configuration": {
       "patch": {
         "description": "This method requires system admin permissions.",
@@ -3281,6 +3945,14 @@
                     "type": "object"
                   },
                   "title": "Runways, in the order they are presented to the user",
+                  "type": "array"
+                },
+                "rws200": {
+                  "items": {
+                    "$ref": "#/definitions/atlasRWS200Config",
+                    "type": "object"
+                  },
+                  "title": "RWS200 config",
                   "type": "array"
                 },
                 "silentAprons": {
@@ -3463,6 +4135,14 @@
                   "title": "Runways, in the order they are presented to the user",
                   "type": "array"
                 },
+                "rws200": {
+                  "items": {
+                    "$ref": "#/definitions/atlasRWS200Config",
+                    "type": "object"
+                  },
+                  "title": "RWS200 config",
+                  "type": "array"
+                },
                 "silentAprons": {
                   "items": {
                     "type": "string"
@@ -3612,6 +4292,7 @@
             }
           }
         },
+        "security": [],
         "summary": "Get login configuration",
         "tags": [
           "Auth"
@@ -3732,7 +4413,7 @@
     },
     "/v1/auth/user/data/{data.key}": {
       "put": {
-        "description": "Set user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes. The server does not interpret the value\nand is only used to store it. The Atlas app uses user data to store\nuser preferences and other settings.",
+        "description": "Set user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes (base64 encoded, in JSON). The server does\nnot interpret the value and is only used to store it. The Atlas app\nuses user data to store user preferences and other settings.",
         "operationId": "Auth_SetUserData",
         "parameters": [
           {
@@ -3748,6 +4429,7 @@
             "schema": {
               "properties": {
                 "value": {
+                  "description": "In JSON, this value is base64 encoded.",
                   "format": "byte",
                   "type": "string"
                 }
@@ -3778,7 +4460,7 @@
     },
     "/v1/auth/user/data/{key}": {
       "get": {
-        "description": "Get user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes. The server does not interpret the value\nand is only used to store it. The Atlas app uses user data to store\nuser preferences and other settings.",
+        "description": "Get user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes (base64 encoded, in JSON). The server does\nnot interpret the value and is only used to store it. The Atlas app\nuses user data to store user preferences and other settings.",
         "operationId": "Auth_GetUserData",
         "parameters": [
           {
@@ -3803,96 +4485,6 @@
           }
         },
         "summary": "Get user data",
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/v1/auth/user/{userId}/attributes": {
-      "put": {
-        "description": "Set the user attributes (currently only display name). This method\nrequires aerodrome admin permissions.",
-        "operationId": "Auth_SetUserAttributes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "properties": {
-                "displayName": {
-                  "type": "string"
-                }
-              },
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/atlasUser"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "summary": "Deprecated: Set user attributes",
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/v1/auth/user/{userId}/permissions": {
-      "post": {
-        "description": "Update the user permissions for one or more aerodromes. The user\npermissions are replaced for the specified aerodromes. The special\npermission \"RevokeAccess\" can be used to remove permissions for an\naerodrome entirely. This method requires aerodrome admin permissions\nfor all aerodromes mentioned in the permission set. The user may have\n(and will retain) permissions on other aerodromes than those\nmentioned in the permission set.",
-        "operationId": "Auth_SetUserPermissions",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "properties": {
-                "permissions": {
-                  "$ref": "#/definitions/atlasPermissions"
-                }
-              },
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/atlasUser"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "summary": "Deprecated: Set user permissions",
         "tags": [
           "Auth"
         ]
@@ -3997,6 +4589,7 @@
             }
           }
         },
+        "security": [],
         "summary": "Perform a health check",
         "tags": [
           "Health"
@@ -4041,8 +4634,10 @@
   ],
   "securityDefinitions": {
     "bearerAuth": {
-      "scheme": "bearer",
-      "type": "http"
+      "description": "API key as Bearer token",
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey"
     }
   },
   "swagger": "2.0",
@@ -4066,6 +4661,9 @@
     },
     {
       "name": "Reports"
+    },
+    {
+      "name": "Sensor"
     },
     {
       "name": "System"
