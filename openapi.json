@@ -53,8 +53,8 @@
         "cloudType": {
           "$ref": "#/definitions/atlasSkyCover"
         },
-        "skyCover": {
-          "title": "Deprecated (07-06-2023)",
+        "deprecatedSkyCover": {
+          "title": "Deprecated, use cloud_type (v1.18.0)",
           "type": "string"
         }
       },
@@ -255,6 +255,10 @@
           "title": "METAR ID (ICAO), for importing weather data",
           "type": "string"
         },
+        "mobileSensorThresholds": {
+          "$ref": "#/definitions/atlasMobileSensorThresholds",
+          "title": "Overwrite sensor depth thresholds"
+        },
         "navCanada": {
           "$ref": "#/definitions/atlasNavCanadaConfig",
           "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
@@ -390,6 +394,9 @@
           "type": "boolean"
         },
         "disablePlausibilityAnalysis": {
+          "type": "boolean"
+        },
+        "disableRwyccAdjustReason": {
           "type": "boolean"
         },
         "enforceRwyccUpDownGrades": {
@@ -644,7 +651,10 @@
           "$ref": "#/definitions/atlasMetadata"
         },
         "value": {
-          "$ref": "#/definitions/atlasDeicingChemical"
+          "items": {
+            "$ref": "#/definitions/atlasDeicingChemical"
+          },
+          "type": "array"
         }
       },
       "title": "A deicing chemical",
@@ -793,6 +803,14 @@
       "properties": {
         "status": {
           "$ref": "#/definitions/atlasHealthStatus"
+        }
+      },
+      "type": "object"
+    },
+    "atlasGetSensorSessionResponse": {
+      "properties": {
+        "measurementLog": {
+          "$ref": "#/definitions/atlasSensorMeasurementLog"
         }
       },
       "type": "object"
@@ -1296,6 +1314,16 @@
         },
         "user": {
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasMobileSensorThresholds": {
+      "properties": {
+        "wetDepthThreshold": {
+          "format": "double",
+          "title": "Depth in mm from which the runway should be considered wet",
+          "type": "number"
         }
       },
       "type": "object"
@@ -1828,7 +1856,8 @@
       "enum": [
         "FRAMEWORK_UNSPECIFIED",
         "ICAO_GRF",
-        "CANADA_RSC"
+        "CANADA_RSC",
+        "ICAO_GRF_NOMULTIDEPTH"
       ],
       "type": "string"
     },
@@ -2109,9 +2138,9 @@
     },
     "atlasSensorMeasurement": {
       "properties": {
-        "contaminationDepthMm": {
+        "deprecatedContaminationDepthMm": {
           "format": "int32",
-          "title": "interpreted from raw sensor data",
+          "title": "deprecated (1.18.0)",
           "type": "integer"
         },
         "floatData": {
@@ -2126,6 +2155,11 @@
           "format": "int32",
           "title": "interpreted from raw sensor data",
           "type": "integer"
+        },
+        "iceDepthMm": {
+          "format": "double",
+          "title": "interpreted from raw sensor data",
+          "type": "number"
         },
         "intData": {
           "items": {
@@ -2146,6 +2180,11 @@
           "title": "within measurement session",
           "type": "integer"
         },
+        "snowDepthMm": {
+          "format": "double",
+          "title": "interpreted from raw sensor data",
+          "type": "number"
+        },
         "surface": {
           "$ref": "#/definitions/atlasRunwaySurfaceDescription",
           "description": "interpreted from raw sensor data",
@@ -2154,6 +2193,11 @@
         "time": {
           "format": "date-time",
           "type": "string"
+        },
+        "waterDepthMm": {
+          "format": "double",
+          "title": "interpreted from raw sensor data",
+          "type": "number"
         }
       },
       "type": "object"
@@ -2227,6 +2271,17 @@
         "LR",
         "L",
         "R"
+      ],
+      "type": "string"
+    },
+    "atlasSignificantChangeStatus": {
+      "default": "SIGNIFICANT_CHANGE_STATUS_UNSPECIFIED",
+      "enum": [
+        "SIGNIFICANT_CHANGE_STATUS_UNSPECIFIED",
+        "SIGNIFICANT_CHANGE_STATUS_OK",
+        "SIGNIFICANT_CHANGE_STATUS_SHOULD_PUBLISH",
+        "SIGNIFICANT_CHANGE_STATUS_EXPIRES_SOON",
+        "SIGNIFICANT_CHANGE_STATUS_EXPIRED"
       ],
       "type": "string"
     },
@@ -2521,7 +2576,7 @@
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n    // or ...\n    if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n      foo = any.unpack(Foo.getDefaultInstance());\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }",
       "properties": {
         "@type": {
-          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics.",
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com. As of May 2023, there are no widely used type server\nimplementations and no plans to implement one.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics.",
           "type": "string"
         }
       },
@@ -2606,7 +2661,7 @@
           "type": "array"
         },
         "remainingValidityMinutes": {
-          "description": "Remaining validity time of the latest filed SNOWTAM.",
+          "description": "Deprecated (05-09-2023 / \u003c 1.18.1). Remaining validity\ntime of the latest filed SNOWTAM.",
           "format": "int32",
           "readOnly": true,
           "type": "integer"
@@ -2644,9 +2699,14 @@
           "type": "string"
         },
         "significantChange": {
-          "description": "True if the current assessments represent a significant change\ncompared to the latest filed SNOWTAM.",
+          "description": "Deprecated (05-09-2023 / \u003c 1.18.1). True if the current\nassessments represent a significant change compared to\nthe latest filed SNOWTAM.",
           "readOnly": true,
           "type": "boolean"
+        },
+        "significantChangeStatus": {
+          "$ref": "#/definitions/atlasSignificantChangeStatus",
+          "readOnly": true,
+          "title": "Significant change indicator (from 1.18.1)"
         },
         "stockPhrases": {
           "$ref": "#/definitions/atlasRepeatedStringValue",
@@ -3807,7 +3867,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasSensorMeasurementLog"
+              "$ref": "#/definitions/atlasGetSensorSessionResponse"
             }
           },
           "default": {
@@ -3911,6 +3971,10 @@
                 "metarId": {
                   "title": "METAR ID (ICAO), for importing weather data",
                   "type": "string"
+                },
+                "mobileSensorThresholds": {
+                  "$ref": "#/definitions/atlasMobileSensorThresholds",
+                  "title": "Overwrite sensor depth thresholds"
                 },
                 "navCanada": {
                   "$ref": "#/definitions/atlasNavCanadaConfig",
@@ -4099,6 +4163,10 @@
                 "metarId": {
                   "title": "METAR ID (ICAO), for importing weather data",
                   "type": "string"
+                },
+                "mobileSensorThresholds": {
+                  "$ref": "#/definitions/atlasMobileSensorThresholds",
+                  "title": "Overwrite sensor depth thresholds"
                 },
                 "navCanada": {
                   "$ref": "#/definitions/atlasNavCanadaConfig",
