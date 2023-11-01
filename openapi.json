@@ -3,28 +3,6 @@
     "application/json"
   ],
   "definitions": {
-    "ListAPIKeysResponseAPIKey": {
-      "properties": {
-        "expiresAt": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "lastUsed": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "revocationId": {
-          "type": "string"
-        },
-        "tokenDisplay": {
-          "type": "string"
-        },
-        "userId": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
     "ListSensorSessionsResponseSensorSessionListItem": {
       "properties": {
         "numMeasurements": {
@@ -196,6 +174,14 @@
           "title": "Aprons, in the order they are presented to the user",
           "type": "array"
         },
+        "atisEmailBodyTemplate": {
+          "title": "ATIS email body template override (Go template format)",
+          "type": "string"
+        },
+        "atisEmailSubjectTemplate": {
+          "title": "ATIS email subject template override (Go template format)",
+          "type": "string"
+        },
         "awoswxSiteId": {
           "title": "wx.awos.se site ID, for importing weather data",
           "type": "string"
@@ -278,6 +264,14 @@
           "$ref": "#/definitions/atlasAerodromePreferences",
           "title": "Aerodrome preferences, editable with aerodrome admin permissions"
         },
+        "rcrEmailBodyTemplate": {
+          "title": "RCR email body template override (Go template format)",
+          "type": "string"
+        },
+        "rcrEmailSubjectTemplate": {
+          "title": "RCR email subject template override (Go template format)",
+          "type": "string"
+        },
         "regulatoryFramework": {
           "$ref": "#/definitions/atlasRegulatoryFramework",
           "title": "The used framework (ICAO_GRF / CANADA_RSC)"
@@ -315,6 +309,14 @@
           },
           "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
           "type": "array"
+        },
+        "snowtamEmailBodyTemplate": {
+          "title": "SNOWTAM email body template override (Go template format)",
+          "type": "string"
+        },
+        "snowtamEmailSubjectTemplate": {
+          "title": "SNOWTAM email subject template override (Go template format)",
+          "type": "string"
         },
         "taxiways": {
           "items": {
@@ -508,6 +510,47 @@
       },
       "type": "object"
     },
+    "atlasAerodromeResponse": {
+      "properties": {
+        "aerodrome": {
+          "$ref": "#/definitions/safeskyatlasAerodrome"
+        },
+        "atisPreview": {
+          "type": "string"
+        },
+        "csvPreview": {
+          "type": "string"
+        },
+        "pdfPreview": {
+          "format": "byte",
+          "type": "string"
+        },
+        "plausibilityAnalysis": {
+          "items": {
+            "$ref": "#/definitions/atlasPlausibilityAnalysis",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "rcrCurrent": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "remainingValidityMinutes": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "significantChangeStatus": {
+          "$ref": "#/definitions/atlasSignificantChangeStatus"
+        },
+        "textPreview": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasApron": {
       "properties": {
         "apronId": {
@@ -536,6 +579,28 @@
         "AUDIO_WAV"
       ],
       "type": "string"
+    },
+    "atlasAuthKey": {
+      "properties": {
+        "expiresAt": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "lastUsed": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "revocationId": {
+          "type": "string"
+        },
+        "tokenDisplay": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
     },
     "atlasBoolValue": {
       "properties": {
@@ -623,6 +688,14 @@
       "properties": {
         "key": {
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCreateAerodromeConfigResponse": {
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/atlasAerodromeConfig"
         }
       },
       "type": "object"
@@ -799,6 +872,22 @@
       },
       "type": "object"
     },
+    "atlasGetAerodromeConfigResponse": {
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/atlasAerodromeConfig"
+        }
+      },
+      "type": "object"
+    },
+    "atlasGetAerodromeReportResponse": {
+      "properties": {
+        "report": {
+          "$ref": "#/definitions/atlasAerodromeReport"
+        }
+      },
+      "type": "object"
+    },
     "atlasGetHealthResponse": {
       "properties": {
         "status": {
@@ -908,7 +997,7 @@
       "properties": {
         "keys": {
           "items": {
-            "$ref": "#/definitions/ListAPIKeysResponseAPIKey",
+            "$ref": "#/definitions/atlasAuthKey",
             "type": "object"
           },
           "type": "array"
@@ -965,6 +1054,18 @@
         "imports": {
           "items": {
             "$ref": "#/definitions/atlasConditionImport",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListReadonlyAccessKeysResponse": {
+      "properties": {
+        "keys": {
+          "items": {
+            "$ref": "#/definitions/atlasAuthKey",
             "type": "object"
           },
           "type": "array"
@@ -1600,7 +1701,8 @@
       "enum": [
         "UNSPECIFIED",
         "RCR",
-        "SNOWTAM"
+        "SNOWTAM",
+        "ATIS"
       ],
       "type": "string"
     },
@@ -1886,6 +1988,9 @@
       "type": "object"
     },
     "atlasRevokeAPIKeyResponse": {
+      "type": "object"
+    },
+    "atlasRevokeReadonlyAccessKeyResponse": {
       "type": "object"
     },
     "atlasRunway": {
@@ -2400,6 +2505,14 @@
       "title": "A time",
       "type": "object"
     },
+    "atlasUpdateAerodromeConfigResponse": {
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/atlasAerodromeConfig"
+        }
+      },
+      "type": "object"
+    },
     "atlasUpdateAerodromePreferencesResponse": {
       "type": "object"
     },
@@ -2615,12 +2728,12 @@
         },
         "atisPreview": {
           "readOnly": true,
-          "title": "Preview of ATIS report in text format",
+          "title": "Deprecated (#785 / 1.18.3) Preview of ATIS report in text format",
           "type": "string"
         },
         "csvPreview": {
           "readOnly": true,
-          "title": "Preview of RCR in CSV format",
+          "title": "Deprecated (#785 / 1.18.3) Preview of RCR in CSV format",
           "type": "string"
         },
         "metar": {
@@ -2631,7 +2744,7 @@
         "pdfPreview": {
           "format": "byte",
           "readOnly": true,
-          "title": "Preview of RCR in PDF format",
+          "title": "Deprecated (#785 / 1.18.3) Preview of RCR in PDF format",
           "type": "string"
         },
         "plausibilityAnalysis": {
@@ -2640,7 +2753,7 @@
             "type": "object"
           },
           "readOnly": true,
-          "title": "Plausibility analysis",
+          "title": "Deprecated (#785 / 1.18.3) Plausibility analysis",
           "type": "array"
         },
         "rcrCurrent": {
@@ -2648,7 +2761,7 @@
             "type": "string"
           },
           "readOnly": true,
-          "title": "Current RCR Lines",
+          "title": "Deprecated (#785 / 1.18.3) Current RCR Lines",
           "type": "array"
         },
         "rcrHistory": {
@@ -2657,11 +2770,11 @@
             "type": "object"
           },
           "readOnly": true,
-          "title": "Most recent RCRs",
+          "title": "Most recent historical RCRs (read only)",
           "type": "array"
         },
         "remainingValidityMinutes": {
-          "description": "Deprecated (05-09-2023 / \u003c 1.18.1). Remaining validity\ntime of the latest filed SNOWTAM.",
+          "description": "Deprecated (#784 / 1.18.1). Remaining validity\ntime of the latest filed SNOWTAM.",
           "format": "int32",
           "readOnly": true,
           "type": "integer"
@@ -2689,7 +2802,7 @@
             "type": "object"
           },
           "readOnly": true,
-          "title": "// Most recent RWIS data",
+          "title": "Most recent RWIS data (read only)",
           "type": "array"
         },
         "sequence": {
@@ -2699,14 +2812,14 @@
           "type": "string"
         },
         "significantChange": {
-          "description": "Deprecated (05-09-2023 / \u003c 1.18.1). True if the current\nassessments represent a significant change compared to\nthe latest filed SNOWTAM.",
+          "description": "Deprecated (#784 / 1.18.1). True if the current\nassessments represent a significant change compared to\nthe latest filed SNOWTAM.",
           "readOnly": true,
           "type": "boolean"
         },
         "significantChangeStatus": {
           "$ref": "#/definitions/atlasSignificantChangeStatus",
           "readOnly": true,
-          "title": "Significant change indicator (from 1.18.1)"
+          "title": "Deprecated (#785 / 1.18.3) Significant change indicator (from 1.18.1)"
         },
         "stockPhrases": {
           "$ref": "#/definitions/atlasRepeatedStringValue",
@@ -2721,7 +2834,7 @@
         },
         "textPreview": {
           "readOnly": true,
-          "title": "Preview of RCR in text format",
+          "title": "Deprecated (#785 / 1.18.3) Preview of RCR in text format",
           "type": "string"
         },
         "updatedTimestamp": {
@@ -2754,7 +2867,7 @@
     },
     "description": "## Overview\n\nThe Atlas system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://atlas.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAtlas provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://atlas.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://atlas.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Atlas API",
-    "version": "1.18"
+    "version": "1.19"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -2830,7 +2943,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeConfig"
+              "$ref": "#/definitions/atlasCreateAerodromeConfigResponse"
             }
           },
           "default": {
@@ -2849,7 +2962,7 @@
     "/v1/aerodromes/{aerodromeId}/assessments": {
       "get": {
         "description": "The aerodrome live method returns the currently assessed state of the\naerodrome. No request body is required.",
-        "operationId": "Live_GetAerodrome",
+        "operationId": "Live_GetAerodromeV2",
         "parameters": [
           {
             "in": "path",
@@ -2862,7 +2975,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/safeskyatlasAerodrome"
+              "$ref": "#/definitions/atlasAerodromeResponse"
             }
           },
           "default": {
@@ -3199,7 +3312,7 @@
     "/v1/aerodromes/{aerodromeId}/assessments/stream": {
       "get": {
         "description": "This returns a stream of JSON objects, in real time as assessments change.",
-        "operationId": "Live_WatchAerodrome",
+        "operationId": "Live_WatchAerodromeV2",
         "parameters": [
           {
             "in": "path",
@@ -3217,10 +3330,10 @@
                   "$ref": "#/definitions/rpcStatus"
                 },
                 "result": {
-                  "$ref": "#/definitions/safeskyatlasAerodrome"
+                  "$ref": "#/definitions/atlasAerodromeResponse"
                 }
               },
-              "title": "Stream result of safeskyatlasAerodrome",
+              "title": "Stream result of atlasAerodromeResponse",
               "type": "object"
             }
           },
@@ -3326,7 +3439,7 @@
     "/v1/aerodromes/{aerodromeId}/configuration": {
       "get": {
         "description": "Returns the configuration for the specified aerodrome, including map\ndata.",
-        "operationId": "Config_GetAerodromeConfig",
+        "operationId": "Config_GetAerodromeConfigV2",
         "parameters": [
           {
             "in": "path",
@@ -3339,7 +3452,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeConfig"
+              "$ref": "#/definitions/atlasGetAerodromeConfigResponse"
             }
           },
           "default": {
@@ -3609,8 +3722,8 @@
     },
     "/v1/aerodromes/{aerodromeId}/rcr/by-id/{reportId}": {
       "get": {
-        "description": "Get a specific published RCR for the given aerodrome, identified by\nid.",
-        "operationId": "Reports_GetRCR",
+        "description": "Get a specific published SNOWTAM or sent RCR for the given aerodrome\nbased on the report ID.",
+        "operationId": "Reports_GetReportV2",
         "parameters": [
           {
             "in": "path",
@@ -3629,7 +3742,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeReport"
+              "$ref": "#/definitions/atlasGetAerodromeReportResponse"
             }
           },
           "default": {
@@ -3639,7 +3752,7 @@
             }
           }
         },
-        "summary": "Get RCR",
+        "summary": "Get report (SNOWTAM or RCR)",
         "tags": [
           "Reports"
         ]
@@ -3647,8 +3760,8 @@
     },
     "/v1/aerodromes/{aerodromeId}/rcr/latest-snowtam": {
       "get": {
-        "description": "Get the latest published SNOWTAM report for the given aeroddome.",
-        "operationId": "Reports_GetLatestReport",
+        "description": "Get the latest published SNOWTAM for the given aerodrome.",
+        "operationId": "Reports_GetLatestReportV2",
         "parameters": [
           {
             "in": "path",
@@ -3661,7 +3774,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeReport"
+              "$ref": "#/definitions/atlasGetAerodromeReportResponse"
             }
           },
           "default": {
@@ -3711,7 +3824,7 @@
     },
     "/v1/aerodromes/{aerodromeId}/rcr/years/{year}": {
       "get": {
-        "description": "Lists the published SNOWTAMs for the given aerodrome and year.",
+        "description": "Lists the published reports (SNOWTAM or RCR) for the given aerodrome\nand year.",
         "operationId": "Reports_ListReports",
         "parameters": [
           {
@@ -3742,53 +3855,7 @@
             }
           }
         },
-        "summary": "List SNOWTAMs",
-        "tags": [
-          "Reports"
-        ]
-      }
-    },
-    "/v1/aerodromes/{aerodromeId}/rcr/years/{year}/snowtam/{sequence}": {
-      "get": {
-        "description": "Get a specific published SNOWTAM for the given aerodrome, identified\nby year and sequence number.",
-        "operationId": "Reports_GetReport",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "aerodromeId",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "format": "int32",
-            "in": "path",
-            "name": "year",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "format": "int32",
-            "in": "path",
-            "name": "sequence",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/atlasAerodromeReport"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "summary": "Get SNOWTAM",
+        "summary": "List reports (SNOWTAM or RCR)",
         "tags": [
           "Reports"
         ]
@@ -3913,6 +3980,14 @@
                   "title": "Aprons, in the order they are presented to the user",
                   "type": "array"
                 },
+                "atisEmailBodyTemplate": {
+                  "title": "ATIS email body template override (Go template format)",
+                  "type": "string"
+                },
+                "atisEmailSubjectTemplate": {
+                  "title": "ATIS email subject template override (Go template format)",
+                  "type": "string"
+                },
                 "awoswxSiteId": {
                   "title": "wx.awos.se site ID, for importing weather data",
                   "type": "string"
@@ -3995,6 +4070,14 @@
                   "$ref": "#/definitions/atlasAerodromePreferences",
                   "title": "Aerodrome preferences, editable with aerodrome admin permissions"
                 },
+                "rcrEmailBodyTemplate": {
+                  "title": "RCR email body template override (Go template format)",
+                  "type": "string"
+                },
+                "rcrEmailSubjectTemplate": {
+                  "title": "RCR email subject template override (Go template format)",
+                  "type": "string"
+                },
                 "regulatoryFramework": {
                   "$ref": "#/definitions/atlasRegulatoryFramework",
                   "title": "The used framework (ICAO_GRF / CANADA_RSC)"
@@ -4033,6 +4116,14 @@
                   "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
                   "type": "array"
                 },
+                "snowtamEmailBodyTemplate": {
+                  "title": "SNOWTAM email body template override (Go template format)",
+                  "type": "string"
+                },
+                "snowtamEmailSubjectTemplate": {
+                  "title": "SNOWTAM email subject template override (Go template format)",
+                  "type": "string"
+                },
                 "taxiways": {
                   "items": {
                     "type": "string"
@@ -4061,7 +4152,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeConfig"
+              "$ref": "#/definitions/atlasUpdateAerodromeConfigResponse"
             }
           },
           "default": {
@@ -4105,6 +4196,14 @@
                   "title": "Aprons, in the order they are presented to the user",
                   "type": "array"
                 },
+                "atisEmailBodyTemplate": {
+                  "title": "ATIS email body template override (Go template format)",
+                  "type": "string"
+                },
+                "atisEmailSubjectTemplate": {
+                  "title": "ATIS email subject template override (Go template format)",
+                  "type": "string"
+                },
                 "awoswxSiteId": {
                   "title": "wx.awos.se site ID, for importing weather data",
                   "type": "string"
@@ -4187,6 +4286,14 @@
                   "$ref": "#/definitions/atlasAerodromePreferences",
                   "title": "Aerodrome preferences, editable with aerodrome admin permissions"
                 },
+                "rcrEmailBodyTemplate": {
+                  "title": "RCR email body template override (Go template format)",
+                  "type": "string"
+                },
+                "rcrEmailSubjectTemplate": {
+                  "title": "RCR email subject template override (Go template format)",
+                  "type": "string"
+                },
                 "regulatoryFramework": {
                   "$ref": "#/definitions/atlasRegulatoryFramework",
                   "title": "The used framework (ICAO_GRF / CANADA_RSC)"
@@ -4225,6 +4332,14 @@
                   "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
                   "type": "array"
                 },
+                "snowtamEmailBodyTemplate": {
+                  "title": "SNOWTAM email body template override (Go template format)",
+                  "type": "string"
+                },
+                "snowtamEmailSubjectTemplate": {
+                  "title": "SNOWTAM email subject template override (Go template format)",
+                  "type": "string"
+                },
                 "taxiways": {
                   "items": {
                     "type": "string"
@@ -4259,7 +4374,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeConfig"
+              "$ref": "#/definitions/atlasUpdateAerodromeConfigResponse"
             }
           },
           "default": {
@@ -4553,6 +4668,76 @@
           }
         },
         "summary": "Get user data",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/readonlykeys": {
+      "get": {
+        "description": "Returns a list of current read-only access keys for the currently\nauthenticated user or all the keys related to the aerodrome for admins.\nFor security reasons the full read-only access keys are not returned,\ninstead a truncated display string is returned that can be shown to\nthe user. The revocation ID is used to refer to a key in the revoke\nread-only access key call.",
+        "operationId": "Auth_ListReadonlyAccessKeys",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "aerodromeId",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListReadonlyAccessKeysResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List read-only access keys",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/user/readonlykeys/{revocationId}": {
+      "delete": {
+        "description": "Revokes a read-only access key, by looking it up via its revocation ID.",
+        "operationId": "Auth_RevokeReadonlyAccessKey",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "revocationId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "aerodromeId",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasRevokeReadonlyAccessKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Revoke read-only access key",
         "tags": [
           "Auth"
         ]
