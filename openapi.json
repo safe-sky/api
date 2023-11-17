@@ -32,7 +32,7 @@
           "$ref": "#/definitions/atlasSkyCover"
         },
         "deprecatedSkyCover": {
-          "title": "Deprecated, use cloud_type (v1.18.0)",
+          "title": "Deprecated: use cloud_type (1.18.0)",
           "type": "string"
         }
       },
@@ -191,6 +191,14 @@
           "readOnly": true,
           "title": "Created timestamp (read only)",
           "type": "string"
+        },
+        "customForms": {
+          "items": {
+            "$ref": "#/definitions/atlasCustomForm",
+            "type": "object"
+          },
+          "title": "Custom form definitions",
+          "type": "array"
         },
         "deployment": {
           "$ref": "#/definitions/atlasAerodromeDeployment",
@@ -395,6 +403,12 @@
         "autoImportConditions": {
           "type": "boolean"
         },
+        "customFormRecipients": {
+          "additionalProperties": {
+            "$ref": "#/definitions/atlasRecipients"
+          },
+          "type": "object"
+        },
         "disablePlausibilityAnalysis": {
           "type": "boolean"
         },
@@ -461,6 +475,12 @@
         "aerodrome": {
           "$ref": "#/definitions/safeskyatlasAerodrome"
         },
+        "customForm": {
+          "$ref": "#/definitions/atlasCustomForm"
+        },
+        "formattedAtis": {
+          "type": "string"
+        },
         "formattedCsv": {
           "type": "string"
         },
@@ -479,6 +499,12 @@
     },
     "atlasAerodromeReportMeta": {
       "properties": {
+        "aerodromeId": {
+          "type": "string"
+        },
+        "customFormId": {
+          "type": "string"
+        },
         "format": {
           "$ref": "#/definitions/atlasPublishReportFormat"
         },
@@ -702,6 +728,106 @@
     },
     "atlasCreateConditionImportResponse": {
       "type": "object"
+    },
+    "atlasCustomForm": {
+      "description": "A CustomForm is a form that can be filled out by the user. The form is\nself contained in that every form instance describes both the form schema\nand the filled out values. This allows forms to evolve over time, while\nleaving old data intact.",
+      "properties": {
+        "customFormId": {
+          "description": "The custom_form_id is the unique identifier for the form. It must be\nunique within an aerodrome. It can be either manually set or machine\ngenerated; e.g., \"FOD\" and \"021A303D-C79B-4D37-B97D-7AF530464AA5\" are\nboth valid form IDs.",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description is an optional human readable description of the form.",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "$ref": "#/definitions/atlasCustomFormField",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "persistent": {
+          "description": "A form is \"persistent\" if it remains filled-out after submission. A\nnon-persistent form is cleared or removed on each submission.",
+          "type": "boolean"
+        },
+        "title": {
+          "description": "The title is the human readable name of the form. It must be set.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCustomFormField": {
+      "description": "A CustomFormField is a single field in a CustomForm.",
+      "properties": {
+        "boolValue": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "description": {
+          "description": "The description is an optional human readable description of the field.",
+          "type": "string"
+        },
+        "fieldId": {
+          "description": "The field_id is the unique identifier for the field. It must be unique within a form.",
+          "type": "string"
+        },
+        "intValue": {
+          "$ref": "#/definitions/atlasIntValue"
+        },
+        "label": {
+          "description": "The label is the human readable name of the field. It must be set.",
+          "type": "string"
+        },
+        "moodSet": {
+          "$ref": "#/definitions/atlasCustomFormFieldMood",
+          "title": "The mood to display when the field is set (checked, non-zero, non-empty)"
+        },
+        "moodUnset": {
+          "$ref": "#/definitions/atlasCustomFormFieldMood",
+          "title": "The mood to display when the field is unset (unchecked, zero, empty)"
+        },
+        "oneOfValue": {
+          "$ref": "#/definitions/atlasOneOfValue"
+        },
+        "photosValue": {
+          "$ref": "#/definitions/atlasPhotosValue"
+        },
+        "stringValue": {
+          "$ref": "#/definitions/atlasStringValue"
+        },
+        "timeValue": {
+          "$ref": "#/definitions/atlasTimeValue"
+        },
+        "visibleWhen": {
+          "$ref": "#/definitions/atlasCustomFormFieldCriteria"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCustomFormFieldCriteria": {
+      "description": "CustomFormFieldCriteria decides when a given field is shown.",
+      "properties": {
+        "isSet": {
+          "title": "Only show this field if the other field is set",
+          "type": "boolean"
+        },
+        "otherFieldId": {
+          "title": "Refer to another field in the same form",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCustomFormFieldMood": {
+      "default": "MOOD_NEUTRAL",
+      "description": "CustomFormFieldMood decides how a given field is displayed.",
+      "enum": [
+        "MOOD_NEUTRAL",
+        "MOOD_POSITIVE",
+        "MOOD_NEGATIVE"
+      ],
+      "type": "string"
     },
     "atlasDeicingChemical": {
       "default": "UNSPECIFIED_OR_OTHER",
@@ -1443,6 +1569,25 @@
       },
       "type": "object"
     },
+    "atlasOneOfValue": {
+      "properties": {
+        "choice": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "choices": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        }
+      },
+      "title": "A choice of one of a set of strings",
+      "type": "object"
+    },
     "atlasOnlineUsers": {
       "properties": {
         "users": {
@@ -1513,6 +1658,21 @@
         }
       },
       "title": "Permissions",
+      "type": "object"
+    },
+    "atlasPhotosValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "photoIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "title": "One or more photographs",
       "type": "object"
     },
     "atlasPlausibilityAnalysis": {
@@ -1702,7 +1862,8 @@
         "UNSPECIFIED",
         "RCR",
         "SNOWTAM",
-        "ATIS"
+        "ATIS",
+        "CUSTOM_FORM"
       ],
       "type": "string"
     },
@@ -1935,6 +2096,17 @@
         }
       },
       "title": "An RWYCC",
+      "type": "object"
+    },
+    "atlasRecipients": {
+      "properties": {
+        "addrs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
       "type": "object"
     },
     "atlasRegion": {
@@ -2245,7 +2417,7 @@
       "properties": {
         "deprecatedContaminationDepthMm": {
           "format": "int32",
-          "title": "deprecated (1.18.0)",
+          "title": "Deprecated: use other depth fields (1.18.0)",
           "type": "integer"
         },
         "floatData": {
@@ -2728,12 +2900,12 @@
         },
         "atisPreview": {
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Preview of ATIS report in text format",
+          "title": "Deprecated: see AerodromeResponse (1.18.3)",
           "type": "string"
         },
         "csvPreview": {
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Preview of RCR in CSV format",
+          "title": "Deprecated: see AerodromeResponse (1.18.3)",
           "type": "string"
         },
         "metar": {
@@ -2744,7 +2916,7 @@
         "pdfPreview": {
           "format": "byte",
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Preview of RCR in PDF format",
+          "title": "Deprecated: see AerodromeResponse (1.18.3)",
           "type": "string"
         },
         "plausibilityAnalysis": {
@@ -2753,7 +2925,7 @@
             "type": "object"
           },
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Plausibility analysis",
+          "title": "Deprecated: see AerodromeResponse (1.18.3)",
           "type": "array"
         },
         "rcrCurrent": {
@@ -2761,7 +2933,7 @@
             "type": "string"
           },
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Current RCR Lines",
+          "title": "Deprecated: see AerodromeResponse (1.18.3)",
           "type": "array"
         },
         "rcrHistory": {
@@ -2774,9 +2946,9 @@
           "type": "array"
         },
         "remainingValidityMinutes": {
-          "description": "Deprecated (#784 / 1.18.1). Remaining validity\ntime of the latest filed SNOWTAM.",
           "format": "int32",
           "readOnly": true,
+          "title": "Deprecated: see AerodromeResponse (1.18.1)",
           "type": "integer"
         },
         "remarks": {
@@ -2812,14 +2984,14 @@
           "type": "string"
         },
         "significantChange": {
-          "description": "Deprecated (#784 / 1.18.1). True if the current\nassessments represent a significant change compared to\nthe latest filed SNOWTAM.",
           "readOnly": true,
+          "title": "Deprecated: see AerodromeResponse (1.18.1)",
           "type": "boolean"
         },
         "significantChangeStatus": {
           "$ref": "#/definitions/atlasSignificantChangeStatus",
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Significant change indicator (from 1.18.1)"
+          "title": "Deprecated: see AerodromeResponse (1.18.3)"
         },
         "stockPhrases": {
           "$ref": "#/definitions/atlasRepeatedStringValue",
@@ -2834,7 +3006,7 @@
         },
         "textPreview": {
           "readOnly": true,
-          "title": "Deprecated (#785 / 1.18.3) Preview of RCR in text format",
+          "title": "Deprecated: see AerodromeResponse (1.18.3)",
           "type": "string"
         },
         "updatedTimestamp": {
@@ -2867,7 +3039,7 @@
     },
     "description": "## Overview\n\nThe Atlas system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://atlas.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAtlas provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://atlas.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://atlas.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Atlas API",
-    "version": "1.19"
+    "version": "1.20"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -3998,6 +4170,14 @@
                   "title": "Created timestamp (read only)",
                   "type": "string"
                 },
+                "customForms": {
+                  "items": {
+                    "$ref": "#/definitions/atlasCustomForm",
+                    "type": "object"
+                  },
+                  "title": "Custom form definitions",
+                  "type": "array"
+                },
                 "deployment": {
                   "$ref": "#/definitions/atlasAerodromeDeployment",
                   "title": "The aerodrome deployment type (production, trial, etc.)"
@@ -4213,6 +4393,14 @@
                   "readOnly": true,
                   "title": "Created timestamp (read only)",
                   "type": "string"
+                },
+                "customForms": {
+                  "items": {
+                    "$ref": "#/definitions/atlasCustomForm",
+                    "type": "object"
+                  },
+                  "title": "Custom form definitions",
+                  "type": "array"
                 },
                 "deployment": {
                   "$ref": "#/definitions/atlasAerodromeDeployment",
@@ -4849,6 +5037,42 @@
         ]
       }
     },
+    "/v1/reports/publish": {
+      "post": {
+        "description": "This method is called when a new report (RCR, SNOWTAM, ATIS, or\nCustom) is published. The report is presented in the body of the\nrequest. The server should return a 2xx code to accept report. Any\nother response code will be interpreted as a publish failure. The\nresponse body is ignored.\n\nN.b.: Atlas does not implement this API endpoint. It is part of the\nAtlas API documentation for clarity only. The API endpoint should be\nimplemented by the integration partner, and the URL documented here\nis for documentation purposes only.",
+        "operationId": "Push_PublishReport",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasAerodromeReport"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {},
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "security": [],
+        "summary": "Publish a report",
+        "tags": [
+          "Push"
+        ]
+      }
+    },
     "/v1/system-info": {
       "get": {
         "description": "Get current system information (version, etc).",
@@ -4911,6 +5135,10 @@
     {
       "description": "The aerodrome assessment is represented a single JSON object. At the top\nlevel are certain metadata fields, and the `runways`, `taxiways` and\n`aprons` arrays. Each contain lists of objects describing an individual\naerodrome element. Each such element has several fields, each generally\nconsisting of both a `value` and `meta` field. The `value` is the current\nassessment and the `meta` contains information about who and when made the\nassessment. The personal information (user ID) is in some cases redacted.",
       "name": "Live"
+    },
+    {
+      "description": "The Push service is to be implemented by upstream integration points that\nwish to receive a notification of important Atlas events.\n",
+      "name": "Push"
     },
     {
       "name": "Reports"
