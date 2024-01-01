@@ -733,7 +733,7 @@
       "description": "A CustomForm is a form that can be filled out by the user. The form is\nself contained in that every form instance describes both the form schema\nand the filled out values. This allows forms to evolve over time, while\nleaving old data intact.",
       "properties": {
         "customFormId": {
-          "description": "The custom_form_id is the unique identifier for the form. It must be\nunique within an aerodrome. It can be either manually set or machine\ngenerated; e.g., \"FOD\" and \"021A303D-C79B-4D37-B97D-7AF530464AA5\" are\nboth valid form IDs.",
+          "description": "The custom_form_id is the unique identifier for the form. It must be\nunique within an aerodrome. It can be either manually set or machine\ngenerated; e.g., \"fod\" and \"021a303dc79b4d37b97d7af530464aa5\" are\nboth valid form IDs. IDs are enforced to be lowercase alphanumeric\nstrings of at least 3 characters.",
           "type": "string"
         },
         "description": {
@@ -1639,6 +1639,13 @@
           "description": "The archive_read_metadata permission grants listing and exporting\nhistorical reports including field metadata (who changed what when).",
           "type": "boolean"
         },
+        "customFormIds": {
+          "description": "The custom_form_ids list is the set of custom forms this user is\nallowed to see and publish.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "liveWrite": {
           "description": "The live_write permission grants changing the live report data.",
           "type": "boolean"
@@ -1854,6 +1861,18 @@
       "type": "string"
     },
     "atlasPublishATISResponse": {
+      "properties": {
+        "report": {
+          "$ref": "#/definitions/atlasAerodromeReport"
+        },
+        "results": {
+          "items": {
+            "$ref": "#/definitions/atlasPublishReportResult",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
       "type": "object"
     },
     "atlasPublishReportFormat": {
@@ -3816,6 +3835,12 @@
             "name": "aerodromeId",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "updateTime",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -4994,9 +5019,12 @@
         ],
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "A successful response.(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/apiHttpBody"
+              "format": "binary",
+              "properties": {},
+              "title": "Free form byte stream",
+              "type": "string"
             }
           },
           "default": {
