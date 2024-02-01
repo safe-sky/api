@@ -473,26 +473,33 @@
     "atlasAerodromeReport": {
       "properties": {
         "aerodrome": {
-          "$ref": "#/definitions/safeskyatlasAerodrome"
+          "$ref": "#/definitions/safeskyatlasAerodrome",
+          "title": "Aerodrome assessment in structured form"
         },
         "customForm": {
-          "$ref": "#/definitions/atlasCustomForm"
+          "$ref": "#/definitions/atlasCustomForm",
+          "title": "Custom form data in structured form"
         },
         "formattedAtis": {
+          "title": "Report in ATIS text format",
           "type": "string"
         },
         "formattedCsv": {
+          "title": "Report in CSV format",
           "type": "string"
         },
         "formattedPdf": {
           "format": "byte",
+          "title": "Report in PDF format",
           "type": "string"
         },
         "formattedText": {
+          "title": "Report in RCR/SNOWTAM text",
           "type": "string"
         },
         "meta": {
-          "$ref": "#/definitions/atlasAerodromeReportMeta"
+          "$ref": "#/definitions/atlasAerodromeReportMeta",
+          "title": "Report metadata, including timestamps and sequence number"
         }
       },
       "type": "object"
