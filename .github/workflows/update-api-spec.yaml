@@ -21,7 +21,7 @@ jobs:
           git config --global user.name 'Safe Sky Release Automation'
           git config --global user.email 'release@safe-sky.net'
 
-          curl -LO https://atlas.safe-sky.net/v1/openapi.json
+          curl -LO https://app.safe-sky.net/v1/openapi.json
 
           npm i -g @redocly/cli@latest
           redocly build-docs openapi.json -o docs/index.html
