@@ -3,6 +3,25 @@
     "application/json"
   ],
   "definitions": {
+    "AuthUpdateAerodromeUserBody": {
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "permissions": {
+          "$ref": "#/definitions/atlasPermissions"
+        }
+      },
+      "type": "object"
+    },
+    "ConfigUpdateAerodromePreferencesBody": {
+      "properties": {
+        "preferences": {
+          "$ref": "#/definitions/atlasAerodromePreferences"
+        }
+      },
+      "type": "object"
+    },
     "ListSensorSessionsResponseSensorSessionListItem": {
       "properties": {
         "numMeasurements": {
@@ -18,6 +37,44 @@
         "time": {
           "format": "date-time",
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "LiveUpdateApronsBody": {
+      "properties": {
+        "aprons": {
+          "items": {
+            "$ref": "#/definitions/atlasApron",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "LiveUpdateRemarksBody": {
+      "properties": {
+        "remarks": {
+          "type": "string"
+        },
+        "stockPhrases": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "LiveUpdateTaxiwaysBody": {
+      "properties": {
+        "taxiways": {
+          "items": {
+            "$ref": "#/definitions/atlasTaxiway",
+            "type": "object"
+          },
+          "type": "array"
         }
       },
       "type": "object"
@@ -163,7 +220,11 @@
           "title": "Aerodrome identifier (ICAO)",
           "type": "string"
         },
-        "aftn": {
+        "aftnRcr": {
+          "$ref": "#/definitions/atlasAFTNConfig",
+          "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
+        },
+        "aftnSnowtam": {
           "$ref": "#/definitions/atlasAFTNConfig",
           "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
         },
@@ -197,7 +258,7 @@
             "$ref": "#/definitions/atlasCustomForm",
             "type": "object"
           },
-          "title": "Custom form definitions",
+          "title": "Customised report definitions",
           "type": "array"
         },
         "deployment": {
@@ -478,7 +539,7 @@
         },
         "customForm": {
           "$ref": "#/definitions/atlasCustomForm",
-          "title": "Custom form data in structured form"
+          "title": "Customised report data in structured form"
         },
         "formattedAtis": {
           "title": "Report in ATIS text format",
@@ -785,6 +846,9 @@
         "label": {
           "description": "The label is the human readable name of the field. It must be set.",
           "type": "string"
+        },
+        "mapPointValue": {
+          "$ref": "#/definitions/atlasMapPointValue"
         },
         "moodSet": {
           "$ref": "#/definitions/atlasCustomFormFieldMood",
@@ -1525,6 +1589,18 @@
       },
       "type": "object"
     },
+    "atlasMapPointValue": {
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "point": {
+          "$ref": "#/definitions/atlasMapPoint"
+        }
+      },
+      "title": "A position on the map",
+      "type": "object"
+    },
     "atlasMapRect": {
       "properties": {
         "northEast": {
@@ -1647,7 +1723,7 @@
           "type": "boolean"
         },
         "customFormIds": {
-          "description": "The custom_form_ids list is the set of custom forms this user is\nallowed to see and publish.",
+          "description": "The custom_form_ids list is the set of customised reports this user is\nallowed to see and publish.",
           "items": {
             "type": "string"
           },
@@ -1866,21 +1942,6 @@
       ],
       "title": "- PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MEDIAN: Significant deviation from the median of all the runways\n - PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MAX_THRESHOLD: Maximum temperature exceeded\n - PLAUSIBILITY_WARNING_REASON_ALL_SERVING_TAXIWAYS_CLOSED: All serving taxiways are closed\n - PLAUSIBILITY_WARNING_REASON_RWYCC_SIGNIFICANT_DIFF: Significant RWYCC difference within a runway\n - PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS: Conflicting or unlikely conditions within a runway",
       "type": "string"
-    },
-    "atlasPublishATISResponse": {
-      "properties": {
-        "report": {
-          "$ref": "#/definitions/atlasAerodromeReport"
-        },
-        "results": {
-          "items": {
-            "$ref": "#/definitions/atlasPublishReportResult",
-            "type": "object"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
     },
     "atlasPublishReportFormat": {
       "default": "UNSPECIFIED",
@@ -2137,7 +2198,7 @@
     },
     "atlasRegion": {
       "default": "EU",
-      "description": "Region IDs must be valid DNS labels when used in\n\"$region.atlas.safe-sky.net\", e.g. \"EU\" will be encoded to\n\"eu.atlas.safe-sky.net\".",
+      "description": "Region IDs must be valid DNS labels when used in\n\"$region.app.safe-sky.net\", e.g. \"EU\" will be encoded to\n\"eu.app.safe-sky.net\".",
       "enum": [
         "EU",
         "US",
@@ -2174,6 +2235,23 @@
         }
       },
       "title": "One or more strings",
+      "type": "object"
+    },
+    "atlasReportsPublishReportBody": {
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/atlasPublishReportFormat"
+        },
+        "methods": {
+          "items": {
+            "$ref": "#/definitions/atlasPublishReportMethod"
+          },
+          "type": "array"
+        },
+        "updateTime": {
+          "type": "boolean"
+        }
+      },
       "type": "object"
     },
     "atlasResetAerodromeResponse": {
@@ -2411,8 +2489,15 @@
         "MEASUREMENT_VAISALA_DATA_STATUS_WARNING",
         "MEASUREMENT_VAISALA_DATA_STATUS_ERROR",
         "MEASUREMENT_VAISALA_UNIT_STATUS_INFO",
-        "MEASUREMENT_VAISALA_UNIT_STATUS_ERROR"
+        "MEASUREMENT_VAISALA_UNIT_STATUS_ERROR",
+        "MEASUREMENT_LUFFT_ICE_PERCENTAGE",
+        "MEASUREMENT_LUFFT_ROAD_CONDITION",
+        "MEASUREMENT_LUFFT_DEVICE_STATUS",
+        "MEASUREMENT_LUFFT_MEASUREMENT_STATUS",
+        "MEASUREMENT_LUFFT_WATER_LAYER_THICKNESS_SMOOTH",
+        "MEASUREMENT_LUFFT_BLUETOOTH_LINK_QUALITY"
       ],
+      "title": "- MEASUREMENT_AIR_TEMPERATURE: °C, reported by MD30 and MARWIS\n - MEASUREMENT_RELATIVE_HUMIDITY: %, reported by MD30 and MARWIS\n - MEASUREMENT_DEW_POINT: °C, reported by MD30 and MARWIS\n - MEASUREMENT_FROST_POINT: °C, reported by MD30 only\n - MEASUREMENT_SURFACE_TEMPERATURE: °C, reported by MD30 and MARWIS\n - MEASUREMENT_GRIP: µ, reported by MD30 and MARWIS\n - MEASUREMENT_WATER_LAYER_THICKNESS: mm, reported by MD30 and MARWIS\n - MEASUREMENT_SNOW_LAYER_THICKNESS: mm, reported by MD30 and MARWIS\n - MEASUREMENT_ICE_LAYER_THICKNESS: mm, reported by MD30 only",
       "type": "string"
     },
     "atlasSensorFloatDataPoint": {
@@ -2636,6 +2721,12 @@
         },
         "licensee": {
           "$ref": "#/definitions/atlasLicensee"
+        },
+        "minRecommendedAppVer": {
+          "type": "string"
+        },
+        "recommendedAppVer": {
+          "type": "string"
         },
         "version": {
           "$ref": "#/definitions/atlasVersion"
@@ -3056,16 +3147,16 @@
       "type": "string"
     }
   },
-  "host": "atlas.safe-sky.net",
+  "host": "api.safe-sky.net",
   "info": {
     "contact": {
       "email": "support@safe-sky.net",
       "name": "Safe Sky Industries, Inc.",
       "url": "https://docs.safe-sky.net/"
     },
-    "description": "## Overview\n\nThe Atlas system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://atlas.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAtlas provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://atlas.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://atlas.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
-    "title": "Safe Sky Atlas API",
-    "version": "1.20"
+    "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAirside Sync provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://api.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://api.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
+    "title": "Safe Sky Airside Sync API",
+    "version": "1.21"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -3204,16 +3295,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "properties": {
-                "aprons": {
-                  "items": {
-                    "$ref": "#/definitions/atlasApron",
-                    "type": "object"
-                  },
-                  "type": "array"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/LiveUpdateApronsBody"
             }
           }
         ],
@@ -3290,18 +3372,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "properties": {
-                "remarks": {
-                  "type": "string"
-                },
-                "stockPhrases": {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/LiveUpdateRemarksBody"
             }
           }
         ],
@@ -3563,16 +3634,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "properties": {
-                "taxiways": {
-                  "items": {
-                    "$ref": "#/definitions/atlasTaxiway",
-                    "type": "object"
-                  },
-                  "type": "array"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/LiveUpdateTaxiwaysBody"
             }
           }
         ],
@@ -3711,7 +3773,7 @@
         ]
       },
       "post": {
-        "description": "Atlas can accept condition data from third party providers, which can\nthen be selected for import in the app. Only fields with the metadata\nop `UPDATE_SET` or `UPDATE_CLEAR` are applied on import.",
+        "description": "Airside Sync can accept condition data from third party providers, which can\nthen be selected for import in the app. Only fields with the metadata\nop `UPDATE_SET` or `UPDATE_CLEAR` are applied on import.",
         "operationId": "Live_CreateConditionImport",
         "parameters": [
           {
@@ -3803,12 +3865,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "properties": {
-                "preferences": {
-                  "$ref": "#/definitions/atlasAerodromePreferences"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/ConfigUpdateAerodromePreferencesBody"
             }
           }
         ],
@@ -3832,47 +3889,9 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/publish-atis": {
-      "post": {
-        "description": "This publishes the current status as an ATIS message via email, including\nboth text and voice synthesized sound file (as configured).",
-        "operationId": "Reports_PublishATIS",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "aerodromeId",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "query",
-            "name": "updateTime",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/atlasPublishATISResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "summary": "Publish ATIS",
-        "tags": [
-          "Reports"
-        ]
-      }
-    },
     "/v1/aerodromes/{aerodromeId}/publish-report": {
       "post": {
-        "description": "Create and publish a new SNOWTAM or RCR (according to the given\nformat) and send it out using specified methods. The created report\nis returned.",
+        "description": "Create and publish a new SNOWTAM, RCR, or ATIS (according to the\ngiven format) and send it out using specified methods. The created\nreport is returned.",
         "operationId": "Reports_PublishReport",
         "parameters": [
           {
@@ -3886,21 +3905,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "properties": {
-                "format": {
-                  "$ref": "#/definitions/atlasPublishReportFormat"
-                },
-                "methods": {
-                  "items": {
-                    "$ref": "#/definitions/atlasPublishReportMethod"
-                  },
-                  "type": "array"
-                },
-                "updateTime": {
-                  "type": "boolean"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/atlasReportsPublishReportBody"
             }
           }
         ],
@@ -4173,7 +4178,11 @@
             "required": true,
             "schema": {
               "properties": {
-                "aftn": {
+                "aftnRcr": {
+                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
+                },
+                "aftnSnowtam": {
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
                 },
@@ -4207,7 +4216,7 @@
                     "$ref": "#/definitions/atlasCustomForm",
                     "type": "object"
                   },
-                  "title": "Custom form definitions",
+                  "title": "Customised report definitions",
                   "type": "array"
                 },
                 "deployment": {
@@ -4397,7 +4406,11 @@
             "required": true,
             "schema": {
               "properties": {
-                "aftn": {
+                "aftnRcr": {
+                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
+                },
+                "aftnSnowtam": {
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
                 },
@@ -4431,7 +4444,7 @@
                     "$ref": "#/definitions/atlasCustomForm",
                     "type": "object"
                   },
-                  "title": "Custom form definitions",
+                  "title": "Customised report definitions",
                   "type": "array"
                 },
                 "deployment": {
@@ -4645,7 +4658,7 @@
     },
     "/v1/auth/invite": {
       "post": {
-        "description": "The email address is used to look up an existing user or, if one does\nnot exist, invite the user to the Atlas system. In this case the\ndisplay name is used when creating the user.",
+        "description": "The email address is used to look up an existing user or, if one does\nnot exist, invite the user to the Airside Sync system. In this case the\ndisplay name is used when creating the user.",
         "operationId": "Auth_AddAerodromeUser",
         "parameters": [
           {
@@ -4816,7 +4829,7 @@
     },
     "/v1/auth/user/data/{data.key}": {
       "put": {
-        "description": "Set user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes (base64 encoded, in JSON). The server does\nnot interpret the value and is only used to store it. The Atlas app\nuses user data to store user preferences and other settings.",
+        "description": "Set user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes (base64 encoded, in JSON). The server does\nnot interpret the value and is only used to store it. The Airside Sync app\nuses user data to store user preferences and other settings.",
         "operationId": "Auth_SetUserData",
         "parameters": [
           {
@@ -4863,7 +4876,7 @@
     },
     "/v1/auth/user/data/{key}": {
       "get": {
-        "description": "Get user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes (base64 encoded, in JSON). The server does\nnot interpret the value and is only used to store it. The Atlas app\nuses user data to store user preferences and other settings.",
+        "description": "Get user data for the currently authenticated user. User data is a\ncollection of key-value pairs, where the key is a string and the\nvalue is a slice of bytes (base64 encoded, in JSON). The server does\nnot interpret the value and is only used to store it. The Airside Sync app\nuses user data to store user preferences and other settings.",
         "operationId": "Auth_GetUserData",
         "parameters": [
           {
@@ -4979,15 +4992,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "properties": {
-                "displayName": {
-                  "type": "string"
-                },
-                "permissions": {
-                  "$ref": "#/definitions/atlasPermissions"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/AuthUpdateAerodromeUserBody"
             }
           }
         ],
@@ -5074,7 +5079,7 @@
     },
     "/v1/reports/publish": {
       "post": {
-        "description": "This method is called when a new report (RCR, SNOWTAM, ATIS, or\nCustom) is published. The report is presented in the body of the\nrequest. The server should return a 2xx code to accept report. Any\nother response code will be interpreted as a publish failure. The\nresponse body is ignored.\n\nN.b.: Atlas does not implement this API endpoint. It is part of the\nAtlas API documentation for clarity only. The API endpoint should be\nimplemented by the integration partner, and the URL documented here\nis for documentation purposes only.",
+        "description": "This method is called when a new report (RCR, SNOWTAM, ATIS, or\nCustom) is published. The report is presented in the body of the\nrequest. The server should return a 2xx code to accept report. Any\nother response code will be interpreted as a publish failure. The\nresponse body is ignored.\n\nN.b.: Airside Sync does not implement this API endpoint. It is part of the\nAirside Sync API documentation for clarity only. The API endpoint should be\nimplemented by the integration partner, and the URL documented here\nis for documentation purposes only.",
         "operationId": "Push_PublishReport",
         "parameters": [
           {
@@ -5155,7 +5160,7 @@
   "swagger": "2.0",
   "tags": [
     {
-      "description": "All API methods require authentication, unless otherwise noted. Each request\nmust carry an `Authorization` header with the `Bearer` scheme and a valid\naccess token. An access token can be acquired in different ways depending on\nthe specific deployment. For customers using federated authentication\n(OAuth2 / OpenID Connect), the access token provided from the identity\nprovider should be used. For customers using built-in Atlas authentication\nthe token is acquired from the [Login](#tag/Auth/operation/Login_Login)\nmethod. It's also possible to request a long lived API key for the Atlas\ncloud, please contact your support representative.\n\n### Demo Key\n\nThere is a read only API key `azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4` that\ncan be used for demonstration and experimentation on the fictional aerodrome\n`DEMO`. For example, to verify authentication from the command line:\n\n    % curl -H 'Authorization: Bearer azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4' \\\n        https://atlas.safe-sky.net/v1/auth/user?pretty\n    {\n        \"username\": \"dc78f878-2d7c-40b9-a416-52a7ceea1fff\",\n        \"email\": \"demo@safe-sky.net\",\n        \"displayName\": \"Atlas Demo User\",\n        ...\n\n",
+      "description": "All API methods require authentication, unless otherwise noted. Each request\nmust carry an `Authorization` header with the `Bearer` scheme and a valid\nAPI key. An API key can be created in the Airside Sync GUI, using the\n\"Manage API keys\" button at the bottom of the \"About\" screen. API keys are\ntied to the user who created them and will inherit their access permissions.\nAPI keys can be set to expire or have an unlimited lifetime.\n\n### Demo Key\n\nThere is a read only API key `azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4` that\ncan be used for demonstration and experimentation on the fictional aerodrome\n`DEMO`. For example, to verify authentication from the command line:\n\n    % curl -H 'Authorization: Bearer azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4' \\\n        https://api.safe-sky.net/v1/auth/user?pretty\n    {\n        \"username\": \"dc78f878-2d7c-40b9-a416-52a7ceea1fff\",\n        \"email\": \"demo@safe-sky.net\",\n        \"displayName\": \"Airside Sync Demo User\",\n        ...\n\n",
       "name": "Auth"
     },
     {
@@ -5172,7 +5177,7 @@
       "name": "Live"
     },
     {
-      "description": "The Push service is to be implemented by upstream integration points that\nwish to receive a notification of important Atlas events.\n",
+      "description": "The Push service is to be implemented by upstream integration points that\nwish to receive a notification of important Airside Sync events.\n",
       "name": "Push"
     },
     {
