@@ -632,6 +632,13 @@
           },
           "type": "array"
         },
+        "rcrHistory": {
+          "items": {
+            "$ref": "#/definitions/atlasRCREntry",
+            "type": "object"
+          },
+          "type": "array"
+        },
         "remainingValidityMinutes": {
           "format": "int32",
           "type": "integer"
@@ -1038,6 +1045,17 @@
         }
       },
       "type": "object"
+    },
+    "atlasFeatureType": {
+      "default": "FEATURE_UNDEFINED",
+      "enum": [
+        "FEATURE_UNDEFINED",
+        "FEATURE_RWY",
+        "FEATURE_TWY",
+        "FEATURE_APR",
+        "FEATURE_AD"
+      ],
+      "type": "string"
     },
     "atlasGPSPosition": {
       "properties": {
@@ -1547,7 +1565,7 @@
     "atlasMapMarker": {
       "properties": {
         "kind": {
-          "$ref": "#/definitions/atlasMapMarkerKind"
+          "$ref": "#/definitions/atlasFeatureType"
         },
         "point": {
           "$ref": "#/definitions/atlasMapPoint"
@@ -1561,16 +1579,6 @@
         }
       },
       "type": "object"
-    },
-    "atlasMapMarkerKind": {
-      "default": "MARKER_UNDEFINED",
-      "enum": [
-        "MARKER_UNDEFINED",
-        "MARKER_RWY",
-        "MARKER_TWY",
-        "MARKER_APR"
-      ],
-      "type": "string"
     },
     "atlasMapPoint": {
       "properties": {
@@ -3059,7 +3067,7 @@
             "type": "object"
           },
           "readOnly": true,
-          "title": "Most recent historical RCRs (read only)",
+          "title": "Deprecated: see AerodromeResponse (1.22.0)",
           "type": "array"
         },
         "remainingValidityMinutes": {
