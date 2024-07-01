@@ -619,6 +619,13 @@
           "format": "byte",
           "type": "string"
         },
+        "pirepSummary": {
+          "items": {
+            "$ref": "#/definitions/atlasPIREPSummary",
+            "type": "object"
+          },
+          "type": "array"
+        },
         "plausibilityAnalysis": {
           "items": {
             "$ref": "#/definitions/atlasPlausibilityAnalysis",
@@ -714,6 +721,19 @@
       },
       "title": "A boolean",
       "type": "object"
+    },
+    "atlasBrakingActionCondition": {
+      "default": "BRAKING_ACTION_UNSPECIFIED",
+      "enum": [
+        "BRAKING_ACTION_UNSPECIFIED",
+        "BRAKING_ACTION_GOOD",
+        "BRAKING_ACTION_GOOD_TO_MEDIUM",
+        "BRAKING_ACTION_MEDIUM",
+        "BRAKING_ACTION_MEDIUM_TO_POOR",
+        "BRAKING_ACTION_POOR",
+        "BRAKING_ACTION_LESS_THAN_POOR"
+      ],
+      "type": "string"
     },
     "atlasCardinal": {
       "default": "CARDINAL_UNSPECIFIED",
@@ -822,6 +842,10 @@
           },
           "type": "array"
         },
+        "languageCode": {
+          "description": "Optional language code for rendering the form. Defaults to English.\nValid values are those understood by the internal/l10n package.",
+          "type": "string"
+        },
         "persistent": {
           "description": "A form is \"persistent\" if it remains filled-out after submission. A\nnon-persistent form is cleared or removed on each submission.",
           "type": "boolean"
@@ -846,6 +870,9 @@
         "fieldId": {
           "description": "The field_id is the unique identifier for the field. It must be unique within a form.",
           "type": "string"
+        },
+        "htmlLabel": {
+          "$ref": "#/definitions/atlasHTMLLabel"
         },
         "intValue": {
           "$ref": "#/definitions/atlasIntValue"
@@ -1138,6 +1165,15 @@
       "properties": {
         "data": {
           "$ref": "#/definitions/atlasUserData"
+        }
+      },
+      "type": "object"
+    },
+    "atlasHTMLLabel": {
+      "description": "HTMLLabel represents a simple label of (limited) HTML content.",
+      "properties": {
+        "html": {
+          "type": "string"
         }
       },
       "type": "object"
@@ -1708,10 +1744,52 @@
         "API_FEATURE",
         "SEND_SMS_FEATURE",
         "SEND_FAX_FEATURE",
-        "MAP_FEATURE"
+        "MAP_FEATURE",
+        "RUNWAY_ASSESSMENT_FEATURE",
+        "PIREP_FEATURE"
       ],
       "title": "Optional features, i.e., licensed modules",
       "type": "string"
+    },
+    "atlasPIREPSignificantChange": {
+      "default": "STATUS_UNSPECIFIED",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_LESS_THAN_POOR",
+        "STATUS_TWO_POOR"
+      ],
+      "type": "string"
+    },
+    "atlasPIREPSummary": {
+      "properties": {
+        "latestBATime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "latestBrakingAction": {
+          "$ref": "#/definitions/atlasBrakingActionCondition"
+        },
+        "latestFlightNumber": {
+          "type": "string"
+        },
+        "minBATime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "minBrakingAction": {
+          "$ref": "#/definitions/atlasBrakingActionCondition"
+        },
+        "minFlightNumber": {
+          "type": "string"
+        },
+        "pirepSigChange": {
+          "$ref": "#/definitions/atlasPIREPSignificantChange"
+        },
+        "runwayId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
     },
     "atlasPermissions": {
       "properties": {
@@ -3164,7 +3242,7 @@
     },
     "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAirside Sync provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://api.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://api.safe-sky.net/v1/openapi.html.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
-    "version": "1.21"
+    "version": "1.22"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -3939,7 +4017,7 @@
     },
     "/v1/aerodromes/{aerodromeId}/rcr/by-id/{reportId}": {
       "get": {
-        "description": "Get a specific published SNOWTAM or sent RCR for the given aerodrome\nbased on the report ID.",
+        "description": "Get a specific published report for the given aerodrome based on the\nreport ID.",
         "operationId": "Reports_GetReportV2",
         "parameters": [
           {
@@ -3969,7 +4047,7 @@
             }
           }
         },
-        "summary": "Get report (SNOWTAM or RCR)",
+        "summary": "Get report (SNOWTAM, RCR, ATIS or Customised Report)",
         "tags": [
           "Reports"
         ]
@@ -4009,7 +4087,7 @@
     },
     "/v1/aerodromes/{aerodromeId}/rcr/years": {
       "get": {
-        "description": "Lists the available years for the given aerodrome.",
+        "description": "Lists the years in which reports were published for the given aerodrome.",
         "operationId": "Reports_ListReportYears",
         "parameters": [
           {
@@ -4041,7 +4119,7 @@
     },
     "/v1/aerodromes/{aerodromeId}/rcr/years/{year}": {
       "get": {
-        "description": "Lists the published reports (SNOWTAM or RCR) for the given aerodrome\nand year.",
+        "description": "Lists the published reports for the given aerodrome and year.",
         "operationId": "Reports_ListReports",
         "parameters": [
           {
@@ -4072,7 +4150,7 @@
             }
           }
         },
-        "summary": "List reports (SNOWTAM or RCR)",
+        "summary": "List reports (SNOWTAM, RCR, ATIS or Customised Report)",
         "tags": [
           "Reports"
         ]
