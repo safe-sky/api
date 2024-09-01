@@ -624,11 +624,7 @@
           "type": "string"
         },
         "pirepSummary": {
-          "items": {
-            "$ref": "#/definitions/atlasPIREPSummary",
-            "type": "object"
-          },
-          "type": "array"
+          "$ref": "#/definitions/atlasPIREPSummary"
         },
         "plausibilityAnalysis": {
           "items": {
@@ -828,6 +824,9 @@
     "atlasCreateConditionImportResponse": {
       "type": "object"
     },
+    "atlasCreateTaskResponse": {
+      "type": "object"
+    },
     "atlasCustomForm": {
       "description": "A CustomForm is a form that can be filled out by the user. The form is\nself contained in that every form instance describes both the form schema\nand the filled out values. This allows forms to evolve over time, while\nleaving old data intact.",
       "properties": {
@@ -917,12 +916,26 @@
     "atlasCustomFormFieldCriteria": {
       "description": "CustomFormFieldCriteria decides when a given field is shown.",
       "properties": {
+        "equalsString": {
+          "description": "Only show this field if (the string representation of) the value of\nthe other field is equal to this string. The string representation is\nthe natural one for strings, integers and oneOf:s, \"true\" or \"false\"\nfor booleans, and not supported at all for times, photos, map points,\nand HTML labels.\n\nFor integers and booleans, setting this to \"0\" or \"false\" means the\nopposite of the is_set field.\n\nMultiple values are OR:ed together (f == \"a\" || f == \"b\").",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "isSet": {
-          "title": "Only show this field if the other field is set",
+          "description": "Only show this field if the other field is set (in addition to being\nvisible).",
           "type": "boolean"
         },
+        "notEqualsString": {
+          "description": "Only show this field if the value of the other field is not equal to\nthis. See equals_string for more information on how to interpret the\nstring representation.\n\nMultiple values are AND:ed together (f != \"a\" \u0026\u0026 f != \"b\").",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "otherFieldId": {
-          "title": "Refer to another field in the same form",
+          "description": "Refer to another field in the same form. If no other criteria are\nspecified, this implicitly means \"when the other field is visible\".",
           "type": "string"
         }
       },
@@ -1165,6 +1178,14 @@
       },
       "type": "object"
     },
+    "atlasGetTaskResponse": {
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/atlasTaskData"
+        }
+      },
+      "type": "object"
+    },
     "atlasGetUserDataResponse": {
       "properties": {
         "data": {
@@ -1357,6 +1378,18 @@
         "sensorSessions": {
           "items": {
             "$ref": "#/definitions/ListSensorSessionsResponseSensorSessionListItem",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListTasksResponse": {
+      "properties": {
+        "tasks": {
+          "items": {
+            "$ref": "#/definitions/atlasTaskData",
             "type": "object"
           },
           "type": "array"
@@ -1750,10 +1783,29 @@
         "SEND_FAX_FEATURE",
         "MAP_FEATURE",
         "RUNWAY_ASSESSMENT_FEATURE",
-        "PIREP_FEATURE"
+        "PIREP_FEATURE",
+        "TASK_MANAGEMENT_FEATURE",
+        "ANALYTICS_FEATURE"
       ],
       "title": "Optional features, i.e., licensed modules",
       "type": "string"
+    },
+    "atlasPIREPRunwaySummary": {
+      "properties": {
+        "latestReport": {
+          "$ref": "#/definitions/atlasPilotReport"
+        },
+        "minReport": {
+          "$ref": "#/definitions/atlasPilotReport"
+        },
+        "pirepSigChange": {
+          "$ref": "#/definitions/atlasPIREPSignificantChange"
+        },
+        "runwayId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
     },
     "atlasPIREPSignificantChange": {
       "default": "STATUS_UNSPECIFIED",
@@ -1766,31 +1818,18 @@
     },
     "atlasPIREPSummary": {
       "properties": {
-        "latestBATime": {
-          "format": "date-time",
-          "type": "string"
+        "recentPireps": {
+          "items": {
+            "$ref": "#/definitions/atlasPilotReport",
+            "type": "object"
+          },
+          "type": "array"
         },
-        "latestBrakingAction": {
-          "$ref": "#/definitions/atlasBrakingActionCondition"
-        },
-        "latestFlightNumber": {
-          "type": "string"
-        },
-        "minBATime": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "minBrakingAction": {
-          "$ref": "#/definitions/atlasBrakingActionCondition"
-        },
-        "minFlightNumber": {
-          "type": "string"
-        },
-        "pirepSigChange": {
-          "$ref": "#/definitions/atlasPIREPSignificantChange"
-        },
-        "runwayId": {
-          "type": "string"
+        "runwaySummaries": {
+          "additionalProperties": {
+            "$ref": "#/definitions/atlasPIREPRunwaySummary"
+          },
+          "type": "object"
         }
       },
       "type": "object"
@@ -1853,6 +1892,31 @@
         }
       },
       "title": "One or more photographs",
+      "type": "object"
+    },
+    "atlasPilotReport": {
+      "properties": {
+        "brakingAction": {
+          "$ref": "#/definitions/atlasBrakingActionCondition"
+        },
+        "flightNumber": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "published": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "runwayId": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
       "type": "object"
     },
     "atlasPlausibilityAnalysis": {
@@ -2824,6 +2888,120 @@
       },
       "type": "object"
     },
+    "atlasTaskData": {
+      "properties": {
+        "assignee": {
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "readOnly": true,
+          "type": "string"
+        },
+        "creator": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "$ref": "#/definitions/atlasTaskNoteValue",
+            "type": "object"
+          },
+          "readOnly": true,
+          "type": "array"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "photoIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "position": {
+          "$ref": "#/definitions/atlasMapPoint",
+          "title": "GPS location"
+        },
+        "status": {
+          "items": {
+            "$ref": "#/definitions/atlasTaskStatusValue",
+            "type": "object"
+          },
+          "readOnly": true,
+          "type": "array"
+        },
+        "taskId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "readOnly": true,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasTaskNoteValue": {
+      "properties": {
+        "created": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "When the note was created",
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "noteId": {
+          "type": "string"
+        },
+        "user": {
+          "readOnly": true,
+          "title": "User who filed the note",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasTaskStatus": {
+      "default": "TASK_STATUS_UNSPECIFIED",
+      "enum": [
+        "TASK_STATUS_UNSPECIFIED",
+        "TASK_STATUS_CREATED",
+        "TASK_STATUS_ASSIGNED",
+        "TASK_STATUS_IN_PROGRESS",
+        "TASK_STATUS_ESCALATED",
+        "TASK_STATUS_AWAIT_INFO",
+        "TASK_STATUS_COMPLETED",
+        "TASK_STATUS_CANCELLED"
+      ],
+      "type": "string"
+    },
+    "atlasTaskStatusValue": {
+      "properties": {
+        "date": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "When the status was changed",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/atlasTaskStatus"
+        },
+        "user": {
+          "title": "User who changed the status",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasTaxiway": {
       "properties": {
         "closed": {
@@ -2904,6 +3082,18 @@
     "atlasUpdateRunwayResponse": {
       "type": "object"
     },
+    "atlasUpdateTaskAssigneeResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaskDescriptionResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaskNoteResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaskStatusResponse": {
+      "type": "object"
+    },
     "atlasUpdateTaxiwaysResponse": {
       "type": "object"
     },
@@ -2916,6 +3106,11 @@
           "type": "string"
         },
         "country": {
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "readOnly": true,
           "type": "string"
         },
         "displayName": {
@@ -4249,6 +4444,306 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/tasks": {
+      "post": {
+        "operationId": "Task_CreateTask",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "task",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasTaskData"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasCreateTaskResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Create a task",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/days/{sinceDays}": {
+      "get": {
+        "operationId": "Task_ListTasks",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "sinceDays",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListTasksResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List all tasks for a given number of days",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}": {
+      "get": {
+        "operationId": "Task_GetTask",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasGetTaskResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get a task",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/assignee": {
+      "post": {
+        "operationId": "Task_UpdateTaskAssignee",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "assignee",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskAssigneeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update the assigned user of a task",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/descr": {
+      "post": {
+        "operationId": "Task_UpdateTaskDescription",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "description",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskDescriptionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update the task description",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/note/{noteId}": {
+      "post": {
+        "operationId": "Task_UpdateTaskNote",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "noteId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "note",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update or add a note to a task",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/status": {
+      "post": {
+        "operationId": "Task_UpdateTaskStatus",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "status",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasTaskStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update the task status",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
     "/v1/aerodromes/{config.aerodromeId}/configuration": {
       "patch": {
         "description": "This method requires system admin permissions.",
@@ -5278,6 +5773,9 @@
     },
     {
       "name": "System"
+    },
+    {
+      "name": "Task"
     },
     {
       "name": "Tile"
