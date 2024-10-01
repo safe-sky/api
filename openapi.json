@@ -41,6 +41,21 @@
       },
       "type": "object"
     },
+    "ListTaskUsersResponseTaskUser": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "taskType": {
+          "items": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "LiveUpdateApronsBody": {
       "properties": {
         "aprons": {
@@ -507,6 +522,9 @@
           },
           "type": "array"
         },
+        "taskPreferences": {
+          "$ref": "#/definitions/atlasTaskPreferences"
+        },
         "withFriction": {
           "type": "boolean"
         },
@@ -900,6 +918,10 @@
         },
         "photosValue": {
           "$ref": "#/definitions/atlasPhotosValue"
+        },
+        "required": {
+          "description": "Inidicates whether this field is mandatory. This is only relevant when\nthe visible_when criterea are met and this field is in fact visible.",
+          "type": "boolean"
         },
         "stringValue": {
           "$ref": "#/definitions/atlasStringValue"
@@ -1378,6 +1400,18 @@
         "sensorSessions": {
           "items": {
             "$ref": "#/definitions/ListSensorSessionsResponseSensorSessionListItem",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListTaskUsersResponse": {
+      "properties": {
+        "taskUsers": {
+          "items": {
+            "$ref": "#/definitions/ListTaskUsersResponseTaskUser",
             "type": "object"
           },
           "type": "array"
@@ -1874,6 +1908,14 @@
         "revokeAccess": {
           "description": "The revoke_access bit makes the permission invalid and it will be\nremoved. Used in updates only.",
           "type": "boolean"
+        },
+        "taskTypeIds": {
+          "description": "The task_type_ids list is the set of task types this user is allowed to\nsee and handle.",
+          "items": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": "array"
         }
       },
       "title": "Permissions",
@@ -1902,11 +1944,11 @@
         "flightNumber": {
           "type": "string"
         },
-        "id": {
-          "type": "string"
-        },
         "published": {
           "format": "date-time",
+          "type": "string"
+        },
+        "reportId": {
           "type": "string"
         },
         "runwayId": {
@@ -2970,6 +3012,18 @@
       },
       "type": "object"
     },
+    "atlasTaskPreferences": {
+      "properties": {
+        "taskTypes": {
+          "items": {
+            "$ref": "#/definitions/atlasTaskType",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "atlasTaskStatus": {
       "default": "TASK_STATUS_UNSPECIFIED",
       "enum": [
@@ -2997,6 +3051,23 @@
         },
         "user": {
           "title": "User who changed the status",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasTaskType": {
+      "properties": {
+        "disabled": {
+          "readOnly": true,
+          "type": "boolean"
+        },
+        "id": {
+          "format": "int32",
+          "readOnly": true,
+          "type": "integer"
+        },
+        "name": {
           "type": "string"
         }
       },
@@ -3092,6 +3163,9 @@
       "type": "object"
     },
     "atlasUpdateTaskStatusResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaskTypePreferenceResponse": {
       "type": "object"
     },
     "atlasUpdateTaxiwaysResponse": {
@@ -3439,7 +3513,7 @@
       "name": "Safe Sky Industries, Inc.",
       "url": "https://docs.safe-sky.net/"
     },
-    "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPIv2 Specification\n\nAirside Sync provides an OpenAPIv2 specification documenting the current API in a\nmachine readable manner. This specification can be used to generate API code\nfor many languages. The latest version is always available at\nhttps://api.safe-sky.net/v1/openapi.json, with this rendered documentation\navailable at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
+    "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPI Specifications\n\nAirside Sync provides an OpenAPI specification documenting the current API\nin a machine readable manner, v2 and v3. This specification can be used to\ngenerate API code for many languages. The latest version is always available\nat https://api.safe-sky.net/v1/openapi.json (OpenAPI v2) and\nhttps://api.safe-sky.net/v1/openapi-v3.json (OpenAPI v3), with this rendered\ndocumentation available at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
     "version": "1.22"
   },
@@ -4174,6 +4248,53 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/preferences/tasktypes/{typeId}": {
+      "post": {
+        "description": "Create a new task type or updates an existing task type if an id is\nsupplied. Requires aerodrome admin permissions.",
+        "operationId": "Config_UpdateTaskTypePreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "typeId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "typeName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskTypePreferenceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Add or update task types",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
     "/v1/aerodromes/{aerodromeId}/publish-report": {
       "post": {
         "description": "Create and publish a new SNOWTAM, RCR, or ATIS (according to the\ngiven format) and send it out using specified methods. The created\nreport is returned.",
@@ -4214,7 +4335,7 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/rcr/by-id/{reportId}": {
+    "/v1/aerodromes/{aerodromeId}/reports/by-id/{reportId}": {
       "get": {
         "description": "Get a specific published report for the given aerodrome based on the\nreport ID.",
         "operationId": "Reports_GetReportV2",
@@ -4252,7 +4373,7 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/rcr/latest-snowtam": {
+    "/v1/aerodromes/{aerodromeId}/reports/latest-snowtam": {
       "get": {
         "description": "Get the latest published SNOWTAM for the given aerodrome.",
         "operationId": "Reports_GetLatestReportV2",
@@ -4284,7 +4405,7 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/rcr/years": {
+    "/v1/aerodromes/{aerodromeId}/reports/years": {
       "get": {
         "description": "Lists the years in which reports were published for the given aerodrome.",
         "operationId": "Reports_ListReportYears",
@@ -4316,7 +4437,7 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/rcr/years/{year}": {
+    "/v1/aerodromes/{aerodromeId}/reports/years/{year}": {
       "get": {
         "description": "Lists the published reports for the given aerodrome and year.",
         "operationId": "Reports_ListReports",
@@ -5205,6 +5326,38 @@
         "summary": "Update aerodrome configuration",
         "tags": [
           "Config"
+        ]
+      }
+    },
+    "/v1/auth/aerodrome/{aerodromeId}/taskusers": {
+      "get": {
+        "description": "Returns the usernames of users with task management permissions. The\nusers are filtered based on the requesting user's permissions. A user\ncannot obtain a list of users of task types which the requesting user has\nno permissions to.",
+        "operationId": "Auth_ListTaskUsers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListTaskUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List task users",
+        "tags": [
+          "Auth"
         ]
       }
     },
