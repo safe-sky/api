@@ -3,7 +3,7 @@
     "application/json"
   ],
   "definitions": {
-    "AuthUpdateAerodromeUserBody": {
+    "AuthUpdateAerodromeUserV2Body": {
       "properties": {
         "displayName": {
           "type": "string"
@@ -225,6 +225,20 @@
         },
         "permissions": {
           "$ref": "#/definitions/atlasPermissions"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAddAerodromeUserResponse": {
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "sentMail": {
+          "type": "boolean"
+        },
+        "user": {
+          "$ref": "#/definitions/atlasUser"
         }
       },
       "type": "object"
@@ -481,7 +495,7 @@
         },
         "customFormRecipients": {
           "additionalProperties": {
-            "$ref": "#/definitions/atlasRecipients"
+            "$ref": "#/definitions/atlasRecipientsConfig"
           },
           "type": "object"
         },
@@ -923,6 +937,10 @@
           "description": "Inidicates whether this field is mandatory. This is only relevant when\nthe visible_when criterea are met and this field is in fact visible.",
           "type": "boolean"
         },
+        "requiredWhen": {
+          "$ref": "#/definitions/atlasCustomFormFieldCriteria",
+          "description": "Indicates whether this field is required based on specified criteria."
+        },
         "stringValue": {
           "$ref": "#/definitions/atlasStringValue"
         },
@@ -930,7 +948,8 @@
           "$ref": "#/definitions/atlasTimeValue"
         },
         "visibleWhen": {
-          "$ref": "#/definitions/atlasCustomFormFieldCriteria"
+          "$ref": "#/definitions/atlasCustomFormFieldCriteria",
+          "description": "Indicates whether this field is visible based on specified criteria."
         }
       },
       "type": "object"
@@ -2146,7 +2165,8 @@
         "RCR",
         "SNOWTAM",
         "ATIS",
-        "CUSTOM_FORM"
+        "CUSTOM_FORM",
+        "TASK"
       ],
       "type": "string"
     },
@@ -2381,13 +2401,16 @@
       "title": "An RWYCC",
       "type": "object"
     },
-    "atlasRecipients": {
+    "atlasRecipientsConfig": {
       "properties": {
         "addrs": {
           "items": {
             "type": "string"
           },
           "type": "array"
+        },
+        "sendToCurrentUser": {
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -2722,11 +2745,6 @@
     },
     "atlasSensorMeasurement": {
       "properties": {
-        "deprecatedContaminationDepthMm": {
-          "format": "int32",
-          "title": "Deprecated: use other depth fields (1.18.0)",
-          "type": "integer"
-        },
         "floatData": {
           "items": {
             "$ref": "#/definitions/atlasSensorFloatDataPoint",
@@ -3144,6 +3162,17 @@
     "atlasUpdateAerodromePreferencesResponse": {
       "type": "object"
     },
+    "atlasUpdateAerodromeUserResponse": {
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/atlasUser"
+        }
+      },
+      "type": "object"
+    },
     "atlasUpdateApronsResponse": {
       "type": "object"
     },
@@ -3421,12 +3450,6 @@
           "title": "Deprecated: see AerodromeResponse (1.22.0)",
           "type": "array"
         },
-        "remainingValidityMinutes": {
-          "format": "int32",
-          "readOnly": true,
-          "title": "Deprecated: see AerodromeResponse (1.18.1)",
-          "type": "integer"
-        },
         "remarks": {
           "$ref": "#/definitions/atlasStringValue",
           "title": "Free form remarks"
@@ -3458,11 +3481,6 @@
           "readOnly": true,
           "title": "Sequence number increments by one for each change",
           "type": "string"
-        },
-        "significantChange": {
-          "readOnly": true,
-          "title": "Deprecated: see AerodromeResponse (1.18.1)",
-          "type": "boolean"
         },
         "significantChangeStatus": {
           "$ref": "#/definitions/atlasSignificantChangeStatus",
@@ -5397,7 +5415,7 @@
     "/v1/auth/invite": {
       "post": {
         "description": "The email address is used to look up an existing user or, if one does\nnot exist, invite the user to the Airside Sync system. In this case the\ndisplay name is used when creating the user.",
-        "operationId": "Auth_AddAerodromeUser",
+        "operationId": "Auth_AddAerodromeUserV2",
         "parameters": [
           {
             "in": "body",
@@ -5412,7 +5430,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasUser"
+              "$ref": "#/definitions/atlasAddAerodromeUserResponse"
             }
           },
           "default": {
@@ -5717,7 +5735,7 @@
     "/v1/auth/user/{userId}/update": {
       "post": {
         "description": "Update the user permissions for one or more aerodromes and sets the\ndisplay name. The special permission \"RevokeAccess\" can be used to\nremove permissions for an aerodrome entirely.",
-        "operationId": "Auth_UpdateAerodromeUser",
+        "operationId": "Auth_UpdateAerodromeUserV2",
         "parameters": [
           {
             "in": "path",
@@ -5730,7 +5748,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AuthUpdateAerodromeUserBody"
+              "$ref": "#/definitions/AuthUpdateAerodromeUserV2Body"
             }
           }
         ],
@@ -5738,7 +5756,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasUser"
+              "$ref": "#/definitions/atlasUpdateAerodromeUserResponse"
             }
           },
           "default": {
