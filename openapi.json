@@ -783,15 +783,15 @@
       "type": "string"
     },
     "atlasChangeReason": {
-      "default": "TEMPERATURE",
+      "default": "CHANGE_REASON_TEMPERATURE",
       "enum": [
-        "TEMPERATURE",
-        "DEW_POINT",
-        "FRICTION",
-        "PRECIPITATION",
-        "PIREP",
-        "OTHER",
-        "FROZEN_SAND"
+        "CHANGE_REASON_TEMPERATURE",
+        "CHANGE_REASON_DEW_POINT",
+        "CHANGE_REASON_FRICTION",
+        "CHANGE_REASON_PRECIPITATION",
+        "CHANGE_REASON_PIREP",
+        "CHANGE_REASON_OTHER",
+        "CHANGE_REASON_FROZEN_SAND"
       ],
       "type": "string"
     },
@@ -854,6 +854,9 @@
       "type": "object"
     },
     "atlasCreateConditionImportResponse": {
+      "type": "object"
+    },
+    "atlasCreatePIREPResponse": {
       "type": "object"
     },
     "atlasCreateTaskResponse": {
@@ -1378,6 +1381,30 @@
       },
       "type": "object"
     },
+    "atlasListPIREPsForYearResponse": {
+      "properties": {
+        "pireps": {
+          "items": {
+            "$ref": "#/definitions/atlasPIREP",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListPIREPsResponse": {
+      "properties": {
+        "pireps": {
+          "items": {
+            "$ref": "#/definitions/atlasPIREP",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "atlasListReadonlyAccessKeysResponse": {
       "properties": {
         "keys": {
@@ -1843,13 +1870,38 @@
       "title": "Optional features, i.e., licensed modules",
       "type": "string"
     },
+    "atlasPIREP": {
+      "properties": {
+        "brakingAction": {
+          "$ref": "#/definitions/atlasBrakingActionCondition"
+        },
+        "flightNumber": {
+          "type": "string"
+        },
+        "published": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "reportId": {
+          "type": "string"
+        },
+        "runwayId": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasPIREPRunwaySummary": {
       "properties": {
         "latestReport": {
-          "$ref": "#/definitions/atlasPilotReport"
+          "$ref": "#/definitions/atlasPIREP"
         },
         "minReport": {
-          "$ref": "#/definitions/atlasPilotReport"
+          "$ref": "#/definitions/atlasPIREP"
         },
         "pirepSigChange": {
           "$ref": "#/definitions/atlasPIREPSignificantChange"
@@ -1873,7 +1925,7 @@
       "properties": {
         "recentPireps": {
           "items": {
-            "$ref": "#/definitions/atlasPilotReport",
+            "$ref": "#/definitions/atlasPIREP",
             "type": "object"
           },
           "type": "array"
@@ -1953,31 +2005,6 @@
         }
       },
       "title": "One or more photographs",
-      "type": "object"
-    },
-    "atlasPilotReport": {
-      "properties": {
-        "brakingAction": {
-          "$ref": "#/definitions/atlasBrakingActionCondition"
-        },
-        "flightNumber": {
-          "type": "string"
-        },
-        "published": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "reportId": {
-          "type": "string"
-        },
-        "runwayId": {
-          "type": "string"
-        },
-        "time": {
-          "format": "date-time",
-          "type": "string"
-        }
-      },
       "type": "object"
     },
     "atlasPlausibilityAnalysis": {
@@ -2986,6 +3013,12 @@
           "$ref": "#/definitions/atlasMapPoint",
           "title": "GPS location"
         },
+        "sequence": {
+          "format": "int32",
+          "readOnly": true,
+          "title": "Id for customer consumption",
+          "type": "integer"
+        },
         "status": {
           "items": {
             "$ref": "#/definitions/atlasTaskStatusValue",
@@ -3533,7 +3566,7 @@
     },
     "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPI Specifications\n\nAirside Sync provides an OpenAPI specification documenting the current API\nin a machine readable manner, v2 and v3. This specification can be used to\ngenerate API code for many languages. The latest version is always available\nat https://api.safe-sky.net/v1/openapi.json (OpenAPI v2) and\nhttps://api.safe-sky.net/v1/openapi-v3.json (OpenAPI v3), with this rendered\ndocumentation available at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
-    "version": "1.22"
+    "version": "1.25"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -4223,6 +4256,124 @@
         "summary": "List online users",
         "tags": [
           "System"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/pireps/create": {
+      "post": {
+        "description": "Create and and store a pilot report. The report to file is supplied as body.",
+        "operationId": "Pireps_CreatePIREP",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "pirep",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasPIREP"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasCreatePIREPResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Create pilot report",
+        "tags": [
+          "Pireps"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/pireps/days/{sinceDays}": {
+      "get": {
+        "description": "List the pilot reports for a given aerodrome for a given amount of days.",
+        "operationId": "Pireps_ListPIREPs",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "sinceDays",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListPIREPsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List pilot reports",
+        "tags": [
+          "Pireps"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/pireps/years/{year}": {
+      "get": {
+        "description": "List the pilot reports for a given aerodrome for a given year.",
+        "operationId": "Pireps_ListPIREPsForYear",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListPIREPsForYearResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List pilot reports for a year",
+        "tags": [
+          "Pireps"
         ]
       }
     },
@@ -5931,6 +6082,9 @@
     {
       "description": "The aerodrome assessment is represented a single JSON object. At the top\nlevel are certain metadata fields, and the `runways`, `taxiways` and\n`aprons` arrays. Each contain lists of objects describing an individual\naerodrome element. Each such element has several fields, each generally\nconsisting of both a `value` and `meta` field. The `value` is the current\nassessment and the `meta` contains information about who and when made the\nassessment. The personal information (user ID) is in some cases redacted.",
       "name": "Live"
+    },
+    {
+      "name": "Pireps"
     },
     {
       "description": "The Push service is to be implemented by upstream integration points that\nwish to receive a notification of important Airside Sync events.\n",
