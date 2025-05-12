@@ -8,6 +8,9 @@
         "displayName": {
           "type": "string"
         },
+        "newPermissionsStyle": {
+          "type": "boolean"
+        },
         "permissions": {
           "$ref": "#/definitions/atlasPermissions"
         }
@@ -43,6 +46,9 @@
     },
     "ListTaskUsersResponseTaskUser": {
       "properties": {
+        "displayName": {
+          "type": "string"
+        },
         "email": {
           "type": "string"
         },
@@ -223,6 +229,9 @@
         "email": {
           "type": "string"
         },
+        "newPermissionsStyle": {
+          "type": "boolean"
+        },
         "permissions": {
           "$ref": "#/definitions/atlasPermissions"
         }
@@ -256,6 +265,13 @@
         "aftnSnowtam": {
           "$ref": "#/definitions/atlasAFTNConfig",
           "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+        },
+        "apronOverrides": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Apron name override, overrides the apron names in the reports only",
+          "type": "object"
         },
         "aprons": {
           "items": {
@@ -416,6 +432,21 @@
           "title": "SNOWTAM email subject template override (Go template format)",
           "type": "string"
         },
+        "taskEmailBodyTemplate": {
+          "title": "Task email notification body template override (Go template format)",
+          "type": "string"
+        },
+        "taskEmailSubjectTemplate": {
+          "title": "Task email notification subject template override (Go template format)",
+          "type": "string"
+        },
+        "taxiwayOverrides": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Taxiway name override, overrides the taxiway names in the reports only",
+          "type": "object"
+        },
         "taxiways": {
           "items": {
             "type": "string"
@@ -543,6 +574,9 @@
           "type": "boolean"
         },
         "withFrozenSand": {
+          "type": "boolean"
+        },
+        "withIgnoreRunway": {
           "type": "boolean"
         },
         "withLandingDirection": {
@@ -888,6 +922,10 @@
           "description": "A form is \"persistent\" if it remains filled-out after submission. A\nnon-persistent form is cleared or removed on each submission.",
           "type": "boolean"
         },
+        "tileset": {
+          "$ref": "#/definitions/atlasTileset",
+          "description": "The tileset changes the map tiles in the rendered images (GPS locations)."
+        },
         "title": {
           "description": "The title is the human readable name of the form. It must be set.",
           "type": "string"
@@ -1122,10 +1160,19 @@
         "smtpFrom": {
           "type": "string"
         },
+        "smtpFromName": {
+          "type": "string"
+        },
         "smtpHost": {
           "type": "string"
         },
         "smtpPassword": {
+          "type": "string"
+        },
+        "smtpReplyTo": {
+          "type": "string"
+        },
+        "smtpReplyToName": {
           "type": "string"
         },
         "smtpUser": {
@@ -1865,7 +1912,8 @@
         "RUNWAY_ASSESSMENT_FEATURE",
         "PIREP_FEATURE",
         "TASK_MANAGEMENT_FEATURE",
-        "ANALYTICS_FEATURE"
+        "ANALYTICS_FEATURE",
+        "SEND_NOTIFICATIONS_FEATURE"
       ],
       "title": "Optional features, i.e., licensed modules",
       "type": "string"
@@ -1881,6 +1929,9 @@
         "published": {
           "format": "date-time",
           "type": "string"
+        },
+        "publisher": {
+          "$ref": "#/definitions/atlasUserDetails"
         },
         "reportId": {
           "type": "string"
@@ -1954,6 +2005,10 @@
         },
         "archiveReadMetadata": {
           "description": "The archive_read_metadata permission grants listing and exporting\nhistorical reports including field metadata (who changed what when).",
+          "type": "boolean"
+        },
+        "assessmentViewer": {
+          "description": "The assessment_viewer permission grants read-only access to the live\nreport data.",
           "type": "boolean"
         },
         "customFormIds": {
@@ -2030,9 +2085,10 @@
         "PLAUSIBILITY_ANALYSIS_RUNWAY_TEMPERATURE",
         "PLAUSIBILITY_ANALYSIS_SERVING_TAXIWAYS",
         "PLAUSIBILITY_ANALYSIS_RUNWAY_CONDITIONS",
-        "PLAUSIBILITY_ANALYSIS_ZONE_RWYCC"
+        "PLAUSIBILITY_ANALYSIS_ZONE_RWYCC",
+        "PLAUSIBILITY_ANALYSIS_RUNWAY_IGNORED"
       ],
-      "title": "- PLAUSIBILITY_ANALYSIS_RUNWAY_TEMPERATURE: Temperature abnormalies\n - PLAUSIBILITY_ANALYSIS_SERVING_TAXIWAYS: No open serving taxiways for a specific runway\n - PLAUSIBILITY_ANALYSIS_RUNWAY_CONDITIONS: Conditions within the same runway are conflicting or unlikely\n - PLAUSIBILITY_ANALYSIS_ZONE_RWYCC: Unexpected difference in RWYCC within a runway",
+      "title": "- PLAUSIBILITY_ANALYSIS_RUNWAY_TEMPERATURE: Temperature abnormalies\n - PLAUSIBILITY_ANALYSIS_SERVING_TAXIWAYS: No open serving taxiways for a specific runway\n - PLAUSIBILITY_ANALYSIS_RUNWAY_CONDITIONS: Conditions within the same runway are conflicting or unlikely\n - PLAUSIBILITY_ANALYSIS_ZONE_RWYCC: Unexpected difference in RWYCC within a runway\n - PLAUSIBILITY_ANALYSIS_RUNWAY_IGNORED: All runways are ignored",
       "type": "string"
     },
     "atlasPlausibilityConditionWarning": {
@@ -2180,9 +2236,10 @@
         "PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MAX_THRESHOLD",
         "PLAUSIBILITY_WARNING_REASON_ALL_SERVING_TAXIWAYS_CLOSED",
         "PLAUSIBILITY_WARNING_REASON_RWYCC_SIGNIFICANT_DIFF",
-        "PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS"
+        "PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS",
+        "PLAUSIBILITY_WARNING_REASON_ALL_RUNWAYS_IGNORED"
       ],
-      "title": "- PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MEDIAN: Significant deviation from the median of all the runways\n - PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MAX_THRESHOLD: Maximum temperature exceeded\n - PLAUSIBILITY_WARNING_REASON_ALL_SERVING_TAXIWAYS_CLOSED: All serving taxiways are closed\n - PLAUSIBILITY_WARNING_REASON_RWYCC_SIGNIFICANT_DIFF: Significant RWYCC difference within a runway\n - PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS: Conflicting or unlikely conditions within a runway",
+      "title": "- PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MEDIAN: Significant deviation from the median of all the runways\n - PLAUSIBILITY_WARNING_REASON_TEMPERATURE_MAX_THRESHOLD: Maximum temperature exceeded\n - PLAUSIBILITY_WARNING_REASON_ALL_SERVING_TAXIWAYS_CLOSED: All serving taxiways are closed\n - PLAUSIBILITY_WARNING_REASON_RWYCC_SIGNIFICANT_DIFF: Significant RWYCC difference within a runway\n - PLAUSIBILITY_WARNING_REASON_CONFLICTING_CONDITIONS: Conflicting or unlikely conditions within a runway\n - PLAUSIBILITY_WARNING_REASON_ALL_RUNWAYS_IGNORED: All runways are being ignored",
       "type": "string"
     },
     "atlasPublishReportFormat": {
@@ -2541,6 +2598,9 @@
         "frozenSand": {
           "$ref": "#/definitions/atlasBoolValue"
         },
+        "ignored": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
         "landingDirection": {
           "$ref": "#/definitions/atlasSide"
         },
@@ -2867,6 +2927,9 @@
             "type": "object"
           },
           "type": "array"
+        },
+        "sensorAddress": {
+          "type": "string"
         }
       },
       "type": "object"
@@ -3065,6 +3128,12 @@
     },
     "atlasTaskPreferences": {
       "properties": {
+        "taskRecipients": {
+          "additionalProperties": {
+            "$ref": "#/definitions/atlasRecipientsConfig"
+          },
+          "type": "object"
+        },
         "taskTypes": {
           "items": {
             "$ref": "#/definitions/atlasTaskType",
@@ -3171,6 +3240,16 @@
       "title": "A temperature",
       "type": "object"
     },
+    "atlasTileset": {
+      "default": "TILESET_DEFAULT",
+      "enum": [
+        "TILESET_DEFAULT",
+        "TILESET_LIGHT",
+        "TILESET_DARK",
+        "TILESET_SATELLITE"
+      ],
+      "type": "string"
+    },
     "atlasTimeValue": {
       "properties": {
         "meta": {
@@ -3224,6 +3303,15 @@
     "atlasUpdateTaskNoteResponse": {
       "type": "object"
     },
+    "atlasUpdateTaskPhotoResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaskPositionResponse": {
+      "type": "object"
+    },
+    "atlasUpdateTaskRecipientPreferenceResponse": {
+      "type": "object"
+    },
     "atlasUpdateTaskStatusResponse": {
       "type": "object"
     },
@@ -3268,6 +3356,10 @@
         },
         "userId": {
           "type": "string"
+        },
+        "viaReadOnlyToken": {
+          "description": "Set if it's a read-only token user.",
+          "type": "boolean"
         }
       },
       "title": "User",
@@ -3302,10 +3394,16 @@
     },
     "atlasVersion": {
       "properties": {
+        "buildInfo": {
+          "title": "\"9000-761b6ff4\"",
+          "type": "string"
+        },
         "buildTime": {
+          "title": "\"2006-01-02T15:04:05Z\"",
           "type": "string"
         },
         "versionName": {
+          "title": "\"1.25.0\"",
           "type": "string"
         }
       },
@@ -3566,14 +3664,72 @@
     },
     "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPI Specifications\n\nAirside Sync provides an OpenAPI specification documenting the current API\nin a machine readable manner, v2 and v3. This specification can be used to\ngenerate API code for many languages. The latest version is always available\nat https://api.safe-sky.net/v1/openapi.json (OpenAPI v2) and\nhttps://api.safe-sky.net/v1/openapi-v3.json (OpenAPI v3), with this rendered\ndocumentation available at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
-    "version": "1.25"
+    "version": "1.28"
   },
   "paths": {
     "/map/tile/{name}": {
       "get": {
         "description": "The tile name is in OpenStreetMap format: x/y/zoom. The tile data is\nreturned in the HTTP body in png format.",
+        "operationId": "Tile_GetTile2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "pattern": ".+",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "default": "TILESET_DEFAULT",
+            "enum": [
+              "TILESET_DEFAULT",
+              "TILESET_LIGHT",
+              "TILESET_DARK",
+              "TILESET_SATELLITE"
+            ],
+            "in": "query",
+            "name": "tileSet",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiHttpBody"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get map tile",
+        "tags": [
+          "Tile"
+        ]
+      }
+    },
+    "/map/{tileSet}/{name}": {
+      "get": {
+        "description": "The tile name is in OpenStreetMap format: x/y/zoom. The tile data is\nreturned in the HTTP body in png format.",
         "operationId": "Tile_GetTile",
         "parameters": [
+          {
+            "enum": [
+              "TILESET_DEFAULT",
+              "TILESET_LIGHT",
+              "TILESET_DARK",
+              "TILESET_SATELLITE"
+            ],
+            "in": "path",
+            "name": "tileSet",
+            "required": true,
+            "type": "string"
+          },
           {
             "in": "path",
             "name": "name",
@@ -3921,6 +4077,9 @@
                   "$ref": "#/definitions/atlasBoolValue"
                 },
                 "frozenSand": {
+                  "$ref": "#/definitions/atlasBoolValue"
+                },
+                "ignored": {
                   "$ref": "#/definitions/atlasBoolValue"
                 },
                 "landingDirection": {
@@ -4417,7 +4576,57 @@
         ]
       }
     },
-    "/v1/aerodromes/{aerodromeId}/preferences/tasktypes/{typeId}": {
+    "/v1/aerodromes/{aerodromeId}/preferences/task/recipients/{id}": {
+      "post": {
+        "description": "Add or remove recipients for a specific task type",
+        "operationId": "Config_UpdateTaskRecipientPreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "recipients",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskRecipientPreferenceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update task recipients",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/preferences/task/types/{typeId}": {
       "post": {
         "description": "Create a new task type or updates an existing task type if an id is\nsupplied. Requires aerodrome admin permissions.",
         "operationId": "Config_UpdateTaskTypePreferences",
@@ -4989,6 +5198,100 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/photo/{photoId}": {
+      "post": {
+        "operationId": "Task_UpdateTaskPhoto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "photoId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "delete",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskPhotoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Add a photo to a task or remove one",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/position": {
+      "post": {
+        "operationId": "Task_UpdateTaskPosition",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "position",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasMapPoint"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateTaskPositionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update or add a position",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
     "/v1/aerodromes/{aerodromeId}/tasks/{taskId}/status": {
       "post": {
         "operationId": "Task_UpdateTaskStatus",
@@ -5061,6 +5364,13 @@
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
                 },
+                "apronOverrides": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Apron name override, overrides the apron names in the reports only",
+                  "type": "object"
+                },
                 "aprons": {
                   "items": {
                     "type": "string"
@@ -5219,6 +5529,21 @@
                 "snowtamEmailSubjectTemplate": {
                   "title": "SNOWTAM email subject template override (Go template format)",
                   "type": "string"
+                },
+                "taskEmailBodyTemplate": {
+                  "title": "Task email notification body template override (Go template format)",
+                  "type": "string"
+                },
+                "taskEmailSubjectTemplate": {
+                  "title": "Task email notification subject template override (Go template format)",
+                  "type": "string"
+                },
+                "taxiwayOverrides": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Taxiway name override, overrides the taxiway names in the reports only",
+                  "type": "object"
                 },
                 "taxiways": {
                   "items": {
@@ -5289,6 +5614,13 @@
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
                 },
+                "apronOverrides": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Apron name override, overrides the apron names in the reports only",
+                  "type": "object"
+                },
                 "aprons": {
                   "items": {
                     "type": "string"
@@ -5447,6 +5779,21 @@
                 "snowtamEmailSubjectTemplate": {
                   "title": "SNOWTAM email subject template override (Go template format)",
                   "type": "string"
+                },
+                "taskEmailBodyTemplate": {
+                  "title": "Task email notification body template override (Go template format)",
+                  "type": "string"
+                },
+                "taskEmailSubjectTemplate": {
+                  "title": "Task email notification subject template override (Go template format)",
+                  "type": "string"
+                },
+                "taxiwayOverrides": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Taxiway name override, overrides the taxiway names in the reports only",
+                  "type": "object"
                 },
                 "taxiways": {
                   "items": {
