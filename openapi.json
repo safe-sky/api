@@ -254,6 +254,10 @@
     },
     "atlasAerodromeConfig": {
       "properties": {
+        "aerodromeAixmIdentifier": {
+          "title": "AIXM identifier of the aerodrome in UUIDv4 format",
+          "type": "string"
+        },
         "aerodromeId": {
           "title": "Aerodrome identifier (ICAO)",
           "type": "string"
@@ -265,6 +269,13 @@
         "aftnSnowtam": {
           "$ref": "#/definitions/atlasAFTNConfig",
           "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+        },
+        "apronAixmIdentifiers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "AIXM Apron identifiers",
+          "type": "object"
         },
         "apronOverrides": {
           "additionalProperties": {
@@ -424,6 +435,10 @@
           "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
           "type": "array"
         },
+        "snowtamAixmIdentifier": {
+          "title": "SNOWTAM event identifier in UUIDv4 format",
+          "type": "string"
+        },
         "snowtamEmailBodyTemplate": {
           "title": "SNOWTAM email body template override (Go template format)",
           "type": "string"
@@ -439,6 +454,13 @@
         "taskEmailSubjectTemplate": {
           "title": "Task email notification subject template override (Go template format)",
           "type": "string"
+        },
+        "taxiwayAixmIdentifiers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "AIXM Taxiway identifiers",
+          "type": "object"
         },
         "taxiwayOverrides": {
           "additionalProperties": {
@@ -1550,6 +1572,12 @@
         "oidcClientId": {
           "type": "string"
         },
+        "oidcExtra": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
         "oidcIssuer": {
           "type": "string"
         },
@@ -1744,6 +1772,13 @@
           "$ref": "#/definitions/atlasMapGeometryKind"
         },
         "points": {
+          "items": {
+            "$ref": "#/definitions/atlasMapPoint",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "pointsSensorOverride": {
           "items": {
             "$ref": "#/definitions/atlasMapPoint",
             "type": "object"
@@ -2669,6 +2704,10 @@
           "$ref": "#/definitions/atlasCardinal",
           "title": "Side of the runway as Compass Cardinal value"
         },
+        "runwayAixmIdentifier": {
+          "title": "AIXM identifier",
+          "type": "string"
+        },
         "runwayId": {
           "title": "Runway identifier, with dash (e.g., \"01L-19R\")",
           "type": "string"
@@ -3178,6 +3217,9 @@
     },
     "atlasTaskType": {
       "properties": {
+        "description": {
+          "type": "string"
+        },
         "disabled": {
           "readOnly": true,
           "type": "boolean"
@@ -3664,7 +3706,7 @@
     },
     "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPI Specifications\n\nAirside Sync provides an OpenAPI specification documenting the current API\nin a machine readable manner, v2 and v3. This specification can be used to\ngenerate API code for many languages. The latest version is always available\nat https://api.safe-sky.net/v1/openapi.json (OpenAPI v2) and\nhttps://api.safe-sky.net/v1/openapi-v3.json (OpenAPI v3), with this rendered\ndocumentation available at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
-    "version": "1.28"
+    "version": "1.29"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -4651,6 +4693,12 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "typeDescription",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -4751,6 +4799,44 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/reports/by-id/{reportId}/aixm": {
+      "get": {
+        "description": "Get a specific published report for the given aerodrome based on the\nreport ID, in AIXM format. Only SNOWTAM reports are valid for AIXM.",
+        "operationId": "ReportsAIXM_GetReportAIXM",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "reportId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiHttpBody"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get report (SNOWTAM) in AIXM format",
+        "tags": [
+          "ReportsAIXM"
+        ]
+      }
+    },
     "/v1/aerodromes/{aerodromeId}/reports/latest-snowtam": {
       "get": {
         "description": "Get the latest published SNOWTAM for the given aerodrome.",
@@ -4780,6 +4866,38 @@
         "summary": "Get latest SNOWTAM",
         "tags": [
           "Reports"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/reports/latest-snowtam/aixm": {
+      "get": {
+        "description": "Get the latest published SNOWTAM for the given aerodrome in AIXM format.",
+        "operationId": "ReportsAIXM_GetLatestReportAIXM",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiHttpBody"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Get latest SNOWTAM in AIXM format",
+        "tags": [
+          "ReportsAIXM"
         ]
       }
     },
@@ -5356,6 +5474,10 @@
             "required": true,
             "schema": {
               "properties": {
+                "aerodromeAixmIdentifier": {
+                  "title": "AIXM identifier of the aerodrome in UUIDv4 format",
+                  "type": "string"
+                },
                 "aftnRcr": {
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
@@ -5363,6 +5485,13 @@
                 "aftnSnowtam": {
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+                },
+                "apronAixmIdentifiers": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "AIXM Apron identifiers",
+                  "type": "object"
                 },
                 "apronOverrides": {
                   "additionalProperties": {
@@ -5522,6 +5651,10 @@
                   "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
                   "type": "array"
                 },
+                "snowtamAixmIdentifier": {
+                  "title": "SNOWTAM event identifier in UUIDv4 format",
+                  "type": "string"
+                },
                 "snowtamEmailBodyTemplate": {
                   "title": "SNOWTAM email body template override (Go template format)",
                   "type": "string"
@@ -5537,6 +5670,13 @@
                 "taskEmailSubjectTemplate": {
                   "title": "Task email notification subject template override (Go template format)",
                   "type": "string"
+                },
+                "taxiwayAixmIdentifiers": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "AIXM Taxiway identifiers",
+                  "type": "object"
                 },
                 "taxiwayOverrides": {
                   "additionalProperties": {
@@ -5606,6 +5746,10 @@
             "required": true,
             "schema": {
               "properties": {
+                "aerodromeAixmIdentifier": {
+                  "title": "AIXM identifier of the aerodrome in UUIDv4 format",
+                  "type": "string"
+                },
                 "aftnRcr": {
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
@@ -5613,6 +5757,13 @@
                 "aftnSnowtam": {
                   "$ref": "#/definitions/atlasAFTNConfig",
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
+                },
+                "apronAixmIdentifiers": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "AIXM Apron identifiers",
+                  "type": "object"
                 },
                 "apronOverrides": {
                   "additionalProperties": {
@@ -5772,6 +5923,10 @@
                   "title": "Silent taxiways, i.e., those that can be reported but are not included in SNOWTAM",
                   "type": "array"
                 },
+                "snowtamAixmIdentifier": {
+                  "title": "SNOWTAM event identifier in UUIDv4 format",
+                  "type": "string"
+                },
                 "snowtamEmailBodyTemplate": {
                   "title": "SNOWTAM email body template override (Go template format)",
                   "type": "string"
@@ -5787,6 +5942,13 @@
                 "taskEmailSubjectTemplate": {
                   "title": "Task email notification subject template override (Go template format)",
                   "type": "string"
+                },
+                "taxiwayAixmIdentifiers": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "AIXM Taxiway identifiers",
+                  "type": "object"
                 },
                 "taxiwayOverrides": {
                   "additionalProperties": {
@@ -6439,6 +6601,9 @@
     },
     {
       "name": "Reports"
+    },
+    {
+      "name": "ReportsAIXM"
     },
     {
       "name": "Sensor"
