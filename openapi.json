@@ -25,6 +25,20 @@
       },
       "type": "object"
     },
+    "EmailConfigSMTPServer": {
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "ListSensorSessionsResponseSensorSessionListItem": {
       "properties": {
         "numMeasurements": {
@@ -160,6 +174,17 @@
         },
         "userId": {
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ReportsWatchLatestReportV2Body": {
+      "properties": {
+        "formats": {
+          "items": {
+            "$ref": "#/definitions/atlasPublishReportFormat"
+          },
+          "type": "array"
         }
       },
       "type": "object"
@@ -1196,6 +1221,13 @@
         },
         "smtpReplyToName": {
           "type": "string"
+        },
+        "smtpServers": {
+          "items": {
+            "$ref": "#/definitions/EmailConfigSMTPServer",
+            "type": "object"
+          },
+          "type": "array"
         },
         "smtpUser": {
           "type": "string"
@@ -3451,6 +3483,14 @@
       },
       "type": "object"
     },
+    "atlasWatchAerodromeReportResponse": {
+      "properties": {
+        "report": {
+          "$ref": "#/definitions/atlasAerodromeReport"
+        }
+      },
+      "type": "object"
+    },
     "atlasWeatherIntensity": {
       "default": "INTENSITY_UNKNOWN",
       "enum": [
@@ -4898,6 +4938,55 @@
         "summary": "Get latest SNOWTAM in AIXM format",
         "tags": [
           "ReportsAIXM"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/reports/watch": {
+      "post": {
+        "description": "Returns a stream of reports as they happen, beginning with the last\none to be published. Optionally filtered to specific report formats\nusing the formats parameter.",
+        "operationId": "Reports_WatchLatestReportV2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReportsWatchLatestReportV2Body"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                },
+                "result": {
+                  "$ref": "#/definitions/atlasWatchAerodromeReportResponse"
+                }
+              },
+              "title": "Stream result of atlasWatchAerodromeReportResponse",
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Watch for latest report",
+        "tags": [
+          "Reports"
         ]
       }
     },
