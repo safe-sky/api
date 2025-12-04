@@ -25,6 +25,68 @@
       },
       "type": "object"
     },
+    "DynamicFeatureFieldOnSelectedAction": {
+      "properties": {
+        "clearTeamAssignment": {
+          "description": "Server: Clear team assignment.",
+          "type": "boolean"
+        },
+        "setFieldToValue": {
+          "description": "Server: Set a field to a certain value.",
+          "items": {
+            "$ref": "#/definitions/atlasASLabel",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "userSetField": {
+          "description": "Client: The field-id of a field to be set by the user.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "DynamicFeatureSnowRemovalConfigFeatureSizeDuration": {
+      "properties": {
+        "durationMinutes": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "size": {
+          "$ref": "#/definitions/atlasDynamicFeatureSize"
+        }
+      },
+      "type": "object"
+    },
+    "DynamicsResetDynamicFeaturesBody": {
+      "properties": {
+        "dynamicFeatureConfigId": {
+          "type": "string"
+        },
+        "featureIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "DynamicsUpdateDynamicFeaturesBody": {
+      "properties": {
+        "dynamicFeatureConfigId": {
+          "type": "string"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeature",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "EmailConfigSMTPServer": {
       "properties": {
         "host": {
@@ -118,10 +180,16 @@
       "properties": {
         "cloudBaseFtAgl": {
           "format": "int32",
+          "title": "Cloud base height in feet above ground level",
           "type": "integer"
         },
         "cloudType": {
-          "$ref": "#/definitions/atlasSkyCover"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasSkyCover"
+            }
+          ],
+          "title": "Type of cloud coverage abbreviated"
         },
         "deprecatedSkyCover": {
           "title": "Deprecated: use cloud_type (1.18.0)",
@@ -246,6 +314,17 @@
       },
       "type": "object"
     },
+    "atlasASLabel": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasAddAerodromeUserRequest": {
       "properties": {
         "displayName": {
@@ -288,11 +367,19 @@
           "type": "string"
         },
         "aftnRcr": {
-          "$ref": "#/definitions/atlasAFTNConfig",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAFTNConfig"
+            }
+          ],
           "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
         },
         "aftnSnowtam": {
-          "$ref": "#/definitions/atlasAFTNConfig",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAFTNConfig"
+            }
+          ],
           "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
         },
         "apronAixmIdentifiers": {
@@ -343,7 +430,11 @@
           "type": "array"
         },
         "deployment": {
-          "$ref": "#/definitions/atlasAerodromeDeployment",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAerodromeDeployment"
+            }
+          ],
           "title": "The aerodrome deployment type (production, trial, etc.)"
         },
         "description": {
@@ -351,11 +442,27 @@
           "type": "string"
         },
         "distanceUnit": {
-          "$ref": "#/definitions/atlasDistanceUnit",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceUnit"
+            }
+          ],
           "title": "Unit for runway lengths, widths"
         },
+        "dynamicFeatures": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeatureConfig",
+            "type": "object"
+          },
+          "title": "Aircraft stand configuration",
+          "type": "array"
+        },
         "email": {
-          "$ref": "#/definitions/atlasEmailConfig",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasEmailConfig"
+            }
+          ],
           "title": "Configuration for outgoing email (requires system admin permissions)"
         },
         "emailImportAccount": {
@@ -379,7 +486,11 @@
           "type": "array"
         },
         "map": {
-          "$ref": "#/definitions/atlasAerodromeMap",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAerodromeMap"
+            }
+          ],
           "title": "Map of aerodrome elements"
         },
         "mapPointPrecision": {
@@ -392,11 +503,19 @@
           "type": "string"
         },
         "mobileSensorThresholds": {
-          "$ref": "#/definitions/atlasMobileSensorThresholds",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMobileSensorThresholds"
+            }
+          ],
           "title": "Overwrite sensor depth thresholds"
         },
         "navCanada": {
-          "$ref": "#/definitions/atlasNavCanadaConfig",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasNavCanadaConfig"
+            }
+          ],
           "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
         },
         "optionalFeatures": {
@@ -407,11 +526,19 @@
           "type": "array"
         },
         "plausibilityThresholds": {
-          "$ref": "#/definitions/atlasPlausibilityThresholds",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPlausibilityThresholds"
+            }
+          ],
           "title": "Plausibility Analysis Thresholds"
         },
         "preferences": {
-          "$ref": "#/definitions/atlasAerodromePreferences",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAerodromePreferences"
+            }
+          ],
           "title": "Aerodrome preferences, editable with aerodrome admin permissions"
         },
         "rcrEmailBodyTemplate": {
@@ -423,7 +550,11 @@
           "type": "string"
         },
         "regulatoryFramework": {
-          "$ref": "#/definitions/atlasRegulatoryFramework",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRegulatoryFramework"
+            }
+          ],
           "title": "The used framework (ICAO_GRF / CANADA_RSC)"
         },
         "runwaySenseId": {
@@ -577,6 +708,12 @@
           },
           "type": "object"
         },
+        "disableClosedAprons": {
+          "type": "boolean"
+        },
+        "disableClosedTaxiways": {
+          "type": "boolean"
+        },
         "disablePlausibilityAnalysis": {
           "type": "boolean"
         },
@@ -647,11 +784,19 @@
     "atlasAerodromeReport": {
       "properties": {
         "aerodrome": {
-          "$ref": "#/definitions/safeskyatlasAerodrome",
+          "allOf": [
+            {
+              "$ref": "#/definitions/safeskyatlasAerodrome"
+            }
+          ],
           "title": "Aerodrome assessment in structured form"
         },
         "customForm": {
-          "$ref": "#/definitions/atlasCustomForm",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasCustomForm"
+            }
+          ],
           "title": "Customised report data in structured form"
         },
         "formattedAtis": {
@@ -676,7 +821,11 @@
           "type": "string"
         },
         "meta": {
-          "$ref": "#/definitions/atlasAerodromeReportMeta",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAerodromeReportMeta"
+            }
+          ],
           "title": "Report metadata, including timestamps and sequence number"
         }
       },
@@ -688,23 +837,43 @@
           "type": "string"
         },
         "customFormId": {
+          "title": "Identifier for the custom form type, if the report is of a custom form (FOD, Wildlife, etc)",
           "type": "string"
         },
         "format": {
-          "$ref": "#/definitions/atlasPublishReportFormat"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPublishReportFormat"
+            }
+          ],
+          "title": "Report format type. SNOWTAM, ATIS, CUSTOM_FORM, etc"
+        },
+        "mapPoint": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMapPoint"
+            }
+          ],
+          "title": "the first/primary map point for this report, if there is one"
         },
         "published": {
           "format": "date-time",
           "type": "string"
         },
         "publisher": {
-          "$ref": "#/definitions/atlasUserDetails"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasUserDetails"
+            }
+          ],
+          "title": "Information about the report’s publisher"
         },
         "reportId": {
           "type": "string"
         },
         "sequence": {
           "format": "int32",
+          "title": "SNOWTAM sequence number within the calendar year",
           "type": "integer"
         },
         "status": {
@@ -712,10 +881,12 @@
             "$ref": "#/definitions/atlasDeliveryStatus",
             "type": "object"
           },
+          "title": "Delivery status of the report",
           "type": "array"
         },
         "year": {
           "format": "int32",
+          "title": "Report published year",
           "type": "integer"
         }
       },
@@ -778,14 +949,24 @@
           "type": "string"
         },
         "closed": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates if the apron is closed"
         },
         "silent": {
           "title": "A silent apron is not included in SNOWTAMs",
           "type": "boolean"
         },
         "slipperyOrPoor": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates if the apron is slippery or in poor condition"
         }
       },
       "title": "Apron assessments",
@@ -846,6 +1027,7 @@
         "BRAKING_ACTION_POOR",
         "BRAKING_ACTION_LESS_THAN_POOR"
       ],
+      "title": "Pilot-reported assessment of runway braking action, as used in PIREP reports",
       "type": "string"
     },
     "atlasCardinal": {
@@ -874,6 +1056,7 @@
         "CHANGE_REASON_OTHER",
         "CHANGE_REASON_FROZEN_SAND"
       ],
+      "title": "Reasons for manual RWYCC up/downgrade, as defined in ICAO Doc 9981",
       "type": "string"
     },
     "atlasChangeReasonsValue": {
@@ -907,6 +1090,7 @@
           "type": "string"
         }
       },
+      "title": "Imported runway report from external source, such as sensor data",
       "type": "object"
     },
     "atlasCreateAPIKeyRequest": {
@@ -961,6 +1145,10 @@
           },
           "type": "array"
         },
+        "iconData": {
+          "description": "The icon representation of this form. It should be configured as\n\"0x...\" where the value is the hex representation of the icon\nas defined in font_awesome_flutter.dart.\nAny style prefix (\"fa-solid\" or \"fa-light\") must be omitted.",
+          "type": "string"
+        },
         "languageCode": {
           "description": "Optional language code for rendering the form. Defaults to English.\nValid values are those understood by the internal/l10n package.",
           "type": "string"
@@ -970,7 +1158,11 @@
           "type": "boolean"
         },
         "tileset": {
-          "$ref": "#/definitions/atlasTileset",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasTileset"
+            }
+          ],
           "description": "The tileset changes the map tiles in the rendered images (GPS locations)."
         },
         "title": {
@@ -1008,11 +1200,19 @@
           "$ref": "#/definitions/atlasMapPointValue"
         },
         "moodSet": {
-          "$ref": "#/definitions/atlasCustomFormFieldMood",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasCustomFormFieldMood"
+            }
+          ],
           "title": "The mood to display when the field is set (checked, non-zero, non-empty)"
         },
         "moodUnset": {
-          "$ref": "#/definitions/atlasCustomFormFieldMood",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasCustomFormFieldMood"
+            }
+          ],
           "title": "The mood to display when the field is unset (unchecked, zero, empty)"
         },
         "oneOfValue": {
@@ -1026,7 +1226,11 @@
           "type": "boolean"
         },
         "requiredWhen": {
-          "$ref": "#/definitions/atlasCustomFormFieldCriteria",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasFieldCriteria"
+            }
+          ],
           "description": "Indicates whether this field is required based on specified criteria."
         },
         "stringValue": {
@@ -1036,36 +1240,12 @@
           "$ref": "#/definitions/atlasTimeValue"
         },
         "visibleWhen": {
-          "$ref": "#/definitions/atlasCustomFormFieldCriteria",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasFieldCriteria"
+            }
+          ],
           "description": "Indicates whether this field is visible based on specified criteria."
-        }
-      },
-      "type": "object"
-    },
-    "atlasCustomFormFieldCriteria": {
-      "description": "CustomFormFieldCriteria decides when a given field is shown.",
-      "properties": {
-        "equalsString": {
-          "description": "Only show this field if (the string representation of) the value of\nthe other field is equal to this string. The string representation is\nthe natural one for strings, integers and oneOf:s, \"true\" or \"false\"\nfor booleans, and not supported at all for times, photos, map points,\nand HTML labels.\n\nFor integers and booleans, setting this to \"0\" or \"false\" means the\nopposite of the is_set field.\n\nMultiple values are OR:ed together (f == \"a\" || f == \"b\").",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "isSet": {
-          "description": "Only show this field if the other field is set (in addition to being\nvisible).",
-          "type": "boolean"
-        },
-        "notEqualsString": {
-          "description": "Only show this field if the value of the other field is not equal to\nthis. See equals_string for more information on how to interpret the\nstring representation.\n\nMultiple values are AND:ed together (f != \"a\" \u0026\u0026 f != \"b\").",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "otherFieldId": {
-          "description": "Refer to another field in the same form. If no other criteria are\nspecified, this implicitly means \"when the other field is visible\".",
-          "type": "string"
         }
       },
       "type": "object"
@@ -1187,6 +1367,433 @@
       "title": "A distance",
       "type": "object"
     },
+    "atlasDynamicFeature": {
+      "description": "Dynamic Feature Assessment object.",
+      "properties": {
+        "fields": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeatureField",
+            "type": "object"
+          },
+          "title": "The fields which form this feature",
+          "type": "array"
+        },
+        "objectId": {
+          "title": "The object id (derived from DynamicFeatureConfig.objects)",
+          "type": "string"
+        },
+        "team": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasStringValue"
+            }
+          ],
+          "description": "The team assigned to this feature."
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureConfig": {
+      "properties": {
+        "dynamicFeatureConfigId": {
+          "description": "An aerodrome-unique id. This is aimed to keep the potential different\ndynamic feature implementations apart.",
+          "type": "string"
+        },
+        "groupsConfig": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureGroupsConfig"
+            }
+          ],
+          "description": "The possible groups an object can be part of."
+        },
+        "objects": {
+          "description": "The actual features.",
+          "items": {
+            "$ref": "#/definitions/atlasFeatureObject",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "scheme": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureScheme"
+            }
+          ],
+          "description": "Determines the scheme of the features, this determines what information\ncan be supplied."
+        },
+        "snowRemovalConfig": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureSnowRemovalConfig"
+            }
+          ],
+          "description": "Maps the size of a feature to a cleaning duration."
+        },
+        "teamsConfig": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureTeamConfig"
+            }
+          ],
+          "description": "If teams are relevant for this feature, supply the field_id."
+        },
+        "titlePrimary": {
+          "description": "The title is the human readable name of the feature, this is mandatory.",
+          "type": "string"
+        },
+        "titleTeams": {
+          "description": "Title for an optional teams view screen, mandatory if a teams\nconfiguration is present.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureField": {
+      "properties": {
+        "fieldId": {
+          "description": "The field_id is the unique identifier for the field. It must be unique\nwithin a feature.",
+          "type": "string"
+        },
+        "value": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldValue"
+            }
+          ],
+          "description": "The field_types oneof defines the type of the field, the default value\n(if any), and the value when actually filled out. One of the alternatives\nmust be set at all times in order for the field to have a defined type."
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureFieldCriteria": {
+      "description": "DynamicFeatureFieldCriteria decides whether the current field meets\nconfigured criteria.",
+      "properties": {
+        "equalsString": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureFieldMood": {
+      "default": "DFF_MOOD_NEUTRAL",
+      "enum": [
+        "DFF_MOOD_NEUTRAL",
+        "DFF_MOOD_DISABLED",
+        "DFF_MOOD_POSITIVE",
+        "DFF_MOOD_NEGATIVE",
+        "DFF_MOOD_WARNING_YELLOW",
+        "DFF_MOOD_WARNING_ORANGE",
+        "DFF_MOOD_PRIMARY"
+      ],
+      "type": "string"
+    },
+    "atlasDynamicFeatureFieldMoods": {
+      "properties": {
+        "fieldMood": {
+          "additionalProperties": {
+            "$ref": "#/definitions/atlasDynamicFeatureFieldMood"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureFieldOnSelected": {
+      "properties": {
+        "onClear": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/DynamicFeatureFieldOnSelectedAction"
+            }
+          ],
+          "description": "Action to perform when the field was cleared."
+        },
+        "onSet": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/DynamicFeatureFieldOnSelectedAction"
+            }
+          ],
+          "description": "Action to perform when the field was set."
+        },
+        "valueAction": {
+          "additionalProperties": {
+            "$ref": "#/definitions/DynamicFeatureFieldOnSelectedAction"
+          },
+          "description": "The value of a field, mapped to the action it leads to.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureFieldScheme": {
+      "properties": {
+        "confirmCriteria": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldCriteria"
+            }
+          ],
+          "description": "Show a confirmation dialog when the conditions are met."
+        },
+        "description": {
+          "description": "The description is an optional human readable description of the field.",
+          "type": "string"
+        },
+        "fieldId": {
+          "description": "The field_id is the unique identifier for the field. It must be unique\nwithin a feature.",
+          "type": "string"
+        },
+        "filterCriteria": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldCriteria"
+            }
+          ],
+          "description": "The entire feature will be filtered out when the criterea for this field\nwas met. E.g. when a stand is \"CLEARED\" in the teams-view. Does not\naffect the coordinator view."
+        },
+        "label": {
+          "description": "The label is the human readable name of the field. It must be set.",
+          "type": "string"
+        },
+        "mood": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldMoods"
+            }
+          ],
+          "description": "Indicates the mood for a field, depending on its string-represented\nvalue."
+        },
+        "onValueSelected": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldOnSelected"
+            }
+          ],
+          "description": "Mandatory (or automatic) action to perform when selecting a specfic\nvalue."
+        },
+        "privileged": {
+          "description": "Indicates whether it's a field only coordinators may alter directly.",
+          "type": "boolean"
+        },
+        "value": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldValue"
+            }
+          ],
+          "description": "The field_types oneof defines the type of the field, the default value\n(if any), and the value when actually filled out. One of the alternatives\nmust be set at all times in order for the field to have a defined type."
+        },
+        "visibleCriteria": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureOtherFieldCriteria"
+            }
+          ],
+          "description": "Indicates when the field should be visible."
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureFieldValue": {
+      "properties": {
+        "boolValue": {
+          "$ref": "#/definitions/atlasBoolValue"
+        },
+        "intValue": {
+          "$ref": "#/definitions/atlasIntValue"
+        },
+        "oneOfValue": {
+          "$ref": "#/definitions/atlasOneOfValue"
+        },
+        "stringValue": {
+          "$ref": "#/definitions/atlasStringValue"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureGroupsConfig": {
+      "properties": {
+        "fallbackId": {
+          "description": "Default group-id to fall back on.",
+          "type": "string"
+        },
+        "groups": {
+          "description": "Configured groups.",
+          "items": {
+            "$ref": "#/definitions/atlasASLabel",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "travelTime": {
+          "additionalProperties": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "description": "Indicates the travel time between groups of features. Where the keys\nindicate the amount of 'shifts', and the value is the amount of seconds\nit takes on average.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureOtherFieldCriteria": {
+      "description": "DynamicFeatureOtherFieldCriteria decides when a field is shown.",
+      "properties": {
+        "dependsOnTeamsField": {
+          "description": "Base this logic on the teams field.",
+          "type": "boolean"
+        },
+        "fieldCriteria": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasFieldCriteria"
+            }
+          ],
+          "description": "DynamicFeatureField dependency."
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureScheme": {
+      "properties": {
+        "fields": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeatureFieldScheme",
+            "type": "object"
+          },
+          "title": "The fields which form this feature",
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureSize": {
+      "default": "DF_SIZE_UNSPECIFIED",
+      "enum": [
+        "DF_SIZE_UNSPECIFIED",
+        "DF_SIZE_SMALL",
+        "DF_SIZE_MEDIUM",
+        "DF_SIZE_LARGE"
+      ],
+      "type": "string"
+    },
+    "atlasDynamicFeatureSnowRemovalConfig": {
+      "properties": {
+        "sizeDuration": {
+          "items": {
+            "$ref": "#/definitions/DynamicFeatureSnowRemovalConfigFeatureSizeDuration",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeatureTeamConfig": {
+      "properties": {
+        "automaticFocusedView": {
+          "description": "Automatically set the focused view.",
+          "type": "boolean"
+        },
+        "coordinatorTeams": {
+          "description": "Teams which are not to be selected by a team, these are used for special\npurposes like snow storage locations or pre-selections.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "coordinatorTeamsMinimalDetails": {
+          "description": "Minimize irrelevant details in the coordinator overview for configured\nteams. These teams have to be part of \"coordinator_teams\".",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "focusedViewFieldIds": {
+          "description": "The id of the field to used in the focused widget.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "onValueSelected": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureFieldOnSelected"
+            }
+          ],
+          "description": "Mandatory action to perform when selecting a specfic value."
+        },
+        "primarySortColumn": {
+          "description": "Initial column to sort the view on.",
+          "type": "string"
+        },
+        "teams": {
+          "items": {
+            "$ref": "#/definitions/atlasASLabel",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasDynamicFeaturesList": {
+      "properties": {
+        "dynamicFeatureConfigId": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeature",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "title": "Wrapper per dynamic feature",
+      "type": "object"
+    },
+    "atlasDynamicFeaturesLive": {
+      "properties": {
+        "features": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeaturesList",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "sequence": {
+          "format": "int64",
+          "readOnly": true,
+          "title": "Sequence number increments by one for each change",
+          "type": "string"
+        },
+        "updatedTimestamp": {
+          "format": "date-time",
+          "readOnly": true,
+          "title": "Timestamp of last update (read only)",
+          "type": "string"
+        }
+      },
+      "title": "Live state",
+      "type": "object"
+    },
+    "atlasDynamicFeaturesResponse": {
+      "properties": {
+        "dynamicFeatures": {
+          "$ref": "#/definitions/atlasDynamicFeaturesLive"
+        }
+      },
+      "type": "object"
+    },
     "atlasEmailConfig": {
       "properties": {
         "aadClientId": {
@@ -1235,6 +1842,31 @@
       },
       "type": "object"
     },
+    "atlasFeatureObject": {
+      "properties": {
+        "aixmUuid": {
+          "title": "The, optional, AIXM id of an object",
+          "type": "string"
+        },
+        "groupId": {
+          "description": "The group of an object, in case several objects should be grouped\ntogether in the client.",
+          "type": "string"
+        },
+        "id": {
+          "title": "The ID of an object",
+          "type": "string"
+        },
+        "size": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDynamicFeatureSize"
+            }
+          ],
+          "description": "The size of a feature determines the duration of a cleaning process."
+        }
+      },
+      "type": "object"
+    },
     "atlasFeatureType": {
       "default": "FEATURE_UNDEFINED",
       "enum": [
@@ -1245,6 +1877,33 @@
         "FEATURE_AD"
       ],
       "type": "string"
+    },
+    "atlasFieldCriteria": {
+      "properties": {
+        "equalsString": {
+          "description": "Only show this field if (the string representation of) the value of\nthe other field is equal to this string. The string representation is\nthe natural one for strings, integers and oneOf:s, \"true\" or \"false\"\nfor booleans, and not supported at all for times, photos, map points,\nand HTML labels.\n\nFor integers and booleans, setting this to \"0\" or \"false\" means the\nopposite of the is_set field.\n\nMultiple values are OR:ed together (f == \"a\" || f == \"b\").",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "isSet": {
+          "description": "Only show this field if the other field is set (in addition to being\nvisible).",
+          "type": "boolean"
+        },
+        "notEqualsString": {
+          "description": "Only show this field if the value of the other field is not equal to\nthis. See equals_string for more information on how to interpret the\nstring representation.\n\nMultiple values are AND:ed together (f != \"a\" \u0026\u0026 f != \"b\").",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "otherFieldId": {
+          "description": "Refer to another field in the same form. If no other criteria are\nspecified, this implicitly means \"when the other field is visible\".",
+          "type": "string"
+        }
+      },
+      "type": "object"
     },
     "atlasGPSPosition": {
       "properties": {
@@ -1592,8 +2251,19 @@
     },
     "atlasLoginConfiguration": {
       "properties": {
+        "contactRequestUrl": {
+          "type": "string"
+        },
         "kind": {
-          "$ref": "#/definitions/atlasLoginKind"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasLoginKind"
+            }
+          ],
+          "title": "Login method type"
+        },
+        "manageAccountUrl": {
+          "type": "string"
         },
         "oidcAllowedTfps": {
           "items": {
@@ -1655,25 +2325,31 @@
       "properties": {
         "altimInHg": {
           "format": "double",
+          "title": "Altimeter setting in inches of mercury",
           "type": "number"
         },
         "dewpointC": {
+          "description": "Indicates the temperature in Celsius at which dew forms.",
           "format": "double",
           "type": "number"
         },
         "elevationM": {
           "format": "double",
+          "title": "Elevation of the METAR measurement point in meters",
           "type": "number"
         },
         "flightCategory": {
+          "title": "Flight rules category",
           "type": "string"
         },
         "latitude": {
           "format": "double",
+          "title": "Latitude of the METAR measurement point",
           "type": "number"
         },
         "longitude": {
           "format": "double",
+          "title": "Longitude of the METAR measurement point",
           "type": "number"
         },
         "maxt24hrC": {
@@ -1685,6 +2361,7 @@
           "type": "number"
         },
         "metarType": {
+          "title": "Type of METAR-report (METAR, SPECI)",
           "type": "string"
         },
         "mint24hrC": {
@@ -1701,25 +2378,31 @@
         },
         "precip24hrIn": {
           "format": "double",
+          "title": "Precipitation in the last 24 hours in inches",
           "type": "number"
         },
         "precip3hrIn": {
           "format": "double",
+          "title": "Precipitation in the last 3 hours in inches",
           "type": "number"
         },
         "precip6hrIn": {
           "format": "double",
+          "title": "Precipitation in the last 6 hours in inches",
           "type": "number"
         },
         "precipIn": {
           "format": "double",
+          "title": "Precipitation in inches",
           "type": "number"
         },
         "rawText": {
+          "title": "Unparsed METAR as raw string",
           "type": "string"
         },
         "seaLevelPressureMb": {
           "format": "double",
+          "title": "Sea level pressure in millibars",
           "type": "number"
         },
         "skyCondition": {
@@ -1727,10 +2410,12 @@
             "$ref": "#/definitions/METARSkyCondition",
             "type": "object"
           },
+          "title": "Cloud conditions",
           "type": "array"
         },
         "snowIn": {
           "format": "double",
+          "title": "Snow accumulation in inches",
           "type": "number"
         },
         "stationId": {
@@ -1742,14 +2427,17 @@
         },
         "threeHrPressureTendencyMb": {
           "format": "double",
+          "title": "3-hour pressure tendency in millibars",
           "type": "number"
         },
         "vertVisFt": {
           "format": "int32",
+          "title": "Vertical visibility in feet",
           "type": "integer"
         },
         "visibilityStatuteMi": {
           "format": "double",
+          "title": "Visibility in statute miles",
           "type": "number"
         },
         "weatherCondition": {
@@ -1761,20 +2449,25 @@
         },
         "windDirDegrees": {
           "format": "int32",
+          "title": "Wind direction in degrees",
           "type": "integer"
         },
         "windDirVariable": {
+          "title": "True if wind direction fluctuates by 180° or more, with no prevailing direction",
           "type": "boolean"
         },
         "windGustKt": {
           "format": "int32",
+          "title": "Wind gust in knots",
           "type": "integer"
         },
         "windSpeedKt": {
           "format": "int32",
+          "title": "Wind speed in knots",
           "type": "integer"
         },
         "wxString": {
+          "title": "METAR weather code",
           "type": "string"
         }
       },
@@ -1988,26 +2681,46 @@
     "atlasPIREP": {
       "properties": {
         "brakingAction": {
-          "$ref": "#/definitions/atlasBrakingActionCondition"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBrakingActionCondition"
+            }
+          ],
+          "title": "Experienced braking action"
         },
         "flightNumber": {
+          "example": "AB1234",
+          "title": "Landing flight number",
           "type": "string"
         },
         "published": {
           "format": "date-time",
+          "readOnly": true,
+          "title": "Time the report was published into Airside Sync",
           "type": "string"
         },
         "publisher": {
-          "$ref": "#/definitions/atlasUserDetails"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasUserDetails"
+            }
+          ],
+          "readOnly": true,
+          "title": "Publishing Airside Sync user"
         },
         "reportId": {
+          "readOnly": true,
+          "title": "Report ID (automatically generated)",
           "type": "string"
         },
         "runwayId": {
+          "example": "01-19L",
+          "title": "Landing runway ID",
           "type": "string"
         },
         "time": {
           "format": "date-time",
+          "title": "Time the report was received",
           "type": "string"
         }
       },
@@ -2016,15 +2729,32 @@
     "atlasPIREPRunwaySummary": {
       "properties": {
         "latestReport": {
-          "$ref": "#/definitions/atlasPIREP"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPIREP"
+            }
+          ],
+          "title": "The latest filed PIREP"
         },
         "minReport": {
-          "$ref": "#/definitions/atlasPIREP"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPIREP"
+            }
+          ],
+          "title": "The worst PIREP in the time interval"
         },
         "pirepSigChange": {
-          "$ref": "#/definitions/atlasPIREPSignificantChange"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPIREPSignificantChange"
+            }
+          ],
+          "description": "Whether a significant change is present based on the latest received\nPIREPs, and if so which kind",
+          "title": "Significant change indicator"
         },
         "runwayId": {
+          "title": "Landing runway ID",
           "type": "string"
         }
       },
@@ -2037,6 +2767,7 @@
         "STATUS_LESS_THAN_POOR",
         "STATUS_TWO_POOR"
       ],
+      "title": "- STATUS_UNSPECIFIED: No significant change\n - STATUS_LESS_THAN_POOR: Significant change due to one PIREP stating LESS THAN POOR conditions\n - STATUS_TWO_POOR: Significant change due to two consecutive PIREPs stating POOR conditions",
       "type": "string"
     },
     "atlasPIREPSummary": {
@@ -2046,12 +2777,14 @@
             "$ref": "#/definitions/atlasPIREP",
             "type": "object"
           },
+          "title": "Raw list of recent PIREPs",
           "type": "array"
         },
         "runwaySummaries": {
           "additionalProperties": {
             "$ref": "#/definitions/atlasPIREPRunwaySummary"
           },
+          "title": "Map of runway ID to current PIREP summary state",
           "type": "object"
         }
       },
@@ -2090,7 +2823,11 @@
           "type": "boolean"
         },
         "regionId": {
-          "$ref": "#/definitions/atlasRegion",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRegion"
+            }
+          ],
           "description": "The region ID where the aerodrome is located.",
           "readOnly": true
         },
@@ -2100,6 +2837,14 @@
         },
         "revokeAccess": {
           "description": "The revoke_access bit makes the permission invalid and it will be\nremoved. Used in updates only.",
+          "type": "boolean"
+        },
+        "standAssessment": {
+          "description": "The stand_assessment permission grants changing the Aircraft Stand live\ndata.",
+          "type": "boolean"
+        },
+        "standCoordinator": {
+          "description": "The stand_coordinator permission grants the ability to assign Aircraft\nStands to groups. This permission results in a different view in the UI.",
           "type": "boolean"
         },
         "taskTypeIds": {
@@ -2132,7 +2877,11 @@
     "atlasPlausibilityAnalysis": {
       "properties": {
         "type": {
-          "$ref": "#/definitions/atlasPlausibilityAnalysisType",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPlausibilityAnalysisType"
+            }
+          ],
           "title": "Description of the analysis"
         },
         "warnings": {
@@ -2184,10 +2933,12 @@
         },
         "thresholdCover": {
           "format": "int32",
+          "title": "Coverage percentage difference threshold",
           "type": "integer"
         },
         "thresholdDepth": {
           "format": "int32",
+          "title": "Contamination depth difference threshold",
           "type": "integer"
         },
         "zoneFirst": {
@@ -2197,6 +2948,7 @@
           "$ref": "#/definitions/atlasZone"
         }
       },
+      "title": "Compares two runway zones for unlikely or conflicting conditions",
       "type": "object"
     },
     "atlasPlausibilityRWYCCWarning": {
@@ -2209,6 +2961,7 @@
         },
         "threshold": {
           "format": "int32",
+          "title": "RWYCC difference threshold",
           "type": "integer"
         },
         "zoneFirst": {
@@ -2218,12 +2971,14 @@
           "$ref": "#/definitions/atlasZone"
         }
       },
+      "title": "Compares two runway zones for unlikely RWYCC differences",
       "type": "object"
     },
     "atlasPlausibilityTempWarning": {
       "properties": {
         "median": {
           "format": "int32",
+          "title": "Median runway temperature",
           "type": "integer"
         },
         "runwayTemperature": {
@@ -2232,6 +2987,7 @@
         },
         "threshold": {
           "format": "int32",
+          "title": "Temperature difference threshold",
           "type": "integer"
         },
         "unit": {
@@ -2274,7 +3030,11 @@
           "$ref": "#/definitions/atlasPlausibilityConditionWarning"
         },
         "reason": {
-          "$ref": "#/definitions/atlasPlausibilityWarningReason",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasPlausibilityWarningReason"
+            }
+          ],
           "title": "Description of the warning"
         },
         "runwayId": {
@@ -2375,6 +3135,7 @@
           "type": "string"
         }
       },
+      "title": "Runway Condition Report (RCR) entry",
       "type": "object"
     },
     "atlasRWISData": {
@@ -2401,7 +3162,11 @@
           "$ref": "#/definitions/atlasRWISDataValue"
         },
         "presentWeather": {
-          "$ref": "#/definitions/atlasWeatherType",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasWeatherType"
+            }
+          ],
           "title": "WMO 4680 (SYNOP)"
         },
         "rainAccumulation": {
@@ -2423,7 +3188,11 @@
           "$ref": "#/definitions/atlasRWISDataValue"
         },
         "surfaceState": {
-          "$ref": "#/definitions/atlasRWISDataValue",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRWISDataValue"
+            }
+          ],
           "title": "EN 15518-3:2011"
         },
         "surfaceTemperature": {
@@ -2439,7 +3208,11 @@
           "type": "string"
         },
         "weatherStationLocation": {
-          "$ref": "#/definitions/atlasMapPoint",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMapPoint"
+            }
+          ],
           "title": "Weather Station location"
         },
         "windDirection": {
@@ -2463,7 +3236,11 @@
           "type": "string"
         },
         "sensorLocation": {
-          "$ref": "#/definitions/atlasMapPoint",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMapPoint"
+            }
+          ],
           "title": "Sensor location"
         },
         "unit": {
@@ -2538,6 +3315,7 @@
         "RWYCC_5",
         "RWYCC_6"
       ],
+      "title": "Runway Condition Code (RWYCC) as defined in ICAO Doc 9981",
       "type": "string"
     },
     "atlasRWYCCValue": {
@@ -2590,6 +3368,7 @@
         "CANADA_RSC",
         "ICAO_GRF_NOMULTIDEPTH"
       ],
+      "title": "Regulatory standard used for runway condition reporting",
       "type": "string"
     },
     "atlasRepeatedStringValue": {
@@ -2630,6 +3409,9 @@
     "atlasResetAerodromeRunwayResponse": {
       "type": "object"
     },
+    "atlasResetDynamicFeaturesResponse": {
+      "type": "object"
+    },
     "atlasRestoreReportResponse": {
       "type": "object"
     },
@@ -2642,64 +3424,151 @@
     "atlasRunway": {
       "properties": {
         "adjacentSnowbanks": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates adjacent snowbanks near the runway"
         },
         "chemicalTreatment": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates that chemical treatment has been applied to the runway"
         },
         "clearedLength": {
-          "$ref": "#/definitions/atlasDistanceValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceValue"
+            }
+          ],
+          "title": "Length of cleared runway surface"
         },
         "clearedWidth": {
-          "$ref": "#/definitions/atlasDistanceValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceValue"
+            }
+          ],
+          "title": "Width of cleared runway surface"
         },
         "closed": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates if the runway is closed"
         },
         "deicingChemical": {
-          "$ref": "#/definitions/atlasDeicingChemicalValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDeicingChemicalValue"
+            }
+          ],
+          "title": "Type and amount of de-icing chemical applied"
         },
         "driftingSnow": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates presence of drifting snow on the runway"
         },
         "frozenSand": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates presence of frozen sand on the runway"
         },
         "ignored": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates if the runway is ignored in report generation"
         },
         "landingDirection": {
-          "$ref": "#/definitions/atlasSide"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasSide"
+            }
+          ],
+          "title": "Airplane landing direction"
         },
         "looseSand": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates presence of loose sand on the runway"
         },
         "observationTime": {
-          "$ref": "#/definitions/atlasTimeValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasTimeValue"
+            }
+          ],
+          "title": "Time of the observation"
         },
         "remarks": {
-          "$ref": "#/definitions/atlasStringValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasStringValue"
+            }
+          ],
+          "title": "Remarks about the runway"
         },
         "runwayId": {
           "type": "string"
         },
-        "singleZone": {
-          "type": "boolean"
-        },
         "snowDrifts": {
-          "$ref": "#/definitions/atlasDistanceSideValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceSideValue"
+            }
+          ],
+          "title": "Snow drift data including distance and height on each side (Canada only)"
         },
         "snowbanks": {
-          "$ref": "#/definitions/atlasDistanceSideValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceSideValue"
+            }
+          ],
+          "title": "Snowbank data including distance and height on each side"
         },
         "stockPhrases": {
-          "$ref": "#/definitions/atlasRepeatedStringValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRepeatedStringValue"
+            }
+          ],
+          "title": "Runway remarks applied from stock phrases"
         },
         "temperature": {
-          "$ref": "#/definitions/atlasTemperatureValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasTemperatureValue"
+            }
+          ],
+          "title": "Air temperature"
         },
         "windrows": {
-          "$ref": "#/definitions/atlasDistanceSideValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceSideValue"
+            }
+          ],
+          "title": "Windrow data including distance and height on each side (Canada only)"
         },
         "zoneA": {
           "$ref": "#/definitions/atlasRunwayZone"
@@ -2717,7 +3586,11 @@
     "atlasRunwayConfig": {
       "properties": {
         "leftSide": {
-          "$ref": "#/definitions/atlasCardinal",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasCardinal"
+            }
+          ],
           "title": "Side of the runway as Compass Cardinal value"
         },
         "length": {
@@ -2733,7 +3606,11 @@
           "type": "array"
         },
         "rightSide": {
-          "$ref": "#/definitions/atlasCardinal",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasCardinal"
+            }
+          ],
           "title": "Side of the runway as Compass Cardinal value"
         },
         "runwayAixmIdentifier": {
@@ -2766,10 +3643,12 @@
           "$ref": "#/definitions/atlasRWYCC"
         }
       },
+      "title": "Runway sensor summary",
       "type": "object"
     },
     "atlasRunwaySurfaceDescription": {
       "default": "DRY",
+      "description": "Runway condition descriptions defined in ICAO Doc 9981.",
       "enum": [
         "DRY",
         "COMPACTED_SNOW",
@@ -2806,42 +3685,93 @@
     "atlasRunwayZone": {
       "properties": {
         "adjustedRwycc": {
-          "$ref": "#/definitions/atlasRWYCCValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRWYCCValue"
+            }
+          ],
+          "title": "Manually adjusted Runway Condition Code (RWYCC)"
         },
         "calculatedRwycc": {
-          "$ref": "#/definitions/atlasRWYCC"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRWYCC"
+            }
+          ],
+          "title": "Automatically calculated RWYCC value indicating runway breaking condition"
         },
         "contaminationCoverPct": {
-          "$ref": "#/definitions/atlasIntValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasIntValue"
+            }
+          ],
+          "title": "Runway contamination percentage (rounded category: 0, 25, 50, 75, or 100) per ICAO Doc 9981"
         },
         "contaminationDepthMm": {
-          "$ref": "#/definitions/atlasIntValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasIntValue"
+            }
+          ],
+          "title": "Depth of the contamination in millimeters"
         },
         "frictionMu": {
-          "$ref": "#/definitions/atlasIntValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasIntValue"
+            }
+          ],
+          "title": "Coefficient of friction as μ * 100"
         },
         "runwaySense": {
-          "$ref": "#/definitions/atlasRunwaySenseSummary",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRunwaySenseSummary"
+            }
+          ],
           "readOnly": true,
           "title": "Summary of current RunwaySense data (read only)"
         },
         "rwyccAdjustReasons": {
-          "$ref": "#/definitions/atlasChangeReasonsValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasChangeReasonsValue"
+            }
+          ],
+          "title": "Reason(s) for manual RWYCC adjustment"
         },
         "secondContaminationCoverPct": {
-          "$ref": "#/definitions/atlasIntValue",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasIntValue"
+            }
+          ],
           "title": "Canada-RSC only"
         },
         "secondContaminationDepthMm": {
-          "$ref": "#/definitions/atlasIntValue",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasIntValue"
+            }
+          ],
           "title": "Canada-RSC only"
         },
         "secondSurfaceDescription": {
-          "$ref": "#/definitions/atlasRunwaySurfaceDescriptionValue",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRunwaySurfaceDescriptionValue"
+            }
+          ],
           "title": "Canada-RSC only"
         },
         "surfaceDescription": {
-          "$ref": "#/definitions/atlasRunwaySurfaceDescriptionValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRunwaySurfaceDescriptionValue"
+            }
+          ],
+          "title": "Primary surface description for the zone (DRY, WET, ICE, etc)"
         }
       },
       "title": "Runway zone assessments",
@@ -2929,7 +3859,11 @@
           "type": "array"
         },
         "interpolatedPosition": {
-          "$ref": "#/definitions/atlasMapPoint",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMapPoint"
+            }
+          ],
           "title": "Added server side"
         },
         "resolvedLocation": {
@@ -2946,7 +3880,11 @@
           "type": "number"
         },
         "surface": {
-          "$ref": "#/definitions/atlasRunwaySurfaceDescription",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRunwaySurfaceDescription"
+            }
+          ],
           "description": "interpreted from raw sensor data",
           "title": "Client interpretation of sensor data"
         },
@@ -3035,10 +3973,12 @@
         "L",
         "R"
       ],
+      "title": "- LR: Both sides\n - L: Left\n - R: Right",
       "type": "string"
     },
     "atlasSignificantChangeStatus": {
       "default": "SIGNIFICANT_CHANGE_STATUS_UNSPECIFIED",
+      "description": "Indicating if a significant change has occurred in the aerodrome report, such as SNOWTAM validity or expiration.",
       "enum": [
         "SIGNIFICANT_CHANGE_STATUS_UNSPECIFIED",
         "SIGNIFICANT_CHANGE_STATUS_OK",
@@ -3144,7 +4084,11 @@
           "type": "array"
         },
         "position": {
-          "$ref": "#/definitions/atlasMapPoint",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMapPoint"
+            }
+          ],
           "title": "GPS location"
         },
         "sequence": {
@@ -3270,17 +4214,32 @@
     "atlasTaxiway": {
       "properties": {
         "closed": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates if the taxiway is closed"
         },
         "silent": {
           "title": "A silent taxiways is not included in SNOWTAMs",
           "type": "boolean"
         },
         "slipperyOrPoor": {
-          "$ref": "#/definitions/atlasBoolValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasBoolValue"
+            }
+          ],
+          "title": "Indicates if the taxiway is slippery or in poor condition"
         },
         "snowbanks": {
-          "$ref": "#/definitions/atlasDistanceSideValue"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasDistanceSideValue"
+            }
+          ],
+          "title": "Snowbank data including distance and height on each side"
         },
         "taxiwayId": {
           "type": "string"
@@ -3315,9 +4274,9 @@
       "type": "object"
     },
     "atlasTileset": {
-      "default": "TILESET_DEFAULT",
+      "default": "TILESET_UNSPECIFIED",
       "enum": [
-        "TILESET_DEFAULT",
+        "TILESET_UNSPECIFIED",
         "TILESET_LIGHT",
         "TILESET_DARK",
         "TILESET_SATELLITE"
@@ -3360,6 +4319,9 @@
       "type": "object"
     },
     "atlasUpdateApronsResponse": {
+      "type": "object"
+    },
+    "atlasUpdateDynamicFeaturesResponse": {
       "type": "object"
     },
     "atlasUpdateRemarksResponse": {
@@ -3572,6 +4534,7 @@
         "ZONE_B",
         "ZONE_C"
       ],
+      "title": "A runway is divided into three zones; A, B, and C",
       "type": "string"
     },
     "protobufAny": {
@@ -3609,6 +4572,14 @@
         "aerodromeId": {
           "type": "string"
         },
+        "aircraftStands": {
+          "items": {
+            "$ref": "#/definitions/atlasDynamicFeature",
+            "type": "object"
+          },
+          "title": "Deprecated: see Dynamics service (1.31.1)",
+          "type": "array"
+        },
         "aprons": {
           "items": {
             "$ref": "#/definitions/atlasApron",
@@ -3627,7 +4598,11 @@
           "type": "string"
         },
         "metar": {
-          "$ref": "#/definitions/atlasMETAR",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasMETAR"
+            }
+          ],
           "readOnly": true,
           "title": "Last METAR (read only)"
         },
@@ -3664,7 +4639,11 @@
           "type": "array"
         },
         "remarks": {
-          "$ref": "#/definitions/atlasStringValue",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasStringValue"
+            }
+          ],
           "title": "Free form remarks"
         },
         "runwaySenseTimestamp": {
@@ -3696,12 +4675,20 @@
           "type": "string"
         },
         "significantChangeStatus": {
-          "$ref": "#/definitions/atlasSignificantChangeStatus",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasSignificantChangeStatus"
+            }
+          ],
           "readOnly": true,
           "title": "Deprecated: see AerodromeResponse (1.18.3)"
         },
         "stockPhrases": {
-          "$ref": "#/definitions/atlasRepeatedStringValue",
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasRepeatedStringValue"
+            }
+          ],
           "title": "Remarks, of the ones available as stock phrases"
         },
         "taxiways": {
@@ -3746,7 +4733,7 @@
     },
     "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPI Specifications\n\nAirside Sync provides an OpenAPI specification documenting the current API\nin a machine readable manner, v2 and v3. This specification can be used to\ngenerate API code for many languages. The latest version is always available\nat https://api.safe-sky.net/v1/openapi.json (OpenAPI v2) and\nhttps://api.safe-sky.net/v1/openapi-v3.json (OpenAPI v3), with this rendered\ndocumentation available at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
-    "version": "1.29"
+    "version": "1.32"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -3762,9 +4749,9 @@
             "type": "string"
           },
           {
-            "default": "TILESET_DEFAULT",
+            "default": "TILESET_UNSPECIFIED",
             "enum": [
-              "TILESET_DEFAULT",
+              "TILESET_UNSPECIFIED",
               "TILESET_LIGHT",
               "TILESET_DARK",
               "TILESET_SATELLITE"
@@ -3802,7 +4789,7 @@
         "parameters": [
           {
             "enum": [
-              "TILESET_DEFAULT",
+              "TILESET_UNSPECIFIED",
               "TILESET_LIGHT",
               "TILESET_DARK",
               "TILESET_SATELLITE"
@@ -4138,61 +5125,148 @@
             "schema": {
               "properties": {
                 "adjacentSnowbanks": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates adjacent snowbanks near the runway"
                 },
                 "chemicalTreatment": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates that chemical treatment has been applied to the runway"
                 },
                 "clearedLength": {
-                  "$ref": "#/definitions/atlasDistanceValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceValue"
+                    }
+                  ],
+                  "title": "Length of cleared runway surface"
                 },
                 "clearedWidth": {
-                  "$ref": "#/definitions/atlasDistanceValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceValue"
+                    }
+                  ],
+                  "title": "Width of cleared runway surface"
                 },
                 "closed": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates if the runway is closed"
                 },
                 "deicingChemical": {
-                  "$ref": "#/definitions/atlasDeicingChemicalValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDeicingChemicalValue"
+                    }
+                  ],
+                  "title": "Type and amount of de-icing chemical applied"
                 },
                 "driftingSnow": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates presence of drifting snow on the runway"
                 },
                 "frozenSand": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates presence of frozen sand on the runway"
                 },
                 "ignored": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates if the runway is ignored in report generation"
                 },
                 "landingDirection": {
-                  "$ref": "#/definitions/atlasSide"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasSide"
+                    }
+                  ],
+                  "title": "Airplane landing direction"
                 },
                 "looseSand": {
-                  "$ref": "#/definitions/atlasBoolValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasBoolValue"
+                    }
+                  ],
+                  "title": "Indicates presence of loose sand on the runway"
                 },
                 "observationTime": {
-                  "$ref": "#/definitions/atlasTimeValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasTimeValue"
+                    }
+                  ],
+                  "title": "Time of the observation"
                 },
                 "remarks": {
-                  "$ref": "#/definitions/atlasStringValue"
-                },
-                "singleZone": {
-                  "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasStringValue"
+                    }
+                  ],
+                  "title": "Remarks about the runway"
                 },
                 "snowDrifts": {
-                  "$ref": "#/definitions/atlasDistanceSideValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceSideValue"
+                    }
+                  ],
+                  "title": "Snow drift data including distance and height on each side (Canada only)"
                 },
                 "snowbanks": {
-                  "$ref": "#/definitions/atlasDistanceSideValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceSideValue"
+                    }
+                  ],
+                  "title": "Snowbank data including distance and height on each side"
                 },
                 "stockPhrases": {
-                  "$ref": "#/definitions/atlasRepeatedStringValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasRepeatedStringValue"
+                    }
+                  ],
+                  "title": "Runway remarks applied from stock phrases"
                 },
                 "temperature": {
-                  "$ref": "#/definitions/atlasTemperatureValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasTemperatureValue"
+                    }
+                  ],
+                  "title": "Air temperature"
                 },
                 "windrows": {
-                  "$ref": "#/definitions/atlasDistanceSideValue"
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceSideValue"
+                    }
+                  ],
+                  "title": "Windrow data including distance and height on each side (Canada only)"
                 },
                 "zoneA": {
                   "$ref": "#/definitions/atlasRunwayZone"
@@ -4379,6 +5453,125 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/dynamic_features": {
+      "post": {
+        "operationId": "Dynamics_UpdateDynamicFeatures",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DynamicsUpdateDynamicFeaturesBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUpdateDynamicFeaturesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Update dynamic features",
+        "tags": [
+          "Dynamics"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/dynamic_features/reset": {
+      "post": {
+        "operationId": "Dynamics_ResetDynamicFeatures",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DynamicsResetDynamicFeaturesBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasResetDynamicFeaturesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Reset dynamic features",
+        "tags": [
+          "Dynamics"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/dynamic_features/stream": {
+      "get": {
+        "description": "This returns a stream of JSON objects, in real time as assessments change.",
+        "operationId": "Dynamics_WatchDynamicFeatures",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                },
+                "result": {
+                  "$ref": "#/definitions/atlasDynamicFeaturesResponse"
+                }
+              },
+              "title": "Stream result of atlasDynamicFeaturesResponse",
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Watch dynamic features assessments stream",
+        "tags": [
+          "Dynamics"
+        ]
+      }
+    },
     "/v1/aerodromes/{aerodromeId}/imports/runways/{runwayId}": {
       "get": {
         "operationId": "Live_ListConditionImports",
@@ -4542,7 +5735,7 @@
     },
     "/v1/aerodromes/{aerodromeId}/pireps/days/{sinceDays}": {
       "get": {
-        "description": "List the pilot reports for a given aerodrome for a given amount of days.",
+        "description": "List the pilot reports for a given aerodrome for a given number of\ndays into the past.",
         "operationId": "Pireps_ListPIREPs",
         "parameters": [
           {
@@ -5568,11 +6761,19 @@
                   "type": "string"
                 },
                 "aftnRcr": {
-                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAFTNConfig"
+                    }
+                  ],
                   "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
                 },
                 "aftnSnowtam": {
-                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAFTNConfig"
+                    }
+                  ],
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
                 },
                 "apronAixmIdentifiers": {
@@ -5623,7 +6824,11 @@
                   "type": "array"
                 },
                 "deployment": {
-                  "$ref": "#/definitions/atlasAerodromeDeployment",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAerodromeDeployment"
+                    }
+                  ],
                   "title": "The aerodrome deployment type (production, trial, etc.)"
                 },
                 "description": {
@@ -5631,11 +6836,27 @@
                   "type": "string"
                 },
                 "distanceUnit": {
-                  "$ref": "#/definitions/atlasDistanceUnit",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceUnit"
+                    }
+                  ],
                   "title": "Unit for runway lengths, widths"
                 },
+                "dynamicFeatures": {
+                  "items": {
+                    "$ref": "#/definitions/atlasDynamicFeatureConfig",
+                    "type": "object"
+                  },
+                  "title": "Aircraft stand configuration",
+                  "type": "array"
+                },
                 "email": {
-                  "$ref": "#/definitions/atlasEmailConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasEmailConfig"
+                    }
+                  ],
                   "title": "Configuration for outgoing email (requires system admin permissions)"
                 },
                 "emailImportAccount": {
@@ -5659,7 +6880,11 @@
                   "type": "array"
                 },
                 "map": {
-                  "$ref": "#/definitions/atlasAerodromeMap",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAerodromeMap"
+                    }
+                  ],
                   "title": "Map of aerodrome elements"
                 },
                 "mapPointPrecision": {
@@ -5672,11 +6897,19 @@
                   "type": "string"
                 },
                 "mobileSensorThresholds": {
-                  "$ref": "#/definitions/atlasMobileSensorThresholds",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasMobileSensorThresholds"
+                    }
+                  ],
                   "title": "Overwrite sensor depth thresholds"
                 },
                 "navCanada": {
-                  "$ref": "#/definitions/atlasNavCanadaConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasNavCanadaConfig"
+                    }
+                  ],
                   "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
                 },
                 "optionalFeatures": {
@@ -5687,11 +6920,19 @@
                   "type": "array"
                 },
                 "plausibilityThresholds": {
-                  "$ref": "#/definitions/atlasPlausibilityThresholds",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasPlausibilityThresholds"
+                    }
+                  ],
                   "title": "Plausibility Analysis Thresholds"
                 },
                 "preferences": {
-                  "$ref": "#/definitions/atlasAerodromePreferences",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAerodromePreferences"
+                    }
+                  ],
                   "title": "Aerodrome preferences, editable with aerodrome admin permissions"
                 },
                 "rcrEmailBodyTemplate": {
@@ -5703,7 +6944,11 @@
                   "type": "string"
                 },
                 "regulatoryFramework": {
-                  "$ref": "#/definitions/atlasRegulatoryFramework",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasRegulatoryFramework"
+                    }
+                  ],
                   "title": "The used framework (ICAO_GRF / CANADA_RSC)"
                 },
                 "runwaySenseId": {
@@ -5840,11 +7085,19 @@
                   "type": "string"
                 },
                 "aftnRcr": {
-                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAFTNConfig"
+                    }
+                  ],
                   "title": "AFTN configuration, for sending RCR via AFTN-over-TCP gateway"
                 },
                 "aftnSnowtam": {
-                  "$ref": "#/definitions/atlasAFTNConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAFTNConfig"
+                    }
+                  ],
                   "title": "AFTN configuration, for sending SNOWTAM via AFTN-over-TCP gateway"
                 },
                 "apronAixmIdentifiers": {
@@ -5895,7 +7148,11 @@
                   "type": "array"
                 },
                 "deployment": {
-                  "$ref": "#/definitions/atlasAerodromeDeployment",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAerodromeDeployment"
+                    }
+                  ],
                   "title": "The aerodrome deployment type (production, trial, etc.)"
                 },
                 "description": {
@@ -5903,11 +7160,27 @@
                   "type": "string"
                 },
                 "distanceUnit": {
-                  "$ref": "#/definitions/atlasDistanceUnit",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasDistanceUnit"
+                    }
+                  ],
                   "title": "Unit for runway lengths, widths"
                 },
+                "dynamicFeatures": {
+                  "items": {
+                    "$ref": "#/definitions/atlasDynamicFeatureConfig",
+                    "type": "object"
+                  },
+                  "title": "Aircraft stand configuration",
+                  "type": "array"
+                },
                 "email": {
-                  "$ref": "#/definitions/atlasEmailConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasEmailConfig"
+                    }
+                  ],
                   "title": "Configuration for outgoing email (requires system admin permissions)"
                 },
                 "emailImportAccount": {
@@ -5931,7 +7204,11 @@
                   "type": "array"
                 },
                 "map": {
-                  "$ref": "#/definitions/atlasAerodromeMap",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAerodromeMap"
+                    }
+                  ],
                   "title": "Map of aerodrome elements"
                 },
                 "mapPointPrecision": {
@@ -5944,11 +7221,19 @@
                   "type": "string"
                 },
                 "mobileSensorThresholds": {
-                  "$ref": "#/definitions/atlasMobileSensorThresholds",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasMobileSensorThresholds"
+                    }
+                  ],
                   "title": "Overwrite sensor depth thresholds"
                 },
                 "navCanada": {
-                  "$ref": "#/definitions/atlasNavCanadaConfig",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasNavCanadaConfig"
+                    }
+                  ],
                   "title": "NavCanada configuration, for sending SNOWTAM via NavCanada API"
                 },
                 "optionalFeatures": {
@@ -5959,11 +7244,19 @@
                   "type": "array"
                 },
                 "plausibilityThresholds": {
-                  "$ref": "#/definitions/atlasPlausibilityThresholds",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasPlausibilityThresholds"
+                    }
+                  ],
                   "title": "Plausibility Analysis Thresholds"
                 },
                 "preferences": {
-                  "$ref": "#/definitions/atlasAerodromePreferences",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasAerodromePreferences"
+                    }
+                  ],
                   "title": "Aerodrome preferences, editable with aerodrome admin permissions"
                 },
                 "rcrEmailBodyTemplate": {
@@ -5975,7 +7268,11 @@
                   "type": "string"
                 },
                 "regulatoryFramework": {
-                  "$ref": "#/definitions/atlasRegulatoryFramework",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/atlasRegulatoryFramework"
+                    }
+                  ],
                   "title": "The used framework (ICAO_GRF / CANADA_RSC)"
                 },
                 "runwaySenseId": {
@@ -6665,7 +7962,7 @@
   "swagger": "2.0",
   "tags": [
     {
-      "description": "All API methods require authentication, unless otherwise noted. Each request\nmust carry an `Authorization` header with the `Bearer` scheme and a valid\nAPI key. An API key can be created in the Airside Sync GUI, using the\n\"Manage API keys\" button at the bottom of the \"About\" screen. API keys are\ntied to the user who created them and will inherit their access permissions.\nAPI keys can be set to expire or have an unlimited lifetime.\n\n### Demo Key\n\nThere is a read only API key `azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4` that\ncan be used for demonstration and experimentation on the fictional aerodrome\n`DEMO`. For example, to verify authentication from the command line:\n\n    % curl -H 'Authorization: Bearer azt_VRrVFEWcqNes5oGuYA5YDfqpy6ytXNg4' \\\n        https://api.safe-sky.net/v1/auth/user?pretty\n    {\n        \"username\": \"dc78f878-2d7c-40b9-a416-52a7ceea1fff\",\n        \"email\": \"demo@safe-sky.net\",\n        \"displayName\": \"Airside Sync Demo User\",\n        ...\n\n",
+      "description": "All API methods require authentication, unless otherwise noted. Each request\nmust carry an `Authorization` header with the `Bearer` scheme and a valid\nAPI key. An API key can be created in the Airside Sync GUI, using the\n\"Manage API keys\" button at the bottom of the \"About\" screen. API keys are\ntied to the user who created them and will inherit their access permissions.\nAPI keys can be set to expire or have an unlimited lifetime.\n\n### Demo Key\n\nThere is a read only API key `pst_bs6xevRYWdtan2KzhKpAPupiY2KLnAD7` that\ncan be used for demonstration and experimentation on the fictional aerodrome\n`DEMO`. For example, to verify authentication from the command line:\n\n    % curl -H 'Authorization: Bearer pst_bs6xevRYWdtan2KzhKpAPupiY2KLnAD7' \\\n        https://api.safe-sky.net/v1/auth/user?pretty\n    {\n        \"username\": \"dc78f878-2d7c-40b9-a416-52a7ceea1fff\",\n        \"email\": \"demo@safe-sky.net\",\n        \"displayName\": \"Airside Sync Demo User\",\n        ...\n\n",
       "name": "Auth"
     },
     {
@@ -6673,6 +7970,9 @@
     },
     {
       "name": "Config"
+    },
+    {
+      "name": "Dynamics"
     },
     {
       "name": "Health"
