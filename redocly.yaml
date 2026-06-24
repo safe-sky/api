@@ -1,0 +1,4 @@
+openapi:
+  expandResponses: "200"
+  jsonSamplesExpandLevel: 2
+  schemasExpansionLevel: 1

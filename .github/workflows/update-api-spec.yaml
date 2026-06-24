@@ -21,11 +21,11 @@ jobs:
           git config --global user.name 'Safe Sky Release Automation'
           git config --global user.email 'release@safe-sky.net'
 
-          curl -LO https://api.safe-sky.net/v1/openapi.json
+          curl -LO https://api.safe-sky.net/v1/openapi-v3.json
 
           npm i -g @redocly/cli@latest
-          redocly build-docs openapi.json -o docs/index.html
+          redocly build-docs openapi-v3.json -o docs/index.html
 
-          git add openapi.json docs/index.html
+          git add openapi-v3.json docs/index.html
           git commit -am 'Import updated API specs' || exit 0
           git push
