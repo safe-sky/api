@@ -101,6 +101,38 @@
       },
       "type": "object"
     },
+    "FlightSrcDst": {
+      "properties": {
+        "actual": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "airport": {
+          "type": "string"
+        },
+        "estimated": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "gate": {
+          "type": "string"
+        },
+        "iata": {
+          "type": "string"
+        },
+        "icao": {
+          "type": "string"
+        },
+        "scheduled": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "terminal": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "ListSensorSessionsResponseSensorSessionListItem": {
       "properties": {
         "numMeasurements": {
@@ -215,6 +247,25 @@
       },
       "type": "object"
     },
+    "NotificationsStoreTokenBody": {
+      "properties": {
+        "deviceId": {
+          "type": "string"
+        },
+        "registrationToken": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "NotificationsUnlinkUserBody": {
+      "properties": {
+        "deviceId": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "OnlineUsersOnlineUser": {
       "properties": {
         "aerodromeId": {
@@ -242,6 +293,23 @@
         },
         "userId": {
           "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ReportsPublishReportBody": {
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/atlasPublishReportFormat"
+        },
+        "methods": {
+          "items": {
+            "$ref": "#/definitions/atlasPublishReportMethod"
+          },
+          "type": "array"
+        },
+        "updateTime": {
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -352,6 +420,66 @@
         },
         "user": {
           "$ref": "#/definitions/atlasUser"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAdminCreateAerodromeConfigResponse": {
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/atlasAerodromeConfig"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAdminListAerodromesResponse": {
+      "properties": {
+        "aerodromes": {
+          "items": {
+            "$ref": "#/definitions/atlasAdminListAerodromesResponseAerodrome",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAdminListAerodromesResponseAerodrome": {
+      "properties": {
+        "aerodromeId": {
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "deployment": {
+          "$ref": "#/definitions/atlasAerodromeDeployment"
+        },
+        "description": {
+          "type": "string"
+        },
+        "expires": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "iata": {
+          "type": "string"
+        },
+        "metarId": {
+          "type": "string"
+        },
+        "updated": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAdminUpdateAerodromeConfigResponse": {
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/atlasAerodromeConfig"
         }
       },
       "type": "object"
@@ -475,6 +603,7 @@
           "type": "string"
         },
         "iata": {
+          "readOnly": true,
           "title": "Airport code (IATA), for information purposes only",
           "type": "string"
         },
@@ -684,6 +813,12 @@
     },
     "atlasAerodromePreferences": {
       "properties": {
+        "allowedChangeReasons": {
+          "items": {
+            "$ref": "#/definitions/atlasChangeReason"
+          },
+          "type": "array"
+        },
         "allowedChemicals": {
           "items": {
             "$ref": "#/definitions/atlasDeicingChemical"
@@ -721,6 +856,9 @@
           "type": "boolean"
         },
         "enforceRwyccUpDownGrades": {
+          "type": "boolean"
+        },
+        "excludeFrictionFromReport": {
           "type": "boolean"
         },
         "mapTaxiwaysOnTop": {
@@ -786,7 +924,7 @@
         "aerodrome": {
           "allOf": [
             {
-              "$ref": "#/definitions/safeskyatlasAerodrome"
+              "$ref": "#/definitions/safeskyAtlasAerodrome"
             }
           ],
           "title": "Aerodrome assessment in structured form"
@@ -895,7 +1033,7 @@
     "atlasAerodromeResponse": {
       "properties": {
         "aerodrome": {
-          "$ref": "#/definitions/safeskyatlasAerodrome"
+          "$ref": "#/definitions/safeskyAtlasAerodrome"
         },
         "atisPreview": {
           "type": "string"
@@ -938,6 +1076,40 @@
           "$ref": "#/definitions/atlasSignificantChangeStatus"
         },
         "textPreview": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAircraft": {
+      "properties": {
+        "icao": {
+          "type": "string"
+        },
+        "icao24": {
+          "type": "string"
+        },
+        "modelCode": {
+          "type": "string"
+        },
+        "modelText": {
+          "type": "string"
+        },
+        "registration": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasAirline": {
+      "properties": {
+        "iata": {
+          "type": "string"
+        },
+        "icao": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         }
       },
@@ -1054,7 +1226,11 @@
         "CHANGE_REASON_PRECIPITATION",
         "CHANGE_REASON_PIREP",
         "CHANGE_REASON_OTHER",
-        "CHANGE_REASON_FROZEN_SAND"
+        "CHANGE_REASON_FROZEN_SAND",
+        "CHANGE_REASON_EXPERIENCE",
+        "CHANGE_REASON_MULTICONTAMINANT",
+        "CHANGE_REASON_WEATHER",
+        "CHANGE_REASON_OBSERVATION"
       ],
       "title": "Reasons for manual RWYCC up/downgrade, as defined in ICAO Doc 9981",
       "type": "string"
@@ -1110,10 +1286,89 @@
       },
       "type": "object"
     },
-    "atlasCreateAerodromeConfigResponse": {
+    "atlasCreateAerodromeTrialRequest": {
       "properties": {
+        "description": {
+          "title": "Description of the trial aerodrome",
+          "type": "string"
+        },
+        "featureAdditions": {
+          "items": {
+            "$ref": "#/definitions/atlasOptionalFeature"
+          },
+          "title": "Optional: Additional features (e.g. PIREP, MOBILE_SENSORS, ...)",
+          "type": "array"
+        },
+        "featureOverrides": {
+          "items": {
+            "$ref": "#/definitions/atlasOptionalFeature"
+          },
+          "title": "Optional: Completely overrides features, using \"premium\" as default",
+          "type": "array"
+        },
+        "noCustomisedReports": {
+          "description": "Do not include customised reports, the default templates include them.",
+          "type": "boolean"
+        },
+        "preferredAerodromeId": {
+          "title": "Optional: the aerodrome id the trial environment gets. Generated if missing",
+          "type": "string"
+        },
+        "primaryContact": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasCreateAerodromeTrialRequestContact"
+            }
+          ],
+          "title": "Initial admin"
+        },
+        "realIcao": {
+          "title": "Optional: using a default if missing",
+          "type": "string"
+        },
+        "size": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasTrialSize"
+            }
+          ],
+          "title": "Defaults to SMALL_MMX"
+        },
+        "templateFromAerodromeId": {
+          "title": "Optional: creates a template config based on the given aerodrome id",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCreateAerodromeTrialRequestContact": {
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "atlasCreateAerodromeTrialResponse": {
+      "properties": {
+        "addedUser": {
+          "title": "True if the initial admin was added succesfully",
+          "type": "boolean"
+        },
         "config": {
-          "$ref": "#/definitions/atlasAerodromeConfig"
+          "allOf": [
+            {
+              "$ref": "#/definitions/atlasAerodromeConfig"
+            }
+          ],
+          "title": "The complete trial config"
+        },
+        "sentWelcomeEmail": {
+          "title": "True if a welcome mail was sent to the added admin",
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -1215,8 +1470,8 @@
           ],
           "title": "The mood to display when the field is unset (unchecked, zero, empty)"
         },
-        "oneOfValue": {
-          "$ref": "#/definitions/atlasOneOfValue"
+        "nOfValue": {
+          "$ref": "#/definitions/atlasNOfValue"
         },
         "photosValue": {
           "$ref": "#/definitions/atlasPhotosValue"
@@ -1439,8 +1694,16 @@
           ],
           "description": "If teams are relevant for this feature, supply the field_id."
         },
+        "titleCoordinator": {
+          "description": "Title for the coordinator overview, mandatory if a teams configuration is\npresent. Otherwise the primary title is used.",
+          "type": "string"
+        },
         "titlePrimary": {
           "description": "The title is the human readable name of the feature, this is mandatory.",
+          "type": "string"
+        },
+        "titleShort": {
+          "description": "Short version fo the title, used in dialogs.",
           "type": "string"
         },
         "titleTeams": {
@@ -1608,8 +1871,8 @@
         "intValue": {
           "$ref": "#/definitions/atlasIntValue"
         },
-        "oneOfValue": {
-          "$ref": "#/definitions/atlasOneOfValue"
+        "nOfValue": {
+          "$ref": "#/definitions/atlasNOfValue"
         },
         "stringValue": {
           "$ref": "#/definitions/atlasStringValue"
@@ -1905,6 +2168,37 @@
       },
       "type": "object"
     },
+    "atlasFlight": {
+      "properties": {
+        "aircraft": {
+          "$ref": "#/definitions/atlasAircraft"
+        },
+        "airline": {
+          "$ref": "#/definitions/atlasAirline"
+        },
+        "arrival": {
+          "$ref": "#/definitions/FlightSrcDst"
+        },
+        "departure": {
+          "$ref": "#/definitions/FlightSrcDst"
+        },
+        "flightNumber": {
+          "$ref": "#/definitions/atlasFlightNumber"
+        }
+      },
+      "type": "object"
+    },
+    "atlasFlightNumber": {
+      "properties": {
+        "iata": {
+          "type": "string"
+        },
+        "icao": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "atlasGPSPosition": {
       "properties": {
         "accuracy": {
@@ -2085,46 +2379,14 @@
       },
       "type": "object"
     },
-    "atlasListAerodromesResponse": {
+    "atlasListArrivingFlightsResponse": {
       "properties": {
-        "aerodromes": {
+        "flights": {
           "items": {
-            "$ref": "#/definitions/atlasListAerodromesResponseAerodrome",
+            "$ref": "#/definitions/atlasFlight",
             "type": "object"
           },
           "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "atlasListAerodromesResponseAerodrome": {
-      "properties": {
-        "aerodromeId": {
-          "type": "string"
-        },
-        "created": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "deployment": {
-          "$ref": "#/definitions/atlasAerodromeDeployment"
-        },
-        "description": {
-          "type": "string"
-        },
-        "expires": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "iata": {
-          "type": "string"
-        },
-        "metarId": {
-          "type": "string"
-        },
-        "updated": {
-          "format": "date-time",
-          "type": "string"
         }
       },
       "type": "object"
@@ -2134,6 +2396,18 @@
         "imports": {
           "items": {
             "$ref": "#/definitions/atlasConditionImport",
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "atlasListHistoricalMetarResponse": {
+      "properties": {
+        "metars": {
+          "items": {
+            "$ref": "#/definitions/atlasMETAR",
             "type": "object"
           },
           "type": "array"
@@ -2584,7 +2858,7 @@
       "description": "Metadata describes the current state of a given field. A field starts\nlife with op = UNCHANGED_CLEAR and no user or time. When a client sends\nan update with op = SET or op = CLEAR the server will update the\ncorresponding field value, set the user and time according to current\nauthenticated values, and set op back to the corresponding UNCHANGED_\nvariant. Fields without metadata, or with op set to something other than\nSET/CLEAR will be ignored by the server in updates.",
       "properties": {
         "op": {
-          "$ref": "#/definitions/safeskyatlasOperation"
+          "$ref": "#/definitions/safeskyAtlasOperation"
         },
         "time": {
           "format": "date-time",
@@ -2606,6 +2880,32 @@
       },
       "type": "object"
     },
+    "atlasNOfValue": {
+      "properties": {
+        "choices": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "maxSelectedItems": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "meta": {
+          "$ref": "#/definitions/atlasMetadata"
+        },
+        "selection": {
+          "items": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": "array"
+        }
+      },
+      "title": "A choice of one of a set of strings",
+      "type": "object"
+    },
     "atlasNavCanadaConfig": {
       "properties": {
         "apiEndpoint": {
@@ -2618,25 +2918,6 @@
           "type": "string"
         }
       },
-      "type": "object"
-    },
-    "atlasOneOfValue": {
-      "properties": {
-        "choice": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "choices": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "meta": {
-          "$ref": "#/definitions/atlasMetadata"
-        }
-      },
-      "title": "A choice of one of a set of strings",
       "type": "object"
     },
     "atlasOnlineUsers": {
@@ -2680,6 +2961,11 @@
     },
     "atlasPIREP": {
       "properties": {
+        "aircraftIdentification": {
+          "example": "A12B",
+          "title": "Aircraft identification number",
+          "type": "string"
+        },
         "brakingAction": {
           "allOf": [
             {
@@ -2720,7 +3006,7 @@
         },
         "time": {
           "format": "date-time",
-          "title": "Time the report was received",
+          "title": "Reported time of the PIREP",
           "type": "string"
         }
       },
@@ -3124,6 +3410,9 @@
     },
     "atlasRCREntry": {
       "properties": {
+        "reportType": {
+          "$ref": "#/definitions/atlasPublishReportFormat"
+        },
         "runwayLines": {
           "items": {
             "type": "string"
@@ -3384,23 +3673,6 @@
         }
       },
       "title": "One or more strings",
-      "type": "object"
-    },
-    "atlasReportsPublishReportBody": {
-      "properties": {
-        "format": {
-          "$ref": "#/definitions/atlasPublishReportFormat"
-        },
-        "methods": {
-          "items": {
-            "$ref": "#/definitions/atlasPublishReportMethod"
-          },
-          "type": "array"
-        },
-        "updateTime": {
-          "type": "boolean"
-        }
-      },
       "type": "object"
     },
     "atlasResetAerodromeResponse": {
@@ -4006,6 +4278,9 @@
       ],
       "type": "string"
     },
+    "atlasStoreTokenResponse": {
+      "type": "object"
+    },
     "atlasStringValue": {
       "properties": {
         "meta": {
@@ -4042,6 +4317,9 @@
         },
         "recommendedAppVer": {
           "type": "string"
+        },
+        "region": {
+          "$ref": "#/definitions/atlasRegion"
         },
         "version": {
           "$ref": "#/definitions/atlasVersion"
@@ -4296,12 +4574,17 @@
       "title": "A time",
       "type": "object"
     },
-    "atlasUpdateAerodromeConfigResponse": {
-      "properties": {
-        "config": {
-          "$ref": "#/definitions/atlasAerodromeConfig"
-        }
-      },
+    "atlasTrialSize": {
+      "default": "TRIAL_UNKNOWN",
+      "enum": [
+        "TRIAL_UNKNOWN",
+        "TRIAL_SMALL_MMX",
+        "TRIAL_LARGE_DEMO",
+        "TRIAL_CUSTOM"
+      ],
+      "type": "string"
+    },
+    "atlasUnregisterUserResponse": {
       "type": "object"
     },
     "atlasUpdateAerodromePreferencesResponse": {
@@ -4567,7 +4850,7 @@
       },
       "type": "object"
     },
-    "safeskyatlasAerodrome": {
+    "safeskyAtlasAerodrome": {
       "properties": {
         "aerodromeId": {
           "type": "string"
@@ -4713,7 +4996,7 @@
       "title": "Aerodrome assessments",
       "type": "object"
     },
-    "safeskyatlasOperation": {
+    "safeskyAtlasOperation": {
       "default": "CLEARED",
       "enum": [
         "CLEARED",
@@ -4733,7 +5016,7 @@
     },
     "description": "## Overview\n\nThe Airside Sync system provides an open REST API for accessing report data.\n\nThe REST API uses JSON over HTTPS exclusively. In a cloud deployment the API is\nexposed on https://api.safe-sky.net/; in an on-premises deployment the URL\nwill vary. The API uses versioned URLs, where the current API version is `/v1`.\n\n### OpenAPI Specifications\n\nAirside Sync provides an OpenAPI specification documenting the current API\nin a machine readable manner, v2 and v3. This specification can be used to\ngenerate API code for many languages. The latest version is always available\nat https://api.safe-sky.net/v1/openapi.json (OpenAPI v2) and\nhttps://api.safe-sky.net/v1/openapi-v3.json (OpenAPI v3), with this rendered\ndocumentation available at https://api.safe-sky.net/v1/openapi.html.\n\n### Regions\n\nAirside Sync is deployed in multiple geographic regions. A customer\naerodrome is provisioned into a single region, the one closest to the\ncustomer. Region switching is automatic and transparent when using the\nAirside Sync client, but when using the API you must ensure to use the\ncorrect region yourself. If you are unsure about your region, please discuss\nwith customer support.\n\nThe region is set by using the corresponding subdomain of\n``api.safe-sky.net``. Currently, the following regions exist:\n\n- ``eu.api.safe-sky.net`` for European and British customers. This region is\n  also accessed when using ``api.safe-sky.net`` without a region specifier.\n- ``us.api.safe-sky.net`` for North American, South American and Caribbean\n  customers.\n\nUsing the wrong region for an API call for a given aerodrome will result in\nan error.\n\n### Formatting\n\nAPI responses are normally compact JSON. To instead receive formatted\nhuman-readable JSON you can add the query parameter `?pretty` to any API\ncall or, equivalently, set the `Accept: application/json+pretty` query\nheader.\n",
     "title": "Safe Sky Airside Sync API",
-    "version": "1.32"
+    "version": "1.35"
   },
   "paths": {
     "/map/tile/{name}": {
@@ -4830,12 +5113,12 @@
     "/v1/aerodromes": {
       "get": {
         "description": "This method requires system admin permissions.",
-        "operationId": "Config_ListAerodromes",
+        "operationId": "Config_AdminListAerodromes",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasListAerodromesResponse"
+              "$ref": "#/definitions/atlasAdminListAerodromesResponse"
             }
           },
           "default": {
@@ -4852,7 +5135,7 @@
       },
       "post": {
         "description": "This method requires system admin permissions.",
-        "operationId": "Config_CreateAerodromeConfig",
+        "operationId": "Config_AdminCreateAerodromeConfig",
         "parameters": [
           {
             "in": "body",
@@ -4867,7 +5150,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasCreateAerodromeConfigResponse"
+              "$ref": "#/definitions/atlasAdminCreateAerodromeConfigResponse"
             }
           },
           "default": {
@@ -4878,6 +5161,39 @@
           }
         },
         "summary": "Create aerodrome",
+        "tags": [
+          "Config"
+        ]
+      }
+    },
+    "/v1/aerodromes/trial": {
+      "post": {
+        "operationId": "Config_CreateAerodromeTrial",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/atlasCreateAerodromeTrialRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasCreateAerodromeTrialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Create aerodrome trial",
         "tags": [
           "Config"
         ]
@@ -5572,6 +5888,52 @@
         ]
       }
     },
+    "/v1/aerodromes/{aerodromeId}/flights": {
+      "get": {
+        "operationId": "Flights_ListArrivingFlights",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "look this many hours into the past (default 1)",
+            "format": "int32",
+            "in": "query",
+            "name": "sinceHours",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "look this many hours into the future (default 4)",
+            "format": "int32",
+            "in": "query",
+            "name": "untilHours",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListArrivingFlightsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Flights"
+        ]
+      }
+    },
     "/v1/aerodromes/{aerodromeId}/imports/runways/{runwayId}": {
       "get": {
         "operationId": "Live_ListConditionImports",
@@ -5658,6 +6020,45 @@
         "summary": "Inject a condition import",
         "tags": [
           "Live"
+        ]
+      }
+    },
+    "/v1/aerodromes/{aerodromeId}/metar": {
+      "get": {
+        "description": "List the METAR reports for a given aerodrome for a given date.",
+        "operationId": "Metar_ListHistoricalMetar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "date-time",
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasListHistoricalMetarResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "List METAR reports",
+        "tags": [
+          "Metar"
         ]
       }
     },
@@ -5970,7 +6371,7 @@
             "name": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/atlasReportsPublishReportBody"
+              "$ref": "#/definitions/ReportsPublishReportBody"
             }
           }
         ],
@@ -6010,6 +6411,12 @@
             "name": "reportId",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "withPdf",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -6048,6 +6455,12 @@
             "name": "reportId",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "withPdf",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -6740,7 +7153,7 @@
     "/v1/aerodromes/{config.aerodromeId}/configuration": {
       "patch": {
         "description": "This method requires system admin permissions.",
-        "operationId": "Config_UpdateAerodromeConfig2",
+        "operationId": "Config_AdminUpdateAerodromeConfig2",
         "parameters": [
           {
             "description": "Aerodrome identifier (ICAO)",
@@ -6869,6 +7282,7 @@
                   "type": "string"
                 },
                 "iata": {
+                  "readOnly": true,
                   "title": "Airport code (IATA), for information purposes only",
                   "type": "string"
                 },
@@ -7047,7 +7461,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasUpdateAerodromeConfigResponse"
+              "$ref": "#/definitions/atlasAdminUpdateAerodromeConfigResponse"
             }
           },
           "default": {
@@ -7064,7 +7478,7 @@
       },
       "put": {
         "description": "This method requires system admin permissions.",
-        "operationId": "Config_UpdateAerodromeConfig",
+        "operationId": "Config_AdminUpdateAerodromeConfig",
         "parameters": [
           {
             "description": "Aerodrome identifier (ICAO)",
@@ -7193,6 +7607,7 @@
                   "type": "string"
                 },
                 "iata": {
+                  "readOnly": true,
                   "title": "Airport code (IATA), for information purposes only",
                   "type": "string"
                 },
@@ -7377,7 +7792,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/atlasUpdateAerodromeConfigResponse"
+              "$ref": "#/definitions/atlasAdminUpdateAerodromeConfigResponse"
             }
           },
           "default": {
@@ -7431,7 +7846,7 @@
         "operationId": "Auth_ListUsers",
         "parameters": [
           {
-            "description": "Aerodrome is optional, when set it returns users with permission for\nthe aerodrome in question only, requires aerodrome admin permission.\nBlank aerodrome returns all users and requires system admin\npermission.",
+            "description": "Returns users with permission for the aerodrome in question only,\nrequires aerodrome admin permission.",
             "in": "path",
             "name": "aerodromeId",
             "required": true,
@@ -7879,17 +8294,23 @@
         ]
       }
     },
-    "/v1/reports/publish": {
+    "/v1/notifications/{aerodromeId}/token": {
       "post": {
-        "description": "This method is called when a new report (RCR, SNOWTAM, ATIS, or\nCustom) is published. The report is presented in the body of the\nrequest. The server should return a 2xx code to accept report. Any\nother response code will be interpreted as a publish failure. The\nresponse body is ignored.\n\nN.b.: Airside Sync does not implement this API endpoint. It is part of the\nAirside Sync API documentation for clarity only. The API endpoint should be\nimplemented by the integration partner, and the URL documented here\nis for documentation purposes only.",
-        "operationId": "Push_PublishReport",
+        "description": "Store or update a registration token. The user will receive push\nnotifications.",
+        "operationId": "Notifications_StoreToken",
         "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
           {
             "in": "body",
             "name": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/atlasAerodromeReport"
+              "$ref": "#/definitions/NotificationsStoreTokenBody"
             }
           }
         ],
@@ -7897,8 +8318,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {},
-              "type": "object"
+              "$ref": "#/definitions/atlasStoreTokenResponse"
             }
           },
           "default": {
@@ -7908,10 +8328,49 @@
             }
           }
         },
-        "security": [],
-        "summary": "Publish a report",
+        "summary": "Store registration token",
         "tags": [
-          "Push"
+          "Notifications"
+        ]
+      }
+    },
+    "/v1/notifications/{aerodromeId}/token/user/unlink": {
+      "post": {
+        "description": "The user will no longer receive push notifications. The token will not be\nremoved. Calling \"StoreToken\" again will re-map the user to the token.",
+        "operationId": "Notifications_UnlinkUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aerodromeId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NotificationsUnlinkUserBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/atlasUnregisterUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "summary": "Unlink user from registration token",
+        "tags": [
+          "Notifications"
         ]
       }
     },
@@ -7975,6 +8434,9 @@
       "name": "Dynamics"
     },
     {
+      "name": "Flights"
+    },
+    {
       "name": "Health"
     },
     {
@@ -7982,11 +8444,13 @@
       "name": "Live"
     },
     {
-      "name": "Pireps"
+      "name": "Metar"
     },
     {
-      "description": "The Push service is to be implemented by upstream integration points that\nwish to receive a notification of important Airside Sync events.\n",
-      "name": "Push"
+      "name": "Notifications"
+    },
+    {
+      "name": "Pireps"
     },
     {
       "name": "Reports"
